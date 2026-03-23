@@ -34,7 +34,7 @@
 }">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800;900&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
 
 <script>
 const TSS_CONFIG = {
@@ -67,7 +67,7 @@ html{scroll-behavior:smooth}
   --violet:#9f7aea;--violet-dim:rgba(159,122,234,.12);
   --rose:#ff4d8d;--gold:#ffc947;
   --t1:#f0f2ff;--t2:#9094b0;--t3:#50536a;
-  --ff-display:'Syne',sans-serif;--ff-body:'DM Sans',sans-serif;
+  --ff-display:'Barlow Condensed',sans-serif;--ff-body:'Barlow',sans-serif;
   --nav-h:66px;
 }
 body{background:var(--ink);color:var(--t1);font-family:var(--ff-body);font-size:14px;overflow-x:hidden}
@@ -1006,25 +1006,88 @@ async function votarPregunta(id) {
 }
 
 // ── PLAYER ──
-window.addEventListener("load",()=>{
-  const id=TSS_CONFIG.LIVE_VIDEO_ID;
-  document.getElementById("ytFrame").src=id
-    ? `https://www.youtube.com/embed/${id}?rel=0&modestbranding=1`
-    : `https://www.youtube.com/embed?listType=user_uploads&list=todosesabe_tss&rel=0&modestbranding=1`;
-  loadChannelVideos(); buildViewers(); buildPoll();
+window.addEventListener("load", () => {
+  initSmartPlayer();
+  loadChannelVideos();
+  buildViewers();
+  buildPoll();
 });
+
+async function initSmartPlayer() {
+  // Si hay un live ID configurado manualmente, usarlo siempre
+  if (TSS_CONFIG.LIVE_VIDEO_ID) {
+    loadFrame(`https://www.youtube.com/embed/${TSS_CONFIG.LIVE_VIDEO_ID}?autoplay=0&rel=0&modestbranding=1`);
+    return;
+  }
+
+  const now      = new Date();
+  const day      = now.getDay();   // 0=dom, 4=jue
+  const hour     = now.getHours();
+  const isThursday    = day === 4;
+  const isLiveTime    = isThursday && hour >= 20;
+
+  if (isLiveTime) {
+    // Jueves 20:30+ → intentar cargar live del canal
+    loadFrame(`https://www.youtube.com/embed?listType=user_uploads&list=todosesabe_tss&rel=0&modestbranding=1&autoplay=1`);
+    document.querySelector(".pc-sub").innerHTML = `<span class="pc-dot"></span> EN VIVO AHORA`;
+  } else {
+    // Cualquier otro día/hora → cargar el último video publicado
+    await loadLatestVideo();
+  }
+}
+
+async function loadLatestVideo() {
+  try {
+    const key = TSS_CONFIG.YOUTUBE_API_KEY;
+    const ch  = TSS_CONFIG.YOUTUBE_CHANNEL_ID;
+
+    // Buscar la playlist de uploads
+    const chRes  = await fetch(`https://www.googleapis.com/youtube/v3/channels?part=contentDetails&id=${ch}&key=${key}`);
+    const chData = await chRes.json();
+    if (!chData.items?.length) throw new Error("Canal no encontrado");
+
+    const uploadsId = chData.items[0].contentDetails.relatedPlaylists.uploads;
+
+    // Traer el primer video (el más reciente)
+    const plRes  = await fetch(`https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${uploadsId}&maxResults=1&key=${key}`);
+    const plData = await plRes.json();
+    if (!plData.items?.length) throw new Error("No hay videos");
+
+    const latest = plData.items[0];
+    const videoId = latest.snippet.resourceId.videoId;
+    const title   = latest.snippet.title;
+
+    loadFrame(`https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1`);
+    document.getElementById("ytFrame").setAttribute("data-video-id", videoId);
+
+    // Actualizar info del player
+    const progEl = document.querySelector(".pc-prog");
+    const subEl  = document.querySelector(".pc-sub");
+    if (progEl) progEl.textContent = title;
+    if (subEl)  subEl.innerHTML = `<span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--cyan);margin-right:6px"></span> ÚLTIMA EMISIÓN · Próximo en vivo: jueves 20:30`;
+
+  } catch(e) {
+    // Fallback: embed genérico del canal
+    loadFrame(`https://www.youtube.com/embed?listType=user_uploads&list=todosesabe_tss&rel=0&modestbranding=1`);
+    console.warn("Smart player fallback:", e.message);
+  }
+}
+
+function loadFrame(src) {
+  document.getElementById("ytFrame").src = src;
+}
 function loadYT() {
   const raw=document.getElementById("ytIn").value.trim(); if(!raw)return;
   let id=raw; const m=raw.match(/(?:v=|youtu\.be\/|\/live\/|\/embed\/)([a-zA-Z0-9_-]{11})/);
   if(m)id=m[1];
-  document.getElementById("ytFrame").src=`https://www.youtube.com/embed/${id}?autoplay=1&rel=0&modestbranding=1`;
+  loadFrame(`https://www.youtube.com/embed/${id}?autoplay=1&rel=0&modestbranding=1`);
   showToast("▶️","¡Live cargado!");
 }
 document.getElementById("ytIn").addEventListener("keydown",e=>{if(e.key==="Enter")loadYT();});
 function switchSrc(src,btn) {
   document.querySelectorAll(".src-btn").forEach(b=>b.classList.remove("active")); btn.classList.add("active");
-  if(src==="ms"){ if(TSS_CONFIG.MEDIASTREAM_URL){document.getElementById("ytFrame").src=TSS_CONFIG.MEDIASTREAM_URL;showToast("📡","Mediastream activo");}else showToast("📡","Configurá MEDIASTREAM_URL en TSS_CONFIG"); }
-  else{ const id=TSS_CONFIG.LIVE_VIDEO_ID; document.getElementById("ytFrame").src=id?`https://www.youtube.com/embed/${id}?rel=0`:`https://www.youtube.com/embed?listType=user_uploads&list=todosesabe_tss&rel=0`; showToast("▶️","YouTube activo"); }
+  if(src==="ms"){ if(TSS_CONFIG.MEDIASTREAM_URL){loadFrame(TSS_CONFIG.MEDIASTREAM_URL);showToast("📡","Mediastream activo");}else showToast("📡","Configurá MEDIASTREAM_URL en TSS_CONFIG"); }
+  else{ const id=TSS_CONFIG.LIVE_VIDEO_ID; initSmartPlayer(); showToast("▶️","YouTube activo"); }
 }
 
 // ── YOUTUBE API ──
