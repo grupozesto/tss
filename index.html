@@ -480,6 +480,54 @@ body::before{content:'';position:fixed;inset:0;z-index:0;opacity:.022;pointer-ev
 @media(max-width:1200px){.hero-live{grid-template-columns:1fr}.live-sidebar{display:none}.videos-grid{grid-template-columns:repeat(3,1fr)}.team-grid{grid-template-columns:repeat(3,1fr)}.foot-top{grid-template-columns:1fr 1fr}}
 @media(max-width:900px){.nav-links,.nav-search{display:none}.videos-grid,.excl-grid{grid-template-columns:repeat(2,1fr)}.news-layout{grid-template-columns:1fr}.news-main{grid-column:1}.team-grid{grid-template-columns:repeat(2,1fr)}.excl-banner{flex-direction:column;padding:26px;gap:22px}.nl-form{flex-direction:column}.countdown-banner{justify-content:center}}
 @media(max-width:580px){.videos-grid{grid-template-columns:1fr}.section-wrap{padding:36px 16px}.topnav{padding:0 14px;gap:10px}.nav-live-chip{display:none}.foot-top{grid-template-columns:1fr}.team-grid,.excl-grid{grid-template-columns:1fr}.cd-blocks{gap:6px}.cd-block{min-width:52px;padding:7px 10px}}
+
+/* ── VOTACION TEMAS ── */
+.votacion-section{background:var(--ink3);border-top:1px solid var(--border)}
+.votacion-wrap{padding:52px 28px;max-width:1400px;margin:0 auto}
+.votacion-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:14px}
+.votacion-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.vote-card{background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:17px;cursor:pointer;transition:.2s;position:relative}
+.vote-card:hover{border-color:rgba(0,229,255,.28);transform:translateY(-2px)}
+.vote-card.voted{border-color:var(--cyan);background:rgba(0,229,255,.05)}
+.vote-card-title{font-size:14px;font-weight:700;color:var(--t1);margin-bottom:9px;line-height:1.3}
+.vote-bar{height:3px;background:var(--surface2);border-radius:2px;overflow:hidden;margin-bottom:8px}
+.vote-bar-fill{height:100%;background:linear-gradient(90deg,var(--cyan),var(--violet));border-radius:2px;transition:.5s}
+.vote-meta{display:flex;justify-content:space-between;font-size:10px;color:var(--t3)}
+.vote-count{color:var(--cyan);font-weight:700}
+.vote-add-form{display:flex;gap:8px;margin-top:18px;grid-column:1/-1}
+.vote-add-input{flex:1;background:var(--surface);border:1px solid var(--border2);border-radius:8px;padding:10px 14px;color:var(--t1);font-size:13px;outline:none;transition:.18s}
+.vote-add-input:focus{border-color:var(--cyan)}
+.vote-add-input::placeholder{color:var(--t3)}
+.vote-add-btn{padding:10px 20px;border-radius:8px;background:var(--cyan);color:var(--ink);font-size:13px;font-weight:700;border:none;white-space:nowrap;transition:.18s;cursor:pointer}
+.vote-add-btn:hover{background:#33eeff}
+/* ── MURO DONANTES ── */
+.donors-section{border-top:1px solid var(--border);background:var(--ink2)}
+.donors-wrap{padding:52px 28px;max-width:1400px;margin:0 auto}
+.donors-grid{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+.donor-chip{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:6px 14px;transition:.18s}
+.donor-chip:hover{border-color:rgba(255,201,71,.3)}
+.donor-chip.top{border-color:rgba(255,201,71,.35);background:rgba(255,201,71,.04)}
+.donor-av{width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#ffc947,#ff4d8d);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--ink)}
+.donor-name{font-size:12px;font-weight:600;color:var(--t1)}
+/* ── MODAL DONACION ── */
+.don-modal-box{max-width:340px}
+@media(max-width:700px){.votacion-grid{grid-template-columns:1fr}.vote-add-form{flex-direction:column}}
+
+/* ── ONBOARDING ── */
+.onb-overlay{position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.85);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .3s}
+.onb-overlay.show{opacity:1;pointer-events:all}
+.onb-box{background:var(--ink2);border:1px solid var(--border2);border-radius:20px;padding:36px;max-width:440px;width:100%;text-align:center;box-shadow:0 40px 80px rgba(0,0,0,.6);transform:translateY(20px);transition:transform .3s}
+.onb-overlay.show .onb-box{transform:translateY(0)}
+.onb-icon{font-size:52px;margin-bottom:18px;line-height:1}
+.onb-box h2{font-size:22px;font-weight:800;color:var(--t1);margin-bottom:9px;letter-spacing:-.5px}
+.onb-box p{font-size:14px;color:var(--t2);line-height:1.65;margin-bottom:22px}
+.onb-dots{display:flex;justify-content:center;gap:6px;margin-bottom:22px}
+.onb-dot{width:7px;height:7px;border-radius:50%;background:var(--border2);transition:.2s}
+.onb-dot.on{background:var(--cyan);width:22px;border-radius:4px}
+.onb-next{width:100%;padding:12px;border-radius:9px;background:var(--cyan);color:var(--ink);font-size:14px;font-weight:700;border:none;cursor:pointer;transition:.18s;margin-bottom:8px}
+.onb-next:hover{background:#33eeff}
+.onb-skip{background:none;border:none;color:var(--t3);font-size:12px;cursor:pointer;transition:.18s}
+.onb-skip:hover{color:var(--t2)}
 </style>
 
 <!-- Firebase -->
@@ -864,6 +912,43 @@ window._reaccion   = (tipo) => addDoc(collection(db,"reacciones_tss"),{tipo, ts:
 </section>
 <div class="divider"></div>
 
+
+<!-- MURO DONANTES -->
+<section class="donors-section">
+  <div class="donors-wrap">
+    <div class="eyebrow">Comunidad</div>
+    <div class="sec-heading" style="margin-bottom:6px">Quiénes sostienen TSS</div>
+    <div style="font-size:13px;color:var(--t2)">Las personas que hacen posible el periodismo independiente.</div>
+    <div class="donors-grid" id="donantesGrid">
+      <div style="font-size:13px;color:var(--t3)">Cargando donantes...</div>
+    </div>
+  </div>
+</section>
+<div class="divider"></div>
+
+<!-- VOTACION TEMAS -->
+<section id="votacion" class="votacion-section">
+  <div class="votacion-wrap">
+    <div class="votacion-header">
+      <div>
+        <div class="eyebrow">Participá</div>
+        <div class="sec-heading" style="margin-bottom:0">¿Qué querés que trate TSS?</div>
+      </div>
+      <div style="font-size:13px;color:var(--t2)">Los más votados llegan al programa</div>
+    </div>
+    <div class="votacion-grid" id="votacionGrid">
+      <!-- Populated by JS/Firebase -->
+      <div class="vote-card"><div class="vote-card-title">El narco en Uruguay y sus conexiones políticas</div><div class="vote-bar"><div class="vote-bar-fill" style="width:72%"></div></div><div class="vote-meta"><span>Comunidad</span><span class="vote-count">127 votos</span></div></div>
+      <div class="vote-card"><div class="vote-card-title">El caso Canal 4 y la libertad de prensa</div><div class="vote-bar"><div class="vote-bar-fill" style="width:54%"></div></div><div class="vote-meta"><span>Comunidad</span><span class="vote-count">95 votos</span></div></div>
+      <div class="vote-card"><div class="vote-card-title">Crisis de seguridad: ¿qué falló?</div><div class="vote-bar"><div class="vote-bar-fill" style="width:38%"></div></div><div class="vote-meta"><span>Comunidad</span><span class="vote-count">67 votos</span></div></div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:18px">
+      <input class="vote-add-input" type="text" id="voteInput" placeholder="Proponé un tema para el próximo programa..." maxlength="120" onkeydown="if(event.key==='Enter')addVoteTopic()">
+      <button class="vote-add-btn" onclick="addVoteTopic()">Proponer tema</button>
+    </div>
+  </div>
+</section>
+<div class="divider"></div>
 <!-- NEWSLETTER -->
 <section class="newsletter-section">
   <div class="nl-inner">
@@ -1402,6 +1487,173 @@ function showToast(icon,msg){document.getElementById("tI").textContent=icon;docu
 if("serviceWorker" in navigator){
   navigator.serviceWorker.register("data:text/javascript,self.addEventListener('fetch',e=>{})").catch(()=>{});
 }
+
+// ── ONBOARDING ──
+(function(){
+  if (!localStorage.getItem('tss_onboarded')) {
+    setTimeout(() => document.getElementById('onbOverlay').classList.add('show'), 1400);
+  }
+})();
+window.onbGo = step => {
+  [0,1,2].forEach(i => { document.getElementById('onbStep'+i).style.display = 'none'; });
+  document.getElementById('onbStep'+step).style.display = 'block';
+};
+window.onbClose = () => {
+  document.getElementById('onbOverlay').classList.remove('show');
+  localStorage.setItem('tss_onboarded','1');
+};
+
+// ── VOTACION TEMAS ──
+window._myVotes = new Set(JSON.parse(localStorage.getItem('tss_myVotes')||'[]'));
+window.renderVotacion = () => {
+  const grid = document.getElementById('votacionGrid');
+  if (!grid) return;
+  const topics = window._voteTopics || [];
+  if (!topics.length) return;
+  const total = topics.reduce((s,t) => s + (t.votes||0), 0) || 1;
+  grid.innerHTML = topics.map(t => `
+    <div class="vote-card${window._myVotes.has(t.id)?' voted':''}" onclick="votarTema('${t.id}')">
+      <div class="vote-card-title">${t.text}</div>
+      <div class="vote-bar"><div class="vote-bar-fill" style="width:${Math.round((t.votes||0)/total*100)}%"></div></div>
+      <div class="vote-meta"><span>${t.autor||'Comunidad'}</span><span class="vote-count">${t.votes||0} votos</span></div>
+    </div>`).join('');
+};
+window.votarTema = async id => {
+  if (!window._currentUser) { showToast('🔐','Iniciá sesión para votar'); openModal && openModal('login'); return; }
+  if (window._myVotes.has(id)) { showToast('⚠️','Ya votaste este tema'); return; }
+  if (!window._voteTopic) { showToast('⚠️','Conectando...'); return; }
+  try {
+    await window._voteTopic(id);
+    window._myVotes.add(id);
+    localStorage.setItem('tss_myVotes', JSON.stringify([...window._myVotes]));
+    showToast('✅','¡Voto registrado!');
+  } catch(e) { showToast('❌', e.message); }
+};
+window.addVoteTopic = async () => {
+  const inp = document.getElementById('voteInput');
+  const text = inp?.value.trim();
+  if (!text || text.length < 5) { showToast('⚠️','Describí el tema (mínimo 5 caracteres)'); return; }
+  if (!window._currentUser) { showToast('🔐','Iniciá sesión para proponer temas'); openModal && openModal('login'); return; }
+  if (!window._addTopic) { showToast('⚠️','Conectando...'); return; }
+  inp.value = '';
+  try {
+    await window._addTopic(text, window._currentUser.displayName || window._currentUser.email.split('@')[0]);
+    showToast('✅','¡Tema propuesto!');
+  } catch(e) { showToast('❌', e.message); }
+};
+
+// ── MURO DONANTES ──
+window.renderDonantes = () => {
+  const grid = document.getElementById('donantesGrid');
+  if (!grid) return;
+  const donors = window._donantes || [];
+  if (!donors.length) {
+    grid.innerHTML = '<div style="font-size:13px;color:var(--t3)">Sé el primero en apoyar TSS 💛</div>';
+    return;
+  }
+  grid.innerHTML = donors.map((d,i) => `
+    <div class="donor-chip${i<3?' top':''}">
+      <div class="donor-av">${(d.nombre||'?')[0].toUpperCase()}</div>
+      <span class="donor-name">${d.nombre||'Anónimo'}</span>
+      ${i<3?'<span style="font-size:9px;color:#ffc947">⭐</span>':''}
+    </div>`).join('');
+};
+
+// ── DONACION MODAL ──
+window.abrirDonacion = monto => {
+  const box = document.getElementById('donModal');
+  if (!box) return;
+  document.getElementById('donMonto').value = monto || '';
+  box.classList.add('open');
+  document.body.style.overflow = 'hidden';
+};
+window.closeDon = () => {
+  document.getElementById('donModal')?.classList.remove('open');
+  document.body.style.overflow = '';
+};
+window.confirmarDonacion = async () => {
+  const nombre = document.getElementById('donName')?.value.trim() || 'Anónimo';
+  const monto  = parseInt(document.getElementById('donMonto')?.value) || 0;
+  if (monto < 50) { showToast('⚠️','El monto mínimo es $50'); return; }
+  if (window._donar) await window._donar(nombre, monto);
+  closeDon();
+  showToast('💛','¡Gracias '+nombre+'! Serás redirigido...');
+  setTimeout(() => window.open('https://mpago.la/TU_LINK_MP','_blank'), 800);
+};
+
 </script>
+
+<script type="module">
+import { initializeApp }   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, addDoc, onSnapshot, query,
+         orderBy, limit, doc, updateDoc, increment, serverTimestamp }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const app = initializeApp(TSS_CONFIG.FIREBASE);
+const db  = getFirestore(app);
+window._db2 = db;
+
+// Votacion temas — real-time
+const vQ = query(collection(db,"vote_topics"), orderBy("votes","desc"), limit(9));
+onSnapshot(vQ, snap => {
+  window._voteTopics = snap.docs.map(d => ({id:d.id, ...d.data()}));
+  window.renderVotacion && window.renderVotacion();
+});
+
+// Donantes — real-time
+const dQ = query(collection(db,"donantes"), orderBy("monto","desc"), limit(50));
+onSnapshot(dQ, snap => {
+  window._donantes = snap.docs.map(d => d.data());
+  window.renderDonantes && window.renderDonantes();
+});
+
+window._voteTopic = id => updateDoc(doc(db,"vote_topics",id),{votes:increment(1)});
+window._addTopic  = (text,autor) => addDoc(collection(db,"vote_topics"),{text,autor,votes:0,ts:serverTimestamp()});
+window._donar     = (nombre,monto) => addDoc(collection(db,"donantes"),{nombre,monto,ts:serverTimestamp()});
+</script>
+
+<!-- ONBOARDING -->
+<div class="onb-overlay" id="onbOverlay">
+  <div class="onb-box" id="onbBox">
+    <div id="onbStep0">
+      <div class="onb-icon">📺</div>
+      <h2>Bienvenid@ a TSS</h2>
+      <p>La plataforma oficial de <strong style="color:var(--t1)">Todo Se Sabe</strong> con Nacho Álvarez. Periodismo independiente, sin filtros ni censura.</p>
+      <div class="onb-dots"><div class="onb-dot on" id="od0"></div><div class="onb-dot" id="od1"></div><div class="onb-dot" id="od2"></div></div>
+      <button class="onb-next" onclick="onbGo(1)">Siguiente →</button>
+      <button class="onb-skip" onclick="onbClose()">Saltear</button>
+    </div>
+    <div id="onbStep1" style="display:none">
+      <div class="onb-icon">🎙️</div>
+      <h2>En vivo cada jueves</h2>
+      <p>El programa se emite <strong style="color:var(--t1)">todos los jueves a las 20:30</strong>. Activá las notificaciones para no perderte el inicio.</p>
+      <div class="onb-dots"><div class="onb-dot" id="od0b"></div><div class="onb-dot on" id="od1b"></div><div class="onb-dot" id="od2b"></div></div>
+      <button class="onb-next" onclick="onbGo(2)">Siguiente →</button>
+      <button class="onb-skip" onclick="onbClose()">Saltear</button>
+    </div>
+    <div id="onbStep2" style="display:none">
+      <div class="onb-icon">💬</div>
+      <h2>Participá con la comunidad</h2>
+      <p>Chateá en vivo, votá temas, hacé preguntas al aire y apoyá el periodismo independiente con tu aporte.</p>
+      <div class="onb-dots"><div class="onb-dot" id="od0c"></div><div class="onb-dot" id="od1c"></div><div class="onb-dot on" id="od2c"></div></div>
+      <button class="onb-next" onclick="onbClose()">¡Empezar! 🚀</button>
+    </div>
+  </div>
+</div>
+
+<!-- DONACION MODAL -->
+<div class="modal-overlay" id="donModal" onclick="if(event.target===this)closeDon()">
+  <div class="modal-box" style="max-width:340px">
+    <button class="modal-close" onclick="closeDon()">✕</button>
+    <div style="font-size:20px;margin-bottom:8px">💛</div>
+    <div style="font-size:16px;font-weight:700;color:var(--t1);margin-bottom:4px">Apoyá a TSS</div>
+    <div style="font-size:12px;color:var(--t2);margin-bottom:16px;line-height:1.6">Tu nombre va a aparecer en el muro de donantes de la plataforma.</div>
+    <div class="fld"><label>Tu nombre</label><input type="text" id="donName" placeholder="Nombre o apodo..."></div>
+    <div class="fld"><label>Monto (pesos)</label><input type="number" id="donMonto" placeholder="500" min="50"></div>
+    <button class="form-submit" onclick="confirmarDonacion()" style="background:var(--gold);color:var(--ink)">Continuar a MercadoPago →</button>
+    <div style="font-size:10px;color:var(--t3);text-align:center;margin-top:8px">Serás redirigido a MercadoPago de forma segura.</div>
+  </div>
+</div>
+
 </body>
 </html>
