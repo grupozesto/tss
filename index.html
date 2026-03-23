@@ -131,7 +131,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;opacity:.022;pointer-ev
 
 /* ── TOPNAV ── */
 .topnav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);background:rgba(8,9,13,.88);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 26px;gap:18px;z-index:500}
-.nav-logo img{height:46px;width:auto;display:block;border-radius:6px}
+.nav-logo img{height:46px;width:auto;display:block;border-radius:8px;background:transparent;object-fit:contain}
 .nav-live-chip{display:flex;align-items:center;gap:8px;background:rgba(0,229,255,.07);border:1px solid rgba(0,229,255,.2);border-radius:6px;padding:6px 14px;flex-shrink:0}
 .lpulse{width:7px;height:7px;border-radius:50%;background:var(--rose);animation:lp 1.8s ease-in-out infinite;flex-shrink:0}
 @keyframes lp{0%{box-shadow:0 0 0 0 rgba(255,77,141,.7)}70%{box-shadow:0 0 0 7px rgba(255,77,141,0)}100%{box-shadow:0 0 0 0 rgba(255,77,141,0)}}
@@ -500,7 +500,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;opacity:.022;pointer-ev
 .foot-inner{max-width:1100px;margin:0 auto}
 .foot-top{display:grid;grid-template-columns:1.8fr 1fr 1fr 1fr;gap:36px;margin-bottom:36px}
 .foot-brand p{font-size:13px;color:var(--t2);line-height:1.7;margin-top:12px;max-width:270px}
-.foot-brand img{height:40px;width:auto;object-fit:contain}
+.foot-brand img{height:40px;width:auto;object-fit:contain;background:transparent;border-radius:8px}
 .foot-socs{display:flex;gap:7px;margin-top:14px}
 .fsoc{width:32px;height:32px;border-radius:7px;border:1px solid var(--border);background:var(--surface);display:flex;align-items:center;justify-content:center;color:var(--t2);transition:.18s}
 .fsoc:hover{color:var(--cyan);border-color:rgba(0,229,255,.3)}
@@ -604,8 +604,13 @@ body.light-mode .glow-bg span{opacity:.03}
   .votacion-wrap{padding:28px 14px}
   .donors-wrap{padding:28px 14px}
   .foot-inner{padding:28px 14px}
-  .foot-brand p{font-size:12px;max-width:100%}
-  .foot-bottom{flex-direction:column;text-align:center;gap:6px}
+  .foot-brand{text-align:center}
+  .foot-brand img{margin:0 auto}
+  .foot-brand p{font-size:12px;max-width:100%;text-align:center}
+  .foot-socs{justify-content:center}
+  .foot-desktop-only{display:none}
+  .foot-top{gap:0}
+  .foot-bottom{flex-direction:column;text-align:center;gap:4px;font-size:10px}
   .modal-box{padding:22px 18px;margin:8px;border-radius:14px;max-width:calc(100vw - 16px)}
   .share-modal-box{max-width:calc(100vw - 16px)}
   .onb-box{padding:28px 20px;max-width:calc(100vw - 16px)}
@@ -687,6 +692,10 @@ window._auth = auth; window._db = db;
 onAuthStateChanged(auth, u => {
   window._currentUser = u || null;
   u ? window.onUserLoggedIn(u) : window.onUserLoggedOut();
+  // Update reactions bar visibility
+  const rb = document.getElementById("reactionsBar");
+  const live = TSS_CONFIG.LIVE_VIDEO_ID || isLiveNow();
+  if(rb) rb.style.display = (live && u) ? "flex" : "none";
 });
 
 // Chat en tiempo real
@@ -836,7 +845,7 @@ window._donar     = (nombre,monto) => addDoc(collection(db,"donantes"),{nombre,m
       </div>
             <!-- Chat -->
       <div class="tab-panel active" id="panel-chat">
-        <div class="reactions-bar">
+        <div class="reactions-bar" id="reactionsBar" style="display:none">
           <button class="react-btn" onclick="sendReaccion('🔥')">🔥 <span id="r1">0</span></button>
           <button class="react-btn" onclick="sendReaccion('💥')">💥 <span id="r2">0</span></button>
           <button class="react-btn" onclick="sendReaccion('👏')">👏 <span id="r3">0</span></button>
@@ -851,13 +860,13 @@ window._donar     = (nombre,monto) => addDoc(collection(db,"donantes"),{nombre,m
             allow="autoplay"></iframe>
         </div>
         <!-- Estado fuera de vivo -->
-        <div id="chatOfflineWrap" style="flex:1;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;padding:20px;text-align:center">
-          <div style="font-size:32px">📅</div>
-          <div style="font-size:13px;font-weight:700;color:var(--t1)">Chat disponible los jueves</div>
-          <div style="font-size:12px;color:var(--t2);line-height:1.6;max-width:220px">
-            El chat en vivo se activa automáticamente cuando empieza el programa.
+        <div id="chatOfflineWrap" style="flex:1;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px;padding:28px 20px;text-align:center">
+          <div style="font-size:36px;opacity:.7">📅</div>
+          <div style="font-family:var(--ff-display);font-size:15px;font-weight:700;color:var(--t1)">Chat en vivo los jueves</div>
+          <div style="font-size:12px;color:var(--t2);line-height:1.7;max-width:240px">
+            Se activa automáticamente<br>cuando empieza el programa.
           </div>
-          <div style="font-size:11px;color:var(--cyan);font-weight:600;margin-top:4px" id="chatNextShow"></div>
+          <div style="font-size:12px;color:var(--cyan);font-weight:700;margin-top:2px;padding:6px 16px;border:1px solid rgba(0,229,255,.2);border-radius:20px;background:rgba(0,229,255,.05)" id="chatNextShow"></div>
         </div>
         <div id="chatFormArea"></div>
       </div>
@@ -1055,7 +1064,7 @@ window._donar     = (nombre,monto) => addDoc(collection(db,"donantes"),{nombre,m
   <div class="foot-inner">
     <div class="foot-top">
       <div class="foot-brand">
-        <img loading="lazy" id="footLogo" alt="TSS">
+        <img loading="lazy" id="footLogo" alt="TSS" style="background:transparent;border-radius:8px">
         <p>El periodismo independiente de Nacho Álvarez. Todos los jueves a las 20:30 en vivo por YouTube.</p>
         <div class="foot-socs">
           <a href="https://youtube.com/@todosesabe_tss" class="fsoc" target="_blank"><svg viewBox="0 0 24 24"><path d="M23.495 6.205a3.007 3.007 0 0 0-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 0 0 .527 6.205a31.247 31.247 0 0 0-.522 5.805 31.247 31.247 0 0 0 .522 5.783 3.007 3.007 0 0 0 2.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 0 0 2.088-2.088 31.247 31.247 0 0 0 .5-5.783 31.247 31.247 0 0 0-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg></a>
@@ -1064,13 +1073,13 @@ window._donar     = (nombre,monto) => addDoc(collection(db,"donantes"),{nombre,m
           <a href="https://tiktok.com/@todosesabe.tss" class="fsoc" target="_blank"><svg viewBox="0 0 24 24"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg></a>
         </div>
       </div>
-      <div class="foot-col"><h5>Plataforma</h5><ul><li onclick="document.querySelector('#live').scrollIntoView({behavior:'smooth'})">En Vivo</li><li onclick="document.querySelector('#videos').scrollIntoView({behavior:'smooth'})">Videos</li><li onclick="document.querySelector('#noticias').scrollIntoView({behavior:'smooth'})">Noticias</li><li onclick="document.querySelector('#exclusivo').scrollIntoView({behavior:'smooth'})">Exclusivo</li></ul></div>
-      <div class="foot-col"><h5>Canal</h5><ul><li><a href="https://youtube.com/@todosesabe_tss" target="_blank">YouTube @todosesabe_tss</a></li><li><a href="https://x.com/todosesabe_tss" target="_blank">Twitter</a></li><li><a href="https://instagram.com/nacho.alvarez71" target="_blank">Instagram</a></li></ul></div>
-      <div class="foot-col"><h5>Info</h5><ul><li onclick="document.querySelector('#equipo').scrollIntoView({behavior:'smooth'})">El equipo</li><li>Contacto</li><li>Términos</li><li>Privacidad</li></ul></div>
+      <div class="foot-col foot-desktop-only"><h5>Plataforma</h5><ul><li onclick="document.querySelector('#live').scrollIntoView({behavior:'smooth'})">En Vivo</li><li onclick="document.querySelector('#videos').scrollIntoView({behavior:'smooth'})">Videos</li><li onclick="document.querySelector('#noticias').scrollIntoView({behavior:'smooth'})">Noticias</li></ul></div>
+      <div class="foot-col foot-desktop-only"><h5>Canal</h5><ul><li><a href="https://youtube.com/@todosesabe_tss" target="_blank">YouTube</a></li><li><a href="https://x.com/todosesabe_tss" target="_blank">X / Twitter</a></li><li><a href="https://instagram.com/nacho.alvarez71" target="_blank">Instagram</a></li></ul></div>
+      <div class="foot-col foot-desktop-only"><h5>Info</h5><ul><li onclick="document.querySelector('#equipo').scrollIntoView({behavior:'smooth'})">El equipo</li><li>Contacto</li></ul></div>
     </div>
     <div class="foot-bottom">
-      <span>© 2026 TSS — Todo Se Sabe · Nacho Álvarez · Periodismo independiente</span>
-      <span>Stream vía <a href="https://youtube.com/@todosesabe_tss" target="_blank">YouTube</a> & Mediastream</span>
+      <span>© 2026 TSS — Todo Se Sabe · Nacho Álvarez</span>
+      <span>Stream vía <a href="https://youtube.com/@todosesabe_tss" target="_blank">YouTube</a></span>
     </div>
   </div>
 </footer>
@@ -1402,7 +1411,11 @@ function initChatState() {
   const liveWrap    = document.getElementById("chatLiveWrap");
   const offlineWrap = document.getElementById("chatOfflineWrap");
   const nextShow    = document.getElementById("chatNextShow");
+  const reactBar    = document.getElementById("reactionsBar");
   const live = TSS_CONFIG.LIVE_VIDEO_ID || isLiveNow();
+  const user = window._currentUser;
+  // Show reactions only when live AND user is authenticated
+  if(reactBar) reactBar.style.display = (live && user) ? "flex" : "none";
   if (live) {
     liveWrap.style.display    = "flex";
     offlineWrap.style.display = "none";
@@ -1414,7 +1427,6 @@ function initChatState() {
   } else {
     liveWrap.style.display    = "none";
     offlineWrap.style.display = "flex";
-    // Compute next thursday in Uruguay time
     const uy = new Date(new Date().toLocaleString("en-US", {timeZone: "America/Montevideo"}));
     const daysUntilThursday = (4 - uy.getDay() + 7) % 7 || 7;
     const nextThursday = new Date(uy);
