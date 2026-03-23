@@ -1348,37 +1348,61 @@ document.addEventListener('keydown', e => { if (e.key==='Escape') closeConfirm()
             <pre style="background:var(--ink3);border-radius:8px;padding:12px;font-size:10px;color:var(--t2);overflow:auto;line-height:1.6">rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+    // Noticias — solo admin escribe
     match /noticias/{doc} {
       allow read: if true;
       allow write: if request.auth != null;
     }
+    // Chat — auth requerido, max 500 chars, rate limit
     match /chat_tss/{doc} {
       allow read: if true;
-      allow write: if request.auth != null;
+      allow create: if request.auth != null
+        && request.resource.data.keys().hasAll(['text','user','ts'])
+        && request.resource.data.text is string
+        && request.resource.data.text.size() <= 500;
     }
+    // Preguntas — auth requerido, max 300 chars
+    match /preguntas_tss/{doc} {
+      allow read: if true;
+      allow create: if request.auth != null
+        && request.resource.data.text is string
+        && request.resource.data.text.size() <= 300;
+    }
+    // Newsletter — solo crear, validar email
     match /newsletter/{doc} {
-      allow write: if true;
+      allow create: if request.resource.data.email is string
+        && request.resource.data.email.size() <= 120
+        && request.resource.data.email.matches('.*@.*\\..*');
     }
+    // Votación — solo admin
     match /vote_topics/{doc} {
       allow read: if true;
       allow write: if request.auth != null;
     }
+    // Donantes — crear libre, leer público
     match /donantes/{doc} {
       allow read: if true;
-      allow write: if true;
+      allow create: if request.resource.data.keys().hasAll(['nombre'])
+        && request.resource.data.nombre is string
+        && request.resource.data.nombre.size() <= 100;
     }
-    match /preguntas_tss/{doc} {
-      allow read: if true;
-      allow write: if request.auth != null;
+    // Reacciones — solo crear, doc pequeño
+    match /reacciones_tss/{doc} {
+      allow create: if request.resource.data.tipo is string
+        && request.resource.data.tipo.size() <= 10;
     }
+    // Analytics — crear libre, leer solo admin
     match /analytics_events/{doc} {
       allow read: if request.auth != null;
-      allow create: if true;
+      allow create: if request.resource.data.keys().size() <= 15
+        && request.resource.data.type is string;
     }
+    // Presencia online
     match /analytics_presence/{doc} {
       allow read: if true;
-      allow write: if true;
+      allow write: if request.resource.data.keys().size() <= 5;
     }
+    // Config del sitio — solo admin
     match /site_config/{doc} {
       allow read: if true;
       allow write: if request.auth != null;
