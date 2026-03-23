@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://grupozesto.github.io/tss/sitemap.xml

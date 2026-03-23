@@ -4,10 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="X-Content-Type-Options" content="nosniff">
+<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 
 <!-- ═══ SEO + SOCIAL METADATA ═══ -->
 <title>TSS — Todo Se Sabe | Periodismo independiente</title>
+<meta name="description" content="Todo Se Sabe — Programa de periodismo independiente con Nacho Álvarez. En vivo los jueves 20:30hs. Noticias, investigación y análisis sin censura.">
 <meta name="description" content="Todo Se Sabe con Nacho Álvarez. Periodismo independiente. En vivo todos los jueves a las 20:30 por YouTube.">
 <meta name="theme-color" content="#00e5ff">
 
@@ -101,7 +103,7 @@ const TSS_CONFIG = {
 
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
 :root{
   --ink:#08090d;--ink2:#0e0f15;--ink3:#161821;--surface:#1c1e2a;--surface2:#242636;
   --border:rgba(255,255,255,.07);--border2:rgba(255,255,255,.12);
@@ -835,7 +837,7 @@ window._donar     = (nombre,monto) => addDoc(collection(db,"donantes"),{nombre,m
     </div>
     <div class="news-dateline">Periodismo independiente · Todo Se Sabe</div>
     <div class="news-layout">
-      <div class="news-main">
+      <a href="noticias.html" class="news-main" style="text-decoration:none;color:inherit">
         <div class="news-main-img"><img loading="lazy" src="https://cdn.dl.uy/solimg/894x503/39/39554.jpg" alt=""></div>
         <div class="news-main-body">
           <div class="news-cat">Política</div>
@@ -844,11 +846,11 @@ window._donar     = (nombre,monto) => addDoc(collection(db,"donantes"),{nombre,m
           <div class="news-meta"><span>Por Nacho Álvarez</span><span>·</span><span>21/03/2026</span></div>
           <div class="news-read">Leer nota →</div>
         </div>
-      </div>
+      </a>
       <div class="news-stack">
-        <div class="ncard"><div class="ncard-img"><img loading="lazy" src="https://cdn.dl.uy/solimg/320X180/39/39545.jpg" alt=""></div><div class="ncard-body"><div class="ntag">Economía</div><div class="ntitle">Los números que el Ministerio prefería que no veas</div><div class="ndate">20/03/2026</div></div></div>
-        <div class="ncard"><div class="ncard-img"><img loading="lazy" src="https://cdn.dl.uy/solimg/320X180/39/39534.jpg" alt=""></div><div class="ncard-body"><div class="ntag">Seguridad</div><div class="ntitle">El debate sobre narco y política que sacudió la semana</div><div class="ndate">19/03/2026</div></div></div>
-        <div class="ncard"><div class="ncard-img"><img loading="lazy" src="https://cdn.dl.uy/solimg/320X180/39/39548.jpg" alt=""></div><div class="ncard-body"><div class="ntag">Canal 4</div><div class="ntitle">La disputa por el nombre del programa y el registro de marcas</div><div class="ndate">18/03/2026</div></div></div>
+        <a href="noticias.html" class="ncard" style="text-decoration:none;color:inherit"><div class="ncard-img"><img loading="lazy" src="https://cdn.dl.uy/solimg/320X180/39/39545.jpg" alt="Noticias de economía"></div><div class="ncard-body"><div class="ntag">Economía</div><div class="ntitle">Los números que el Ministerio prefería que no veas</div><div class="ndate">20/03/2026</div></div></a>
+        <a href="noticias.html" class="ncard" style="text-decoration:none;color:inherit"><div class="ncard-img"><img loading="lazy" src="https://cdn.dl.uy/solimg/320X180/39/39534.jpg" alt="Noticias de seguridad"></div><div class="ncard-body"><div class="ntag">Seguridad</div><div class="ntitle">El debate sobre narco y política que sacudió la semana</div><div class="ndate">19/03/2026</div></div></a>
+        <a href="noticias.html" class="ncard" style="text-decoration:none;color:inherit"><div class="ncard-img"><img loading="lazy" src="https://cdn.dl.uy/solimg/320X180/39/39548.jpg" alt="Noticias Canal 4"></div><div class="ncard-body"><div class="ntag">Canal 4</div><div class="ntitle">La disputa por el nombre del programa y el registro de marcas</div><div class="ndate">18/03/2026</div></div></a>
       </div>
     </div>
     <div class="editorial-row">
@@ -1155,13 +1157,17 @@ async function doGoogle()  { try{await window._google();}catch(e){if(e.code!=="a
 async function doLogout()  { await window._logout(); toggleMenu(true); showToast("👋","Sesión cerrada"); }
 
 // ── CHAT ──
+let _chatLoaded = false;
 window.renderMsg = ({n,c,av,text}) => {
   const box=document.getElementById("chatBox");
+  if(!box) return;
+  const wasAtBottom = box.scrollHeight - box.scrollTop - box.clientHeight < 80;
   const d=document.createElement("div"); d.className="cmsg";
   d.innerHTML=`<div class="cavatar" style="background:${c}">${av}</div><div class="cbubble"><div class="cuser" style="color:${c}">${n}</div><div class="ctext">${text}</div></div>`;
-  box.appendChild(d); box.scrollTop=box.scrollHeight;
-  const cur=parseInt(document.getElementById("vcCount").textContent.replace(/\D/g,""))||247;
-  document.getElementById("vcCount").textContent="🔴 "+Math.max(200,cur+(Math.random()>.7?1:Math.random()>.5?-1:0))+" en vivo";
+  box.appendChild(d);
+  // Only auto-scroll if user was already at bottom or initial load finished
+  if(wasAtBottom || !_chatLoaded) box.scrollTop=box.scrollHeight;
+  if(!_chatLoaded) setTimeout(()=>{_chatLoaded=true;},3000);
 };
 async function sendChat() {
   const inp=document.getElementById("chatIn"); if(!inp)return;
@@ -1211,6 +1217,16 @@ async function votarPregunta(id) {
   if(!window._currentUser){showToast("🔐","Iniciá sesión para votar");return;}
   try{await window._votarPregunta(id);if(window._trackEvent)window._trackEvent('voto',{id});}catch(e){}
 }
+
+// ── IMAGE FALLBACK ──
+document.addEventListener('error', e => {
+  if(e.target.tagName === 'IMG' && !e.target.dataset.fallback) {
+    e.target.dataset.fallback = '1';
+    e.target.style.background = 'var(--ink3)';
+    e.target.style.objectFit = 'contain';
+    e.target.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="60"><text x="50%" y="50%" text-anchor="middle" dy=".3em" fill="%23555" font-size="12">Sin imagen</text></svg>';
+  }
+}, true);
 
 // ── PLAYER ──
 window.addEventListener("load", () => {
