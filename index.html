@@ -34,7 +34,7 @@
 }">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;500;600;700;800;900&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
 
 <script>
 const TSS_CONFIG = {
@@ -67,7 +67,7 @@ html{scroll-behavior:smooth}
   --violet:#9f7aea;--violet-dim:rgba(159,122,234,.12);
   --rose:#ff4d8d;--gold:#ffc947;
   --t1:#f0f2ff;--t2:#9094b0;--t3:#50536a;
-  --ff-display:'Syne',sans-serif;--ff-body:'DM Sans',sans-serif;
+  --ff-display:'Barlow Condensed',sans-serif;--ff-body:'Barlow',sans-serif;
   --nav-h:66px;
 }
 body{background:var(--ink);color:var(--t1);font-family:var(--ff-body);font-size:14px;overflow-x:hidden}
@@ -176,17 +176,10 @@ body::before{content:'';position:fixed;inset:0;z-index:0;opacity:.022;pointer-ev
 
 /* sidebar */
 .live-sidebar{border-left:1px solid var(--border);display:flex;flex-direction:column;background:var(--ink2)}
-.ls-tabs{display:flex;gap:4px;padding:8px;border-bottom:1px solid var(--border);background:var(--ink3)}
-.ls-tab{
-  flex:1;padding:8px 4px;border:1px solid transparent;background:transparent;
-  font-family:var(--ff-display);font-size:9.5px;font-weight:700;letter-spacing:.5px;
-  text-transform:uppercase;color:var(--t3);border-radius:8px;
-  transition:.18s;cursor:pointer;display:flex;flex-direction:column;
-  align-items:center;gap:3px;line-height:1;
-}
-.ls-tab .ti{font-size:16px;line-height:1}
-.ls-tab.active{color:var(--cyan);background:rgba(0,229,255,.1);border-color:rgba(0,229,255,.2)}
-.ls-tab:hover:not(.active){color:var(--t2);background:var(--surface)}
+.ls-tabs{display:flex;border-bottom:1px solid var(--border)}
+.ls-tab{flex:1;padding:11px 6px;border:none;background:transparent;font-family:var(--ff-display);font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--t3);border-bottom:2px solid transparent;transition:.18s;cursor:pointer}
+.ls-tab.active{color:var(--cyan);border-bottom-color:var(--cyan)}
+.ls-tab:hover{color:var(--t2)}
 .ls-head{display:flex;align-items:center;justify-content:space-between;padding:10px 14px 0}
 .ls-head-t{font-family:var(--ff-display);font-size:13px;font-weight:700;color:var(--t1)}
 .ls-count{font-size:12px;font-weight:700;color:var(--rose)}
@@ -262,11 +255,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;opacity:.022;pointer-ev
 @keyframes shimmer{to{background-position:200% center}}
 
 /* sched */
-.sched-strip{display:flex;gap:10px;overflow-x:auto;padding-bottom:6px;scrollbar-width:thin}
-.sched-chip{flex-shrink:0;background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:10px 16px;cursor:pointer;transition:.18s;min-width:130px;text-align:center}
-.sched-chip:hover,.sched-chip.active{border-color:rgba(0,229,255,.35);background:var(--cyan-dim)}
-.sched-chip-name{font-family:var(--ff-display);font-size:13px;font-weight:700;color:var(--t1);white-space:nowrap}
-.sched-chip-time{font-size:10px;color:var(--cyan);font-weight:700;letter-spacing:1px;margin-top:3px}
+
 
 /* videos */
 .yt-filter-bar{display:flex;gap:7px;margin-bottom:20px;flex-wrap:wrap;align-items:center}
@@ -305,49 +294,50 @@ body::before{content:'';position:fixed;inset:0;z-index:0;opacity:.022;pointer-ev
 .btn-load-more:hover{border-color:var(--cyan);background:var(--cyan-dim)}
 
 /* noticias — diario editorial */
+.news-outer{background:var(--ink2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
 .news-wrap{padding:56px 28px;max-width:1400px;margin:0 auto}
-.news-header{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:6px;padding-bottom:14px;border-bottom:3px solid var(--cyan)}
-.news-header h2{font-family:var(--ff-display);font-size:42px;font-weight:900;letter-spacing:1px;color:var(--t1);line-height:1}
-.news-header-right{text-align:right}
-.news-header-right span{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--t2);display:block}
-.news-date{font-size:11px;color:var(--t3);letter-spacing:1px;text-transform:uppercase;margin-bottom:24px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.news-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:6px;padding-bottom:14px;border-bottom:3px solid var(--cyan)}
+.news-header h2{font-family:var(--ff-display);font-size:44px;font-weight:900;letter-spacing:1px;color:var(--t1);line-height:1;text-transform:uppercase}
+.news-header-meta{text-align:right;display:flex;flex-direction:column;gap:3px}
+.news-header-meta span{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--t2)}
+.news-header-meta a{font-size:11px;color:var(--cyan);font-weight:600;letter-spacing:1px}
+.news-date-line{font-size:11px;color:var(--t3);letter-spacing:1px;text-transform:uppercase;margin-bottom:22px;padding-bottom:10px;border-bottom:1px solid var(--border)}
 
 .news-layout{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;border:1px solid var(--border);border-radius:12px;overflow:hidden}
-
-.news-main{grid-column:1/3;cursor:pointer;position:relative;background:var(--surface);border-right:1px solid var(--border)}
-.news-main-img{height:300px;overflow:hidden;position:relative;background:var(--ink3)}
+.news-main{grid-column:1/3;cursor:pointer;position:relative;background:var(--ink);border-right:1px solid var(--border)}
+.news-main-img{height:310px;overflow:hidden;position:relative;background:var(--ink3)}
 .news-main-img img{height:100%;width:100%;object-fit:cover;transition:transform .6s}
 .news-main:hover .news-main-img img{transform:scale(1.03)}
-.news-main-img::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.9) 0%,rgba(0,0,0,.2) 55%,transparent 100%)}
-.news-main-body{position:absolute;bottom:0;left:0;right:0;padding:24px;z-index:1}
-.news-cat{display:inline-block;background:var(--cyan);color:var(--ink);font-family:var(--ff-display);font-size:9px;font-weight:900;letter-spacing:2.5px;text-transform:uppercase;border-radius:3px;padding:3px 10px;margin-bottom:10px}
-.news-main-body h3{font-family:var(--ff-display);font-size:26px;font-weight:900;line-height:1.2;color:#fff;margin-bottom:6px}
-.news-main-body p{font-size:13px;color:rgba(255,255,255,.68);line-height:1.55;margin-bottom:10px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.news-meta{font-size:10px;color:rgba(255,255,255,.45);display:flex;gap:8px;align-items:center}
-.news-read-more{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--cyan);margin-top:8px;transition:.18s}
+.news-main-img::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.92) 0%,rgba(0,0,0,.15) 60%,transparent 100%)}
+.news-main-overlay{position:absolute;bottom:0;left:0;right:0;padding:26px;z-index:1}
+.news-cat{display:inline-block;background:var(--cyan);color:var(--ink);font-family:var(--ff-display);font-size:9px;font-weight:900;letter-spacing:2.5px;text-transform:uppercase;border-radius:3px;padding:3px 10px;margin-bottom:12px}
+.news-main-overlay h3{font-family:var(--ff-display);font-size:28px;font-weight:900;line-height:1.18;color:#fff;margin-bottom:8px;text-transform:uppercase}
+.news-main-overlay p{font-size:13px;color:rgba(255,255,255,.62);line-height:1.55;margin-bottom:10px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.news-meta{font-size:10px;color:rgba(255,255,255,.42);display:flex;gap:8px;align-items:center}
+.news-read-more{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--cyan);margin-top:10px;transition:gap .18s}
 .news-main:hover .news-read-more{gap:9px}
 
 .news-stack{display:flex;flex-direction:column}
 .ncard{cursor:pointer;transition:.18s;border-bottom:1px solid var(--border);background:var(--surface);display:flex;flex-direction:column}
 .ncard:last-child{border-bottom:none}
 .ncard:hover{background:var(--surface2)}
-.ncard-img{height:120px;overflow:hidden;background:var(--ink3);flex-shrink:0}
+.ncard-img{height:112px;overflow:hidden;background:var(--ink3);flex-shrink:0}
 .ncard-img img{height:100%;width:100%;object-fit:cover;transition:transform .4s}
 .ncard:hover .ncard-img img{transform:scale(1.05)}
 .ncard-body{padding:14px 16px;flex:1;display:flex;flex-direction:column}
 .ntag{font-size:9px;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:var(--cyan);margin-bottom:6px}
-.ntitle{font-family:var(--ff-display);font-size:15px;font-weight:800;line-height:1.25;color:var(--t1);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:auto;padding-bottom:8px}
+.ntitle{font-family:var(--ff-display);font-size:15px;font-weight:800;line-height:1.22;color:var(--t1);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:auto;padding-bottom:6px;text-transform:uppercase}
 .ndate{font-size:10px;color:var(--t3);margin-top:8px;letter-spacing:.5px}
 
 /* Editoriales */
-.editorial-row{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-top:20px}
+.editorial-row{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-top:18px}
 .ed-card{background:var(--surface);padding:22px 20px;cursor:pointer;transition:.18s;position:relative;overflow:hidden}
-.ed-card::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--cyan),var(--violet));opacity:0;transition:.18s}
+.ed-card::after{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--cyan),var(--violet));opacity:0;transition:.18s}
 .ed-card:hover{background:var(--surface2)}
-.ed-card:hover::before{opacity:1}
-.ed-tag{font-size:9px;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:var(--violet);margin-bottom:10px;display:flex;align-items:center;gap:6px}
-.ed-tag::before{content:"";width:16px;height:2px;background:var(--violet);display:inline-block;flex-shrink:0}
-.ed-title{font-family:var(--ff-display);font-size:18px;font-weight:900;line-height:1.2;color:var(--t1);margin-bottom:10px}
+.ed-card:hover::after{opacity:1}
+.ed-tag{font-size:9px;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:var(--violet);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.ed-tag::before{content:"";width:18px;height:2px;background:var(--violet);display:inline-block;flex-shrink:0}
+.ed-title{font-family:var(--ff-display);font-size:19px;font-weight:900;line-height:1.18;color:var(--t1);margin-bottom:10px;text-transform:uppercase}
 .ed-desc{font-size:12px;color:var(--t2);line-height:1.65;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 .ed-meta{font-size:10px;color:var(--t3);margin-top:14px;display:flex;align-items:center;gap:6px;padding-top:12px;border-top:1px solid var(--border)}
 .ed-author{color:var(--cyan);font-weight:600}
@@ -480,7 +470,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;opacity:.022;pointer-ev
 .fade-up:nth-child(5){animation-delay:.28s}.fade-up:nth-child(6){animation-delay:.34s}
 
 @media(max-width:1200px){.hero-live{grid-template-columns:1fr}.live-sidebar{display:none}.videos-grid{grid-template-columns:repeat(3,1fr)}.team-grid{grid-template-columns:repeat(3,1fr)}.foot-top{grid-template-columns:1fr 1fr}}
-@media(max-width:900px){.nav-links,.nav-search{display:none}.videos-grid,.excl-grid{grid-template-columns:repeat(2,1fr)}.news-layout{grid-template-columns:1fr}.news-main{grid-column:1}.editorial-row{grid-template-columns:1fr}.news-wrap{padding:36px 16px}.team-grid{grid-template-columns:repeat(2,1fr)}.excl-banner{flex-direction:column;padding:26px;gap:22px}.nl-form{flex-direction:column}.countdown-banner{justify-content:center}}
+@media(max-width:900px){.nav-links,.nav-search{display:none}.videos-grid,.excl-grid{grid-template-columns:repeat(2,1fr)}.news-layout{grid-template-columns:1fr}.news-main{grid-column:1}.team-grid{grid-template-columns:repeat(2,1fr)}.excl-banner{flex-direction:column;padding:26px;gap:22px}.nl-form{flex-direction:column}.countdown-banner{justify-content:center}.editorial-row{grid-template-columns:1fr}.news-wrap{padding:36px 16px}}
 @media(max-width:580px){.videos-grid{grid-template-columns:1fr}.section-wrap{padding:36px 16px}.topnav{padding:0 14px;gap:10px}.nav-live-chip{display:none}.foot-top{grid-template-columns:1fr}.team-grid,.excl-grid{grid-template-columns:1fr}.cd-blocks{gap:6px}.cd-block{min-width:52px;padding:7px 10px}}
 </style>
 
@@ -558,7 +548,7 @@ window._reaccion   = (tipo) => addDoc(collection(db,"reacciones_tss"),{tipo, ts:
   <div class="nav-links">
     <a href="#live"      class="nlnk active"  onclick="setActive(this)">En Vivo</a>
     <a href="#videos"    class="nlnk"         onclick="setActive(this)">Videos</a>
-    <a href="#noticias"  class="nlnk"         onclick="setActive(this)">Noticias</a>
+    <a href="noticias.html" class="nlnk">Noticias</a>
     <a href="#exclusivo" class="nlnk"         onclick="setActive(this)">Exclusivo</a>
     <a href="#equipo"    class="nlnk"         onclick="setActive(this)">Equipo</a>
   </div>
@@ -616,10 +606,10 @@ window._reaccion   = (tipo) => addDoc(collection(db,"reacciones_tss"),{tipo, ts:
         <span class="ls-count" id="vcCount">🔴 En vivo</span>
       </div>
       <div class="ls-tabs">
-        <button class="ls-tab active" onclick="switchTab('chat',this)"><span class="ti">💬</span>Chat</button>
-        <button class="ls-tab" onclick="switchTab('preguntas',this)"><span class="ti">🙋</span>Al Aire</button>
-        <button class="ls-tab" onclick="switchTab('viewers',this)"><span class="ti">👥</span>Viewers</button>
-        <button class="ls-tab" onclick="switchTab('poll',this)"><span class="ti">📊</span>Encuesta</button>
+        <button class="ls-tab active" onclick="switchTab('chat',this)">💬 Chat</button>
+        <button class="ls-tab" onclick="switchTab('preguntas',this)">🙋 Al Aire</button>
+        <button class="ls-tab" onclick="switchTab('viewers',this)">👥 Viewers</button>
+        <button class="ls-tab" onclick="switchTab('poll',this)">📊 Encuesta</button>
       </div>
       <!-- Chat -->
       <div class="tab-panel active" id="panel-chat">
@@ -630,11 +620,22 @@ window._reaccion   = (tipo) => addDoc(collection(db,"reacciones_tss"),{tipo, ts:
           <button class="react-btn" onclick="sendReaccion('😮')">😮 <span id="r4">0</span></button>
           <button class="react-btn" onclick="sendReaccion('❤️')">❤️ <span id="r5">0</span></button>
         </div>
-        <div class="chat-msgs" id="chatBox"></div>
+        <!-- YouTube Live Chat embed — se actualiza automáticamente con el video -->
+        <div id="ytChatWrap" style="flex:1;display:flex;flex-direction:column;min-height:260px">
+          <iframe id="ytChatFrame"
+            src="about:blank"
+            style="flex:1;border:none;min-height:260px;background:var(--ink3)"
+            allow="autoplay"></iframe>
+          <div id="chatNoLive" style="display:none;flex:1;align-items:center;justify-content:center;flex-direction:column;gap:10px;padding:20px;text-align:center;min-height:200px">
+            <div style="font-size:28px">💬</div>
+            <div style="font-size:13px;font-weight:600;color:var(--t1)">Chat del programa</div>
+            <div style="font-size:12px;color:var(--t2);line-height:1.5">El chat en vivo aparece automáticamente los jueves cuando empieza el programa.</div>
+            <div style="font-size:11px;color:var(--t3);margin-top:4px">El chat guardado de la última emisión aparece cuando reproducís el programa completo.</div>
+          </div>
+        </div>
         <div id="chatFormArea">
-          <div class="chat-login-prompt">
-            <p>Iniciá sesión para chatear 💬</p>
-            <button onclick="openModal('login')">Iniciar sesión</button>
+          <div class="chat-login-prompt" style="padding:10px;border-top:1px solid var(--border);text-align:center">
+            <p style="font-size:11px;color:var(--t2)">Escribí en el chat de YouTube directamente ↑</p>
           </div>
         </div>
       </div>
@@ -666,20 +667,7 @@ window._reaccion   = (tipo) => addDoc(collection(db,"reacciones_tss"),{tipo, ts:
   </div>
 </section>
 
-<!-- PROGRAMACION -->
-<section style="background:var(--ink2);border-bottom:1px solid var(--border)">
-  <div class="section-wrap">
-    <div class="eyebrow">Grilla semanal</div>
-    <div class="sec-heading" style="margin-bottom:18px">Programación</div>
-    <div class="sched-strip">
-      <div class="sched-chip active"><div class="sched-chip-name">TSS En Vivo</div><div class="sched-chip-time">JUE · 20:30</div></div>
-      <div class="sched-chip"><div class="sched-chip-name">La Pecera</div><div class="sched-chip-time">LUN–VIE · Azul FM</div></div>
-      <div class="sched-chip"><div class="sched-chip-name">Clips TSS</div><div class="sched-chip-time">VIE · 18:00</div></div>
-      <div class="sched-chip"><div class="sched-chip-name">Debate TSS</div><div class="sched-chip-time">SÁB · 10:00</div></div>
-      <div class="sched-chip"><div class="sched-chip-name">Archivos</div><div class="sched-chip-time">DOM · Todo el día</div></div>
-    </div>
-  </div>
-</section>
+
 <div class="divider"></div>
 
 <!-- VIDEOS -->
@@ -706,22 +694,20 @@ window._reaccion   = (tipo) => addDoc(collection(db,"reacciones_tss"),{tipo, ts:
 <div class="divider"></div>
 
 <!-- NOTICIAS -->
-<section id="noticias" style="background:var(--ink2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+<section id="noticias" class="news-outer">
   <div class="news-wrap">
     <div class="news-header">
       <h2>Noticias &amp; Editorial</h2>
-      <div class="news-header-right">
+      <div class="news-header-meta">
         <span id="newsDateStr">Cargando...</span>
-        <span style="color:var(--cyan);margin-top:2px">Periodismo independiente</span>
+        <a href="noticias.html">Ver todas las noticias →</a>
       </div>
     </div>
 
     <div class="news-layout">
       <div class="news-main">
-        <div class="news-main-img">
-          <img src="https://cdn.dl.uy//solimg/894x503/39/39554.jpg" alt="">
-        </div>
-        <div class="news-main-body">
+        <div class="news-main-img"><img src="https://cdn.dl.uy//solimg/894x503/39/39554.jpg" alt=""></div>
+        <div class="news-main-overlay">
           <div class="news-cat">Política</div>
           <h3>El análisis que Canal 4 no quiso emitir</h3>
           <p>Nacho Álvarez repasa los episodios que generaron polémica y los datos que los grandes medios omiten en el Uruguay de hoy.</p>
@@ -730,51 +716,29 @@ window._reaccion   = (tipo) => addDoc(collection(db,"reacciones_tss"),{tipo, ts:
         </div>
       </div>
       <div class="news-stack">
-        <div class="ncard">
-          <div class="ncard-img"><img src="https://cdn.dl.uy//solimg/320X180/39/39545.jpg" alt=""></div>
-          <div class="ncard-body">
-            <div class="ntag">Economía</div>
-            <div class="ntitle">Los números que el Ministerio prefería que no veas</div>
-            <div class="ndate">20/03/2026</div>
-          </div>
-        </div>
-        <div class="ncard">
-          <div class="ncard-img"><img src="https://cdn.dl.uy//solimg/320X180/39/39534.jpg" alt=""></div>
-          <div class="ncard-body">
-            <div class="ntag">Seguridad</div>
-            <div class="ntitle">El debate sobre narco y política que sacudió la semana</div>
-            <div class="ndate">19/03/2026</div>
-          </div>
-        </div>
-        <div class="ncard">
-          <div class="ncard-img"><img src="https://cdn.dl.uy//solimg/320X180/39/39548.jpg" alt=""></div>
-          <div class="ncard-body">
-            <div class="ntag">Canal 4</div>
-            <div class="ntitle">La disputa por el nombre del programa y el registro de marcas</div>
-            <div class="ndate">18/03/2026</div>
-          </div>
-        </div>
+        <div class="ncard"><div class="ncard-img"><img src="https://cdn.dl.uy//solimg/320X180/39/39545.jpg" alt=""></div><div class="ncard-body"><div class="ntag">Economía</div><div class="ntitle">Los números que el Ministerio prefería que no veas</div><div class="ndate">20/03/2026</div></div></div>
+        <div class="ncard"><div class="ncard-img"><img src="https://cdn.dl.uy//solimg/320X180/39/39534.jpg" alt=""></div><div class="ncard-body"><div class="ntag">Seguridad</div><div class="ntitle">El debate sobre narco y política que sacudió la semana</div><div class="ndate">19/03/2026</div></div></div>
+        <div class="ncard"><div class="ncard-img"><img src="https://cdn.dl.uy//solimg/320X180/39/39548.jpg" alt=""></div><div class="ncard-body"><div class="ntag">Canal 4</div><div class="ntitle">La disputa por el nombre del programa y el registro de marcas</div><div class="ndate">18/03/2026</div></div></div>
       </div>
     </div>
 
-    <!-- Editoriales -->
     <div class="editorial-row">
       <div class="ed-card">
         <div class="ed-tag">Editorial</div>
         <div class="ed-title">Por qué el periodismo independiente es la única salida</div>
-        <div class="ed-desc">Durante 13 años trabajamos dentro del sistema. Hoy entendemos que la única forma de hacer periodismo de verdad es fuera de él. Lo que aprendimos y lo que viene.</div>
+        <div class="ed-desc">Durante 13 años trabajamos dentro del sistema. Hoy entendemos que la única forma de hacer periodismo de verdad es fuera de él.</div>
         <div class="ed-meta"><span class="ed-author">Nacho Álvarez</span><span>·</span><span>21/03/2026</span></div>
       </div>
       <div class="ed-card">
         <div class="ed-tag">Análisis</div>
         <div class="ed-title">El narco en Uruguay: lo que los datos oficiales no dicen</div>
-        <div class="ed-desc">Un repaso por las cifras reales del crimen organizado y cómo el gobierno maneja la comunicación. Los números detrás del discurso oficial.</div>
+        <div class="ed-desc">Un repaso por las cifras reales del crimen organizado y cómo el gobierno maneja la comunicación.</div>
         <div class="ed-meta"><span class="ed-author">Bernardo Wolloch</span><span>·</span><span>20/03/2026</span></div>
       </div>
       <div class="ed-card">
         <div class="ed-tag">Investigación</div>
         <div class="ed-title">Marset: todo lo que se sabe y lo que aún falta revelar</div>
-        <div class="ed-desc">La historia completa del caso que sacudió al Uruguay y conectó funcionarios públicos con el crimen transnacional. Un repaso con fuentes primarias.</div>
+        <div class="ed-desc">La historia completa del caso que sacudió al Uruguay y conectó funcionarios con el crimen transnacional.</div>
         <div class="ed-meta"><span class="ed-author">Alejandro Amaral</span><span>·</span><span>18/03/2026</span></div>
       </div>
     </div>
@@ -1105,21 +1069,41 @@ window.addEventListener("load",()=>{
   buildPoll();
 });
 
+function setFrame(src) {
+  const f = document.getElementById("ytFrame");
+  if (f) f.src = src;
+  setTimeout(syncYTChat, 900);
+}
+function syncYTChat() {
+  const f  = document.getElementById("ytFrame");
+  const cf = document.getElementById("ytChatFrame");
+  const nl = document.getElementById("chatNoLive");
+  if (!f || !cf) return;
+  const m  = (f.src||"").match(/embed\/([a-zA-Z0-9_-]{11})/);
+  const vid = m ? m[1] : "";
+  if (vid) {
+    cf.src = "https://www.youtube.com/live_chat?v="+vid+"&embed_domain=grupozesto.github.io";
+    cf.style.display = "block";
+    if (nl) nl.style.display = "none";
+  } else {
+    cf.src = "about:blank";
+    cf.style.display = "none";
+    if (nl) nl.style.display = "flex";
+  }
+}
 async function initSmartPlayer() {
   if (TSS_CONFIG.LIVE_VIDEO_ID) {
     setFrame(`https://www.youtube.com/embed/${TSS_CONFIG.LIVE_VIDEO_ID}?rel=0&modestbranding=1`);
     return;
   }
   const now  = new Date();
-  const day  = now.getDay();   // 4 = jueves
+  const day  = now.getDay();
   const hour = now.getHours();
   if (day === 4 && hour >= 20) {
-    // Jueves de noche → live
-    setFrame(`https://www.youtube.com/embed?listType=user_uploads&list=todosesabe_tss&rel=0&modestbranding=1&autoplay=1`);
+    setFrame(`https://www.youtube.com/embed?listType=user_uploads&list=todosesabe_tss&rel=0&modestbranding=1`);
     const sub = document.querySelector(".pc-sub");
     if (sub) sub.innerHTML = `<span class="pc-dot"></span> EN VIVO AHORA`;
   } else {
-    // Resto de la semana → último programa completo (no short)
     await loadLatestProgram();
   }
 }
@@ -1128,43 +1112,34 @@ async function loadLatestProgram() {
   try {
     const key = TSS_CONFIG.YOUTUBE_API_KEY;
     const ch  = TSS_CONFIG.YOUTUBE_CHANNEL_ID;
-    // Uploads playlist
-    const r1   = await fetch(`https://www.googleapis.com/youtube/v3/channels?part=contentDetails&id=${ch}&key=${key}`);
-    const d1   = await r1.json();
-    if (!d1.items?.length) throw new Error("canal no encontrado");
-    const pid  = d1.items[0].contentDetails.relatedPlaylists.uploads;
-    // Últimos 20 videos
-    const r2   = await fetch(`https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${pid}&maxResults=20&key=${key}`);
-    const d2   = await r2.json();
+    const r1  = await fetch(`https://www.googleapis.com/youtube/v3/channels?part=contentDetails&id=${ch}&key=${key}`);
+    const d1  = await r1.json();
+    if (!d1.items?.length) throw new Error("canal");
+    const pid = d1.items[0].contentDetails.relatedPlaylists.uploads;
+    const r2  = await fetch(`https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${pid}&maxResults=20&key=${key}`);
+    const d2  = await r2.json();
     if (!d2.items?.length) throw new Error("sin videos");
-    // Duraciones para filtrar shorts
-    const ids  = d2.items.map(i=>i.snippet.resourceId.videoId).join(",");
-    const r3   = await fetch(`https://www.googleapis.com/youtube/v3/videos?part=contentDetails&id=${ids}&key=${key}`);
-    const d3   = await r3.json();
-    const durMap = {};
-    d3.items?.forEach(v => { durMap[v.id] = v.contentDetails?.duration || ""; });
-    function parseSecs(iso) {
-      const m = iso.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
-      if (!m) return 0;
-      return (parseInt(m[1]||0)*3600)+(parseInt(m[2]||0)*60)+parseInt(m[3]||0);
-    }
-    // Filtrar: solo videos +10 min, preferir "en vivo" / "programa" / "episodio"
-    const longVids = d2.items.filter(i => parseSecs(durMap[i.snippet.resourceId.videoId]||"") > 600);
-    const kw = ["en vivo","programa","episodio","completo","todo se sabe","tss #"];
-    const best = longVids.find(i => kw.some(k => i.snippet.title.toLowerCase().includes(k))) || longVids[0];
-    if (!best) throw new Error("sin programas completos");
+    const ids = d2.items.map(i=>i.snippet.resourceId.videoId).join(",");
+    const r3  = await fetch(`https://www.googleapis.com/youtube/v3/videos?part=contentDetails&id=${ids}&key=${key}`);
+    const d3  = await r3.json();
+    const dm  = {};
+    d3.items?.forEach(v=>{ dm[v.id]=v.contentDetails?.duration||""; });
+    function secs(iso){ const m=iso.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/); if(!m)return 0; return(parseInt(m[1]||0)*3600)+(parseInt(m[2]||0)*60)+parseInt(m[3]||0); }
+    const long = d2.items.filter(i=>secs(dm[i.snippet.resourceId.videoId]||"")>600);
+    const kw   = ["en vivo","programa","episodio","completo","todo se sabe","tss #"];
+    const best = long.find(i=>kw.some(k=>i.snippet.title.toLowerCase().includes(k)))||long[0];
+    if (!best) throw new Error("sin programa");
     const vid   = best.snippet.resourceId.videoId;
     const title = best.snippet.title;
     setFrame(`https://www.youtube.com/embed/${vid}?rel=0&modestbranding=1`);
     const prog = document.querySelector(".pc-prog");
     const sub  = document.querySelector(".pc-sub");
     if (prog) prog.textContent = title;
-    if (sub)  sub.innerHTML = `<span style="width:6px;height:6px;border-radius:50%;background:var(--violet);display:inline-block;margin-right:6px"></span> ÚLTIMA EMISIÓN &nbsp;·&nbsp; Próximo jueves 20:30`;
+    if (sub)  sub.innerHTML=`<span style="width:6px;height:6px;border-radius:50%;background:var(--violet);display:inline-block;margin-right:6px"></span> ÚLTIMA EMISIÓN &nbsp;·&nbsp; Próximo jueves 20:30`;
   } catch(e) {
     setFrame(`https://www.youtube.com/embed?listType=user_uploads&list=todosesabe_tss&rel=0&modestbranding=1`);
   }
 }
-function setFrame(src) { document.getElementById("ytFrame").src = src; }
 function loadYT() {
   const raw=document.getElementById("ytIn").value.trim(); if(!raw)return;
   let id=raw; const m=raw.match(/(?:v=|youtu\.be\/|\/live\/|\/embed\/)([a-zA-Z0-9_-]{11})/);
@@ -1286,15 +1261,13 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeModal();closeS
 function toggleMenu(close){const m=document.getElementById("userMenu");m.classList.toggle("open",!close&&!m.classList.contains("open"));}
 document.addEventListener("click",e=>{if(!e.target.closest("#navUser"))document.getElementById("userMenu")?.classList.remove("open");});
 function requireLogin(){if(window._currentUser)showToast("🔒","Contenido exclusivo — próximamente para suscriptores");else{showToast("🔐","Registrate para acceder");openModal("register");}}
-// Fecha diario
 (function(){
   const ds=["Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"];
   const ms=["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
   const n=new Date();
   const el=document.getElementById("newsDateStr");
-  if(el) el.textContent=`${ds[n.getDay()]}, ${n.getDate()} de ${ms[n.getMonth()]} de ${n.getFullYear()}`;
+  if(el) el.textContent=ds[n.getDay()]+", "+n.getDate()+" de "+ms[n.getMonth()]+" "+n.getFullYear();
 })();
-
 let toastT;
 function showToast(icon,msg){document.getElementById("tI").textContent=icon;document.getElementById("tM").textContent=msg;const t=document.getElementById("toast");t.classList.add("show");clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove("show"),3200);}
 
