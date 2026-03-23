@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta http-equiv="X-Content-Type-Options" content="nosniff">
 <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
 <meta name="referrer" content="strict-origin-when-cross-origin">
@@ -114,7 +114,7 @@ html{scroll-behavior:smooth;scroll-padding-top:80px}
   --ff-display:'Inter',sans-serif;--ff-body:'Inter',sans-serif;
   --nav-h:66px;
 }
-body{background:var(--ink);color:var(--t1);font-family:var(--ff-body);font-size:14px;overflow-x:hidden}
+body{background:var(--ink);color:var(--t1);font-family:var(--ff-body);font-size:14px;overflow-x:hidden;-webkit-text-size-adjust:100%;overscroll-behavior-y:contain}
 a{color:inherit;text-decoration:none}
 img{display:block;object-fit:cover}
 button{cursor:pointer;font-family:var(--ff-body)}
@@ -531,8 +531,61 @@ body.light-mode .topnav{background:rgba(245,245,247,.92)}
 body.light-mode .glow-bg span{opacity:.03}
 
 @media(max-width:1200px){.hero-live{grid-template-columns:1fr}.live-sidebar{border-left:none;border-top:1px solid var(--border);max-height:400px}.videos-grid{grid-template-columns:repeat(3,1fr)}.team-grid{grid-template-columns:repeat(3,1fr)}.foot-top{grid-template-columns:1fr 1fr}}
-@media(max-width:900px){.nav-links,.nav-search{display:none}.videos-grid,.excl-grid{grid-template-columns:repeat(2,1fr)}.news-layout{grid-template-columns:1fr}.news-main{grid-column:1}.team-grid{grid-template-columns:repeat(2,1fr)}.excl-banner{flex-direction:column;padding:26px;gap:22px}.nl-form{flex-direction:column}.countdown-banner{justify-content:center}}
-@media(max-width:580px){.videos-grid{grid-template-columns:1fr}.section-wrap{padding:36px 16px}.topnav{padding:0 14px;gap:10px}.nav-live-chip{display:none}.foot-top{grid-template-columns:1fr}.team-grid,.excl-grid{grid-template-columns:1fr}.cd-blocks{gap:6px}.cd-block{min-width:52px;padding:7px 10px}}
+@media(max-width:900px){.nav-links,.nav-search{display:none}.videos-grid,.excl-grid{grid-template-columns:repeat(2,1fr)}.news-layout{grid-template-columns:1fr}.news-main{grid-column:1}.team-grid{grid-template-columns:repeat(2,1fr)}.excl-banner{flex-direction:column;padding:26px;gap:22px}.nl-form{flex-direction:column}.countdown-banner{justify-content:center}.editorial-row{grid-template-columns:1fr}.news-wrap{padding:36px 16px}}
+@media(max-width:580px){
+  .videos-grid{grid-template-columns:1fr}
+  .section-wrap{padding:28px 14px}
+  .topnav{padding:0 12px;gap:8px;height:56px}
+  .page{padding-top:56px}
+  html{scroll-padding-top:66px}
+  .nav-live-chip{display:none}
+  .nav-logo img{height:34px}
+  .foot-top{grid-template-columns:1fr}
+  .team-grid,.excl-grid{grid-template-columns:1fr}
+  .cd-blocks{gap:6px;flex-wrap:wrap}
+  .cd-block{min-width:52px;padding:7px 10px}
+  .cd-topic{min-width:100%;font-size:12px}
+  .hero-live{min-height:auto}
+  .live-sidebar{max-height:350px}
+  .ls-tab{padding:10px 4px;font-size:9px;letter-spacing:0;gap:2px}
+  .ls-tab span{font-size:12px!important}
+  .ls-head-t{font-size:12px}
+  .ls-count{font-size:10px}
+  .chat-inp{font-size:14px}
+  .pregunta-input{font-size:14px}
+  .news-wrap{padding:28px 14px}
+  .news-masthead{flex-direction:column;gap:8px;align-items:flex-start}
+  .news-main-img{height:200px}
+  .ncard{flex-direction:row}
+  .ncard-img{height:auto;width:110px}
+  .ntitle{font-size:13px}
+  .editorial-row{grid-template-columns:1fr}
+  .ed-card{padding:16px}
+  .ed-title{font-size:15px}
+  .excl-banner{padding:20px;gap:16px}
+  .excl-text h2{font-size:22px}
+  .excl-grid{gap:12px}
+  .donacion-bar{flex-direction:column;text-align:center;gap:12px;padding:18px}
+  .don-blocks{flex-wrap:wrap;justify-content:center;gap:8px}
+  .don-block{min-width:70px;padding:8px 12px}
+  .nl-inner h2{font-size:22px}
+  .nl-inner p{font-size:13px}
+  .nl-form{gap:8px}
+  .nl-input{font-size:14px}
+  .votacion-wrap{padding:28px 14px}
+  .donors-wrap{padding:28px 14px}
+  .foot-inner{padding:28px 14px}
+  .foot-brand p{font-size:12px}
+  .modal-box{padding:24px;margin:10px;border-radius:14px}
+  .share-modal-box{max-width:calc(100vw - 40px)}
+  .toast{bottom:12px;right:12px;left:12px;max-width:none;font-size:12px}
+  .scroll-top{bottom:16px;left:16px;width:36px;height:36px;font-size:16px}
+  .section-head h2{font-size:22px}
+  .section-head .section-sub{font-size:13px}
+  .pc-title{font-size:14px}
+  .pc-sub{font-size:11px}
+  .user-menu{right:-10px}
+}
 
 /* ── VOTACION TEMAS ── */
 .votacion-section{background:var(--ink3);border-top:1px solid var(--border)}
