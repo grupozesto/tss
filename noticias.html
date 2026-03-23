@@ -307,6 +307,7 @@ function cv(c) { return {Política:"var(--cyan)",Economía:"var(--green)",Seguri
 
 window.openArticle = id => {
   const a = allArticles.find(x => x.id === id); if (!a) return;
+  if(window._trackEvent) window._trackEvent('noticia_leida',{id:a.id,titulo:a.titulo,categoria:a.categoria});
   document.getElementById("artTitle").textContent = a.titulo;
   document.getElementById("artCat").textContent = a.categoria || "";
   document.getElementById("artCat").className = "art-cat " + cc(a.categoria);
@@ -334,6 +335,36 @@ const now=new Date();
 document.getElementById("pageDate").textContent=ds[now.getDay()]+", "+now.getDate()+" de "+ms[now.getMonth()]+" de "+now.getFullYear();
 
 loadNoticias();
+</script>
+<!-- ═══ ANALYTICS TRACKER ═══ -->
+<script type="module">
+import { getFirestore, collection, addDoc, serverTimestamp, doc, setDoc, deleteDoc }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+(function(){
+  const db = getFirestore();
+  const PAGE = location.pathname.split('/').pop() || 'noticias.html';
+  const REF = document.referrer;
+  const UA = navigator.userAgent;
+  const isMobile = /Mobi|Android|iPhone|iPad/i.test(UA);
+  const browser = /Edg/i.test(UA)?'Edge':/OPR|Opera/i.test(UA)?'Opera':/Chrome/i.test(UA)?'Chrome':/Safari/i.test(UA)?'Safari':/Firefox/i.test(UA)?'Firefox':'Otro';
+  const os = /Windows/i.test(UA)?'Windows':/Mac/i.test(UA)?'Mac':/Android/i.test(UA)?'Android':/iPhone|iPad/i.test(UA)?'iOS':/Linux/i.test(UA)?'Linux':'Otro';
+  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone||'';
+  const lang = navigator.language||'';
+  const sw = screen.width; const sh = screen.height;
+  function fp(){const s=UA+lang+tz+sw+'x'+sh+(navigator.hardwareConcurrency||0);let h=0;for(let i=0;i<s.length;i++){h=((h<<5)-h)+s.charCodeAt(i);h|=0;}return 'v'+Math.abs(h).toString(36);}
+  const vid = fp();
+  function src(){if(!REF)return'directo';const r=REF.toLowerCase();if(/google|bing|yahoo|duckduck/i.test(r))return'busqueda';if(/facebook|instagram|twitter|x\.com|tiktok|youtube|telegram|whatsapp/i.test(r))return'social';if(r.includes(location.hostname))return'interno';return'referido';}
+  const startTime = Date.now();
+  async function trackView(){try{await addDoc(collection(db,'analytics_events'),{type:'pageview',page:PAGE,visitor:vid,source:src(),referrer:REF?REF.substring(0,200):'',device:isMobile?'mobile':'desktop',browser,os,tz,screenRes:sw+'x'+sh,ts:serverTimestamp()});}catch(e){}}
+  function trackDuration(){const dur=Math.round((Date.now()-startTime)/1000);if(dur<2)return;try{addDoc(collection(db,'analytics_events'),{type:'session_end',page:PAGE,visitor:vid,duration:dur,ts:serverTimestamp()});}catch(e){}}
+  window._trackEvent = async function(n,d){try{await addDoc(collection(db,'analytics_events'),{type:'event',event:n,page:PAGE,visitor:vid,data:d||{},ts:serverTimestamp()});}catch(e){}};
+  const presRef = doc(db,'analytics_presence',vid);
+  async function setPresence(){try{await setDoc(presRef,{page:PAGE,ts:serverTimestamp(),device:isMobile?'mobile':'desktop'});}catch(e){}}
+  async function clearPresence(){try{await deleteDoc(presRef);}catch(e){}}
+  trackView(); setPresence();
+  document.addEventListener('visibilitychange',()=>{if(document.hidden){trackDuration();clearPresence();}else{setPresence();}});
+  window.addEventListener('beforeunload',()=>{trackDuration();clearPresence();});
+})();
 </script>
 </body>
 </html>

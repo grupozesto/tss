@@ -1163,7 +1163,7 @@ async function sendChat() {
   const text=inp.value.trim(); if(!text)return;
   const user=window._currentUser; if(!user){showToast("🔐","Iniciá sesión");return;}
   inp.value="";
-  try{await window._chat(text,user);}catch(e){showToast("❌",e.message);}
+  try{await window._chat(text,user);if(window._trackEvent)window._trackEvent('chat',{text:text.substring(0,50)});}catch(e){showToast("❌",e.message);}
 }
 
 // ── REACCIONES ──
@@ -1200,11 +1200,11 @@ async function enviarPregunta() {
   const text=inp.value.trim(); if(!text||text.length<5){showToast("⚠️","Escribí tu pregunta");return;}
   const user=window._currentUser; if(!user){showToast("🔐","Iniciá sesión");return;}
   inp.value="";
-  try{await window._pregunta(text,user);showToast("🙋","¡Pregunta enviada al aire!");}catch(e){showToast("❌",e.message);}
+  try{await window._pregunta(text,user);if(window._trackEvent)window._trackEvent('pregunta',{text:text.substring(0,50)});showToast("🙋","¡Pregunta enviada al aire!");}catch(e){showToast("❌",e.message);}
 }
 async function votarPregunta(id) {
   if(!window._currentUser){showToast("🔐","Iniciá sesión para votar");return;}
-  try{await window._votarPregunta(id);}catch(e){}
+  try{await window._votarPregunta(id);if(window._trackEvent)window._trackEvent('voto',{id});}catch(e){}
 }
 
 // ── PLAYER ──
@@ -1629,5 +1629,77 @@ window.confirmarDonacion = async () => {
   </div>
 </div>
 
+<!-- ═══ ANALYTICS TRACKER ═══ -->
+<script type="module">
+import { getFirestore, collection, addDoc, serverTimestamp, doc, setDoc, deleteDoc }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+(function(){
+  const db = window._db || getFirestore();
+  const PAGE = location.pathname.split('/').pop() || 'index.html';
+  const REF = document.referrer;
+  const UA = navigator.userAgent;
+  const isMobile = /Mobi|Android|iPhone|iPad/i.test(UA);
+  const browser = /Edg/i.test(UA)?'Edge':/OPR|Opera/i.test(UA)?'Opera':/Chrome/i.test(UA)?'Chrome':/Safari/i.test(UA)?'Safari':/Firefox/i.test(UA)?'Firefox':'Otro';
+  const os = /Windows/i.test(UA)?'Windows':/Mac/i.test(UA)?'Mac':/Android/i.test(UA)?'Android':/iPhone|iPad/i.test(UA)?'iOS':/Linux/i.test(UA)?'Linux':'Otro';
+  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone||'';
+  const lang = navigator.language||'';
+  const sw = screen.width; const sh = screen.height;
+
+  // Fingerprint anónimo (no cookies, no personal data)
+  function fp(){const s=UA+lang+tz+sw+'x'+sh+(navigator.hardwareConcurrency||0);let h=0;for(let i=0;i<s.length;i++){h=((h<<5)-h)+s.charCodeAt(i);h|=0;}return 'v'+Math.abs(h).toString(36);}
+  const vid = fp();
+
+  // Referrer source
+  function src(){if(!REF)return'directo';const r=REF.toLowerCase();if(/google|bing|yahoo|duckduck/i.test(r))return'busqueda';if(/facebook|instagram|twitter|x\.com|tiktok|youtube|telegram|whatsapp/i.test(r))return'social';if(r.includes(location.hostname))return'interno';return'referido';}
+
+  const startTime = Date.now();
+
+  // Track pageview
+  async function trackView(){
+    try{
+      await addDoc(collection(db,'analytics_events'),{
+        type:'pageview', page:PAGE, visitor:vid, source:src(), referrer:REF?REF.substring(0,200):'',
+        device:isMobile?'mobile':'desktop', browser, os, tz, screenRes:sw+'x'+sh,
+        ts:serverTimestamp()
+      });
+    }catch(e){console.warn('Analytics:',e.message);}
+  }
+
+  // Track session duration on leave
+  function trackDuration(){
+    const dur = Math.round((Date.now()-startTime)/1000);
+    if(dur<2)return;
+    try{
+      navigator.sendBeacon && fetch('/').catch(()=>{});
+      addDoc(collection(db,'analytics_events'),{
+        type:'session_end', page:PAGE, visitor:vid, duration:dur, ts:serverTimestamp()
+      });
+    }catch(e){}
+  }
+
+  // Track custom events
+  window._trackEvent = async function(eventName, data){
+    try{
+      await addDoc(collection(db,'analytics_events'),{
+        type:'event', event:eventName, page:PAGE, visitor:vid, data:data||{}, ts:serverTimestamp()
+      });
+    }catch(e){}
+  };
+
+  // Presence (online now) — write a doc, delete on leave
+  const presRef = doc(db,'analytics_presence',vid);
+  async function setPresence(){
+    try{await setDoc(presRef,{page:PAGE,ts:serverTimestamp(),device:isMobile?'mobile':'desktop'});}catch(e){}
+  }
+  async function clearPresence(){
+    try{await deleteDoc(presRef);}catch(e){}
+  }
+
+  trackView();
+  setPresence();
+  document.addEventListener('visibilitychange',()=>{if(document.hidden){trackDuration();clearPresence();}else{setPresence();}});
+  window.addEventListener('beforeunload',()=>{trackDuration();clearPresence();});
+})();
+</script>
 </body>
 </html>

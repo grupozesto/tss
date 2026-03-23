@@ -119,6 +119,7 @@ input,textarea,select{font-family:var(--ff)}
 .stat-card.sc-violet::before{background:var(--violet)}
 .stat-card.sc-rose::before{background:var(--rose)}
 .stat-card.sc-gold::before{background:var(--gold)}
+.stat-card.sc-green::before{background:var(--green)}
 .stat-icon{font-size:22px;margin-bottom:10px}
 .stat-val{font-size:28px;font-weight:800;color:var(--t1);letter-spacing:-1px;line-height:1}
 .stat-label{font-size:11px;color:var(--t2);margin-top:3px}
@@ -787,6 +788,7 @@ document.addEventListener('keydown', e => { if (e.key==='Escape') closeConfirm()
 
     <div class="sb-section">Principal</div>
     <div class="sb-item active" onclick="goPanel('dashboard',this)" id="nav-dashboard"><span class="sb-icon">📊</span> Dashboard</div>
+    <div class="sb-item" onclick="goPanel('analytics',this);loadAnalytics()" id="nav-analytics"><span class="sb-icon">📈</span> Analytics</div>
 
     <div class="sb-section">Contenido</div>
     <div class="sb-item" onclick="goPanel('nueva',this);newArticle()" id="nav-nueva"><span class="sb-icon">✏️</span> Nueva noticia</div>
@@ -859,6 +861,64 @@ document.addEventListener('keydown', e => { if (e.key==='Escape') closeConfirm()
                 <div style="font-size:11px;color:var(--t2);margin-top:3px" id="dashTopic">—</div>
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- NOTICIAS LIST -->
+
+      <!-- ═══ ANALYTICS PANEL ═══ -->
+      <div class="panel" id="panel-analytics">
+        <!-- KPI cards -->
+        <div class="stat-row" style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px">
+          <div class="stat-card sc-cyan"><div class="stat-icon">👁</div><div class="stat-val" id="anVisitasHoy">—</div><div class="stat-label">Visitas hoy</div><div class="stat-sub" id="anVisitasAyer" style="font-size:10px;color:var(--t3);margin-top:2px"></div></div>
+          <div class="stat-card sc-violet"><div class="stat-icon">👤</div><div class="stat-val" id="anUnicosHoy">—</div><div class="stat-label">Únicos hoy</div><div class="stat-sub" id="anUnicosAyer" style="font-size:10px;color:var(--t3);margin-top:2px"></div></div>
+          <div class="stat-card sc-gold"><div class="stat-icon">⏱</div><div class="stat-val" id="anTiempoMedio">—</div><div class="stat-label">Tiempo medio</div><div class="stat-sub" style="font-size:10px;color:var(--t3);margin-top:2px">por sesión</div></div>
+          <div class="stat-card sc-green"><div class="stat-icon">🟢</div><div class="stat-val" id="anOnline">—</div><div class="stat-label">Online ahora</div><div class="stat-sub" id="anOnlineDetail" style="font-size:10px;color:var(--t3);margin-top:2px"></div></div>
+        </div>
+
+        <!-- Chart + tables -->
+        <div style="display:grid;grid-template-columns:2fr 1fr;gap:12px;margin-bottom:16px">
+          <div class="config-card" style="margin:0">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+              <h3 style="font-size:14px">📈 Visitas</h3>
+              <div style="display:flex;gap:4px">
+                <button class="btn-sm btn-outline" style="padding:3px 10px;font-size:10px" onclick="setChartRange(7)" id="chartBtn7">7 días</button>
+                <button class="btn-sm btn-cyan" style="padding:3px 10px;font-size:10px" onclick="setChartRange(30)" id="chartBtn30">30 días</button>
+              </div>
+            </div>
+            <canvas id="visitsChart" height="200" style="width:100%"></canvas>
+          </div>
+
+          <div class="config-card" style="margin:0">
+            <h3 style="font-size:14px;margin-bottom:12px">🏆 Top páginas</h3>
+            <div id="anTopPages" style="font-size:12px;color:var(--t2)">Cargando...</div>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:16px">
+          <div class="config-card" style="margin:0">
+            <h3 style="font-size:14px;margin-bottom:12px">🔗 Fuentes de tráfico</h3>
+            <div id="anSources" style="font-size:12px;color:var(--t2)">Cargando...</div>
+          </div>
+          <div class="config-card" style="margin:0">
+            <h3 style="font-size:14px;margin-bottom:12px">📱 Dispositivos</h3>
+            <div id="anDevices" style="font-size:12px;color:var(--t2)">Cargando...</div>
+          </div>
+          <div class="config-card" style="margin:0">
+            <h3 style="font-size:14px;margin-bottom:12px">🌐 Navegadores</h3>
+            <div id="anBrowsers" style="font-size:12px;color:var(--t2)">Cargando...</div>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div class="config-card" style="margin:0">
+            <h3 style="font-size:14px;margin-bottom:12px">🔥 Engagement</h3>
+            <div id="anEngagement" style="font-size:12px;color:var(--t2)">Cargando...</div>
+          </div>
+          <div class="config-card" style="margin:0">
+            <h3 style="font-size:14px;margin-bottom:12px">📰 Noticias más leídas</h3>
+            <div id="anTopArticles" style="font-size:12px;color:var(--t2)">Cargando...</div>
           </div>
         </div>
       </div>
@@ -1311,6 +1371,18 @@ service cloud.firestore {
       allow read: if true;
       allow write: if request.auth != null;
     }
+    match /analytics_events/{doc} {
+      allow read: if request.auth != null;
+      allow create: if true;
+    }
+    match /analytics_presence/{doc} {
+      allow read: if true;
+      allow write: if true;
+    }
+    match /site_config/{doc} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
   }
 }</pre>
           </div>
@@ -1340,7 +1412,7 @@ service cloud.firestore {
 
 <script>
 // ── NAVIGATION ──
-const panels = ['dashboard','noticias','nueva','cats','header','secciones','exclusivo','donacion','newsletterCfg','footerCfg','donantes','votacion','newsletter','config'];
+const panels = ['dashboard','analytics','noticias','nueva','cats','header','secciones','exclusivo','donacion','newsletterCfg','footerCfg','donantes','votacion','newsletter','config'];
 window.goPanel = (name, navEl) => {
   panels.forEach(p => {
     document.getElementById('panel-'+p)?.classList.toggle('active', p===name);
@@ -1350,7 +1422,7 @@ window.goPanel = (name, navEl) => {
   else document.getElementById('nav-'+name)?.classList.add('active');
 
   const titles = {
-    dashboard:'Dashboard',noticias:'Noticias',nueva:window._editingId?'Editar noticia':'Nueva noticia',
+    dashboard:'Dashboard',analytics:'Analytics',noticias:'Noticias',nueva:window._editingId?'Editar noticia':'Nueva noticia',
     cats:'Categorías',
     header:'Header y navegación',secciones:'Secciones del sitio',exclusivo:'Contenido exclusivo',
     donacion:'Barra de donación',newsletterCfg:'Newsletter (textos)',footerCfg:'Footer',
@@ -1360,6 +1432,7 @@ window.goPanel = (name, navEl) => {
 
   const actions = {
     noticias: `<button class="btn-sm btn-cyan" onclick="goPanel('nueva');newArticle()">✏️ Nueva noticia</button><button class="btn-sm btn-outline" onclick="loadArticles()">↻ Actualizar</button>`,
+    analytics: `<button class="btn-sm btn-cyan" onclick="loadAnalytics()">↻ Actualizar</button><button class="btn-sm btn-outline" onclick="exportAnalytics()">📥 Exportar</button>`,
     donantes: `<button class="btn-sm btn-outline" onclick="loadDonantes()">↻ Actualizar</button>`,
     votacion: `<button class="btn-sm btn-outline" onclick="loadVotacion()">↻ Actualizar</button>`,
     newsletter:`<button class="btn-sm btn-cyan" onclick="exportNewsletter()">📥 Exportar CSV</button>`,
@@ -1539,6 +1612,249 @@ window.loadSiteContent = () => {
 
 // Load on init
 loadSiteContent();
+</script>
+
+<!-- Chart.js for analytics -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<script>
+// ═══ ANALYTICS ENGINE ═══
+let anData = [];
+let anChart = null;
+let anRange = 30;
+
+window.loadAnalytics = async function() {
+  if (!window._db2) { toast('⚠️','Conectando a Firebase...'); return; }
+  const { collection, getDocs, query, orderBy, where, Timestamp } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+  const db = window._db2;
+
+  try {
+    // Load last 30 days of events
+    const since = new Date(); since.setDate(since.getDate() - 30); since.setHours(0,0,0,0);
+    const q = query(collection(db,'analytics_events'), where('ts','>=',Timestamp.fromDate(since)), orderBy('ts','desc'));
+    const snap = await getDocs(q);
+    anData = snap.docs.map(d => ({id:d.id,...d.data()}));
+
+    // Load presence
+    const presSnap = await getDocs(collection(db,'analytics_presence'));
+    const onlineUsers = presSnap.docs.map(d => d.data());
+
+    renderAnalytics(anData, onlineUsers);
+    renderChart(anData, anRange);
+    toast('✅','Analytics actualizado');
+  } catch(e) {
+    toast('❌','Error: '+e.message);
+    console.error(e);
+  }
+};
+
+function renderAnalytics(data, online) {
+  const now = new Date();
+  const todayStr = now.toISOString().slice(0,10);
+  const yesterday = new Date(now); yesterday.setDate(yesterday.getDate()-1);
+  const yStr = yesterday.toISOString().slice(0,10);
+
+  const pageviews = data.filter(e => e.type === 'pageview');
+  const sessions = data.filter(e => e.type === 'session_end');
+  const events = data.filter(e => e.type === 'event');
+
+  const pvToday = pageviews.filter(e => tsDate(e.ts) === todayStr);
+  const pvYester = pageviews.filter(e => tsDate(e.ts) === yStr);
+  const uniqueToday = new Set(pvToday.map(e => e.visitor)).size;
+  const uniqueYester = new Set(pvYester.map(e => e.visitor)).size;
+
+  // KPI Cards
+  document.getElementById('anVisitasHoy').textContent = pvToday.length;
+  document.getElementById('anVisitasAyer').textContent = 'Ayer: ' + pvYester.length + diffBadge(pvToday.length, pvYester.length);
+  document.getElementById('anUnicosHoy').textContent = uniqueToday;
+  document.getElementById('anUnicosAyer').textContent = 'Ayer: ' + uniqueYester + diffBadge(uniqueToday, uniqueYester);
+
+  const todaySessions = sessions.filter(e => tsDate(e.ts) === todayStr);
+  const avgDur = todaySessions.length ? Math.round(todaySessions.reduce((s,e) => s + (e.duration||0), 0) / todaySessions.length) : 0;
+  document.getElementById('anTiempoMedio').textContent = fmtDur(avgDur);
+
+  document.getElementById('anOnline').textContent = online.length;
+  const mob = online.filter(u => u.device === 'mobile').length;
+  const desk = online.length - mob;
+  document.getElementById('anOnlineDetail').textContent = desk + ' desktop · ' + mob + ' mobile';
+
+  // Top pages
+  const pageCounts = {};
+  pageviews.forEach(e => { pageCounts[e.page] = (pageCounts[e.page]||0)+1; });
+  const topPages = Object.entries(pageCounts).sort((a,b) => b[1]-a[1]).slice(0,8);
+  const maxPV = topPages[0]?topPages[0][1]:1;
+  document.getElementById('anTopPages').innerHTML = topPages.map(([p,c]) =>
+    `<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+      <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--t1)" title="${p}">${p}</span>
+      <div style="width:80px;height:6px;background:var(--ink3);border-radius:3px;overflow:hidden"><div style="height:100%;width:${Math.round(c/maxPV*100)}%;background:var(--cyan);border-radius:3px"></div></div>
+      <span style="min-width:30px;text-align:right;color:var(--cyan);font-weight:600">${c}</span>
+    </div>`
+  ).join('') || '<span style="color:var(--t3)">Sin datos</span>';
+
+  // Sources
+  const srcCounts = {};
+  pageviews.forEach(e => { srcCounts[e.source||'directo'] = (srcCounts[e.source||'directo']||0)+1; });
+  const srcLabels = {directo:'🔗 Directo',busqueda:'🔍 Búsqueda',social:'📱 Social',interno:'🏠 Interno',referido:'↗️ Referido'};
+  const srcEntries = Object.entries(srcCounts).sort((a,b) => b[1]-a[1]);
+  const srcTotal = pageviews.length || 1;
+  document.getElementById('anSources').innerHTML = srcEntries.map(([s,c]) =>
+    `<div style="display:flex;justify-content:space-between;margin-bottom:6px">
+      <span>${srcLabels[s]||s}</span>
+      <span style="color:var(--t1);font-weight:600">${c} <span style="color:var(--t3);font-weight:400">(${Math.round(c/srcTotal*100)}%)</span></span>
+    </div>`
+  ).join('') || '<span style="color:var(--t3)">Sin datos</span>';
+
+  // Devices
+  const devCounts = {};
+  pageviews.forEach(e => { devCounts[e.device||'desktop'] = (devCounts[e.device||'desktop']||0)+1; });
+  document.getElementById('anDevices').innerHTML = Object.entries(devCounts).sort((a,b) => b[1]-a[1]).map(([d,c]) =>
+    `<div style="display:flex;justify-content:space-between;margin-bottom:6px">
+      <span>${d==='mobile'?'📱 Mobile':'💻 Desktop'}</span>
+      <span style="color:var(--t1);font-weight:600">${c} <span style="color:var(--t3);font-weight:400">(${Math.round(c/srcTotal*100)}%)</span></span>
+    </div>`
+  ).join('') || '<span style="color:var(--t3)">Sin datos</span>';
+
+  // Browsers
+  const brCounts = {};
+  pageviews.forEach(e => { brCounts[e.browser||'Otro'] = (brCounts[e.browser||'Otro']||0)+1; });
+  document.getElementById('anBrowsers').innerHTML = Object.entries(brCounts).sort((a,b) => b[1]-a[1]).map(([b,c]) =>
+    `<div style="display:flex;justify-content:space-between;margin-bottom:6px">
+      <span>${b}</span>
+      <span style="color:var(--t1);font-weight:600">${c}</span>
+    </div>`
+  ).join('') || '<span style="color:var(--t3)">Sin datos</span>';
+
+  // Engagement
+  const evNames = {};
+  events.forEach(e => { evNames[e.event||'otro'] = (evNames[e.event||'otro']||0)+1; });
+  const engLabels = {noticia_leida:'📰 Noticias leídas',chat:'💬 Mensajes chat',pregunta:'🙋 Preguntas',voto:'🗳️ Votos',login:'🔑 Logins',share:'📤 Compartidos'};
+  document.getElementById('anEngagement').innerHTML = Object.entries(evNames).sort((a,b) => b[1]-a[1]).map(([n,c]) =>
+    `<div style="display:flex;justify-content:space-between;margin-bottom:6px">
+      <span>${engLabels[n]||n}</span>
+      <span style="color:var(--cyan);font-weight:600">${c}</span>
+    </div>`
+  ).join('') || '<span style="color:var(--t3)">Sin eventos registrados aún</span>';
+
+  // Top articles
+  const artReads = events.filter(e => e.event === 'noticia_leida');
+  const artCounts = {};
+  artReads.forEach(e => {
+    const t = e.data?.titulo || e.data?.id || 'Sin título';
+    artCounts[t] = (artCounts[t]||0)+1;
+  });
+  document.getElementById('anTopArticles').innerHTML = Object.entries(artCounts).sort((a,b) => b[1]-a[1]).slice(0,6).map(([t,c]) =>
+    `<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+      <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--t1)">${t}</span>
+      <span style="color:var(--cyan);font-weight:600">${c}</span>
+    </div>`
+  ).join('') || '<span style="color:var(--t3)">Sin lecturas registradas aún</span>';
+}
+
+function renderChart(data, days) {
+  const pageviews = data.filter(e => e.type === 'pageview');
+  const labels = [];
+  const values = [];
+  const uniqueValues = [];
+  const now = new Date();
+
+  for (let i = days-1; i >= 0; i--) {
+    const d = new Date(now); d.setDate(d.getDate()-i);
+    const ds = d.toISOString().slice(0,10);
+    const dayPV = pageviews.filter(e => tsDate(e.ts) === ds);
+    labels.push(d.getDate() + '/' + (d.getMonth()+1));
+    values.push(dayPV.length);
+    uniqueValues.push(new Set(dayPV.map(e => e.visitor)).size);
+  }
+
+  const ctx = document.getElementById('visitsChart');
+  if (!ctx) return;
+
+  if (anChart) anChart.destroy();
+
+  anChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        {
+          label: 'Visitas',
+          data: values,
+          backgroundColor: 'rgba(0,229,255,0.35)',
+          borderColor: 'rgba(0,229,255,0.8)',
+          borderWidth: 1,
+          borderRadius: 4,
+          order: 2
+        },
+        {
+          label: 'Únicos',
+          data: uniqueValues,
+          type: 'line',
+          borderColor: '#9f7aea',
+          backgroundColor: 'rgba(159,122,234,0.15)',
+          fill: true,
+          tension: 0.4,
+          pointRadius: 2,
+          pointBackgroundColor: '#9f7aea',
+          borderWidth: 2,
+          order: 1
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { position: 'bottom', labels: { color: '#9094b0', font: { size: 11 }, boxWidth: 12, padding: 16 } }
+      },
+      scales: {
+        x: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#50536a', font: { size: 10 }, maxRotation: 0, autoSkip: true, maxTicksLimit: 15 } },
+        y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#50536a', font: { size: 10 }, stepSize: 1 } }
+      }
+    }
+  });
+}
+
+window.setChartRange = function(days) {
+  anRange = days;
+  document.getElementById('chartBtn7').className = days===7 ? 'btn-sm btn-cyan' : 'btn-sm btn-outline';
+  document.getElementById('chartBtn30').className = days===30 ? 'btn-sm btn-cyan' : 'btn-sm btn-outline';
+  renderChart(anData, days);
+};
+
+window.exportAnalytics = function() {
+  if (!anData.length) { toast('⚠️','No hay datos para exportar'); return; }
+  const pageviews = anData.filter(e => e.type === 'pageview');
+  let csv = 'Fecha,Página,Visitante,Fuente,Dispositivo,Navegador,OS\n';
+  pageviews.forEach(e => {
+    const d = e.ts?.toDate ? e.ts.toDate().toISOString() : '';
+    csv += `${d},${e.page||''},${e.visitor||''},${e.source||''},${e.device||''},${e.browser||''},${e.os||''}\n`;
+  });
+  const blob = new Blob([csv], {type:'text/csv'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'tss_analytics_' + new Date().toISOString().slice(0,10) + '.csv';
+  a.click();
+  toast('✅','CSV exportado');
+};
+
+// Helpers
+function tsDate(ts) {
+  if (!ts) return '';
+  const d = ts.toDate ? ts.toDate() : new Date(ts.seconds*1000);
+  return d.toISOString().slice(0,10);
+}
+function fmtDur(s) {
+  if (s < 60) return s + 's';
+  const m = Math.floor(s/60); const sec = s%60;
+  return m + 'm ' + sec + 's';
+}
+function diffBadge(curr, prev) {
+  if (!prev) return '';
+  const pct = Math.round((curr-prev)/prev*100);
+  if (pct > 0) return ' ↑' + pct + '%';
+  if (pct < 0) return ' ↓' + Math.abs(pct) + '%';
+  return ' =';
+}
 </script>
 </body>
 </html>
