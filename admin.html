@@ -802,6 +802,7 @@ document.addEventListener('keydown', e => { if (e.key==='Escape') closeConfirm()
     <div class="sb-item" onclick="goPanel('donacion',this);loadSiteContent()" id="nav-donacion"><span class="sb-icon">💰</span> Donación</div>
     <div class="sb-item" onclick="goPanel('newsletterCfg',this);loadSiteContent()" id="nav-newsletterCfg"><span class="sb-icon">✉️</span> Newsletter texto</div>
     <div class="sb-item" onclick="goPanel('footerCfg',this);loadSiteContent()" id="nav-footerCfg"><span class="sb-icon">🦶</span> Footer</div>
+    <div class="sb-item" onclick="goPanel('equipoCfg',this);loadTeam()" id="nav-equipoCfg"><span class="sb-icon">👥</span> Equipo</div>
 
     <div class="sb-section">Comunidad</div>
     <div class="sb-item" onclick="goPanel('donantes',this);loadDonantes()" id="nav-donantes"><span class="sb-icon">💛</span> Donantes</div>
@@ -1292,6 +1293,20 @@ document.addEventListener('keydown', e => { if (e.key==='Escape') closeConfirm()
         </div>
       </div>
 
+      <!-- ═══ CMS: EQUIPO ═══ -->
+      <div class="panel" id="panel-equipoCfg">
+        <div class="config-grid">
+          <div class="config-card full-width">
+            <h3>👥 Equipo — Quiénes hacen TSS</h3>
+            <p style="font-size:12px;color:var(--t2);margin-bottom:16px">Configurá nombre, foto, rol y redes sociales de cada integrante. Los cambios se ven en la web al guardar.</p>
+            <div id="teamList"></div>
+            <button class="btn-sm btn-outline" style="margin-top:12px" onclick="addTeamMember()">➕ Agregar integrante</button>
+            <button class="btn-sm btn-cyan" style="margin-top:12px;margin-left:8px" onclick="saveTeam()">💾 Guardar equipo</button>
+            <div class="save-indicator" id="saveIndTeam">✅ Guardado</div>
+          </div>
+        </div>
+      </div>
+
       <!-- CONFIGURACION -->
       <div class="panel" id="panel-config">
         <div class="config-grid">
@@ -1436,7 +1451,7 @@ service cloud.firestore {
 
 <script>
 // ── NAVIGATION ──
-const panels = ['dashboard','analytics','noticias','nueva','cats','header','secciones','exclusivo','donacion','newsletterCfg','footerCfg','donantes','votacion','newsletter','config'];
+const panels = ['dashboard','analytics','noticias','nueva','cats','header','secciones','exclusivo','donacion','newsletterCfg','footerCfg','equipoCfg','donantes','votacion','newsletter','config'];
 window.goPanel = (name, navEl) => {
   panels.forEach(p => {
     document.getElementById('panel-'+p)?.classList.toggle('active', p===name);
@@ -1449,7 +1464,7 @@ window.goPanel = (name, navEl) => {
     dashboard:'Dashboard',analytics:'Analytics',noticias:'Noticias',nueva:window._editingId?'Editar noticia':'Nueva noticia',
     cats:'Categorías',
     header:'Header y navegación',secciones:'Secciones del sitio',exclusivo:'Contenido exclusivo',
-    donacion:'Barra de donación',newsletterCfg:'Newsletter (textos)',footerCfg:'Footer',
+    donacion:'Barra de donación',newsletterCfg:'Newsletter (textos)',footerCfg:'Footer',equipoCfg:'Equipo',
     donantes:'Donantes',votacion:'Votación de temas',newsletter:'Newsletter',config:'Configuración'
   };
   document.getElementById('topbarTitle').textContent = titles[name]||name;
@@ -1636,6 +1651,68 @@ window.loadSiteContent = () => {
 
 // Load on init
 loadSiteContent();
+
+// ── TEAM MANAGEMENT ──
+let teamData = [
+  {name:"Nacho Álvarez",role:"Conductor · Periodista",initials:"NA",photo:"",ig:"",tw:"",yt:"",tt:""},
+  {name:"Bernardo Wolloch",role:"Periodista",initials:"BW",photo:"",ig:"",tw:"",yt:"",tt:""},
+  {name:"Alejandro Amaral",role:"Periodista · Bicho",initials:"AA",photo:"",ig:"",tw:"",yt:"",tt:""},
+  {name:"Leonardo Pereyra",role:"Periodista",initials:"LP",photo:"",ig:"",tw:"",yt:"",tt:""},
+  {name:"Patricia Martín",role:"Productora General",initials:"PM",photo:"",ig:"",tw:"",yt:"",tt:""}
+];
+
+function loadTeam() {
+  try {
+    const cfg = JSON.parse(localStorage.getItem("tss_admin_config")||"{}");
+    if(cfg.cfgTeam && cfg.cfgTeam.length) teamData = cfg.cfgTeam;
+  } catch(e){}
+  renderTeamAdmin();
+}
+
+function renderTeamAdmin() {
+  const list = document.getElementById("teamList");
+  if(!list) return;
+  list.innerHTML = teamData.map((m,i) => `
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:10px;position:relative">
+      <button onclick="removeTeamMember(${i})" style="position:absolute;top:8px;right:8px;background:none;border:none;color:var(--t3);cursor:pointer;font-size:16px" title="Eliminar">✕</button>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="fld"><label>Nombre</label><input type="text" value="${m.name}" onchange="teamData[${i}].name=this.value"></div>
+        <div class="fld"><label>Rol</label><input type="text" value="${m.role}" onchange="teamData[${i}].role=this.value"></div>
+        <div class="fld"><label>Foto URL</label><input type="text" value="${m.photo||''}" placeholder="https://..." onchange="teamData[${i}].photo=this.value"></div>
+        <div class="fld"><label>Iniciales (fallback)</label><input type="text" value="${m.initials||''}" maxlength="3" onchange="teamData[${i}].initials=this.value"></div>
+        <div class="fld"><label>📷 Instagram @</label><input type="text" value="${m.ig||''}" placeholder="usuario" onchange="teamData[${i}].ig=this.value"></div>
+        <div class="fld"><label>𝕏 Twitter/X @</label><input type="text" value="${m.tw||''}" placeholder="usuario" onchange="teamData[${i}].tw=this.value"></div>
+        <div class="fld"><label>▶ YouTube @</label><input type="text" value="${m.yt||''}" placeholder="canal" onchange="teamData[${i}].yt=this.value"></div>
+        <div class="fld"><label>♪ TikTok @</label><input type="text" value="${m.tt||''}" placeholder="usuario" onchange="teamData[${i}].tt=this.value"></div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function addTeamMember() {
+  teamData.push({name:"Nuevo integrante",role:"Rol",initials:"NN",photo:"",ig:"",tw:"",yt:"",tt:""});
+  renderTeamAdmin();
+}
+
+function removeTeamMember(i) {
+  if(!confirm("¿Eliminar a "+teamData[i].name+"?")) return;
+  teamData.splice(i,1);
+  renderTeamAdmin();
+}
+
+async function saveTeam() {
+  try {
+    const cfg = JSON.parse(localStorage.getItem("tss_admin_config")||"{}");
+    cfg.cfgTeam = teamData;
+    localStorage.setItem("tss_admin_config", JSON.stringify(cfg));
+    // Also save to Firestore
+    const { getFirestore, doc, setDoc } = await import("https://www.gstatic.com/firebasejs/11.5.0/firebase-firestore.js");
+    const db = getFirestore();
+    await setDoc(doc(db,"site_config","content"), { team: teamData }, { merge: true });
+    const ind = document.getElementById("saveIndTeam");
+    if(ind){ind.style.opacity=1; setTimeout(()=>ind.style.opacity=0,2500);}
+  } catch(e) { alert("Error al guardar: "+e.message); }
+}
 </script>
 
 <!-- Chart.js for analytics -->

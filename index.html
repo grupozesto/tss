@@ -114,7 +114,7 @@ html{scroll-behavior:smooth;scroll-padding-top:80px;overflow-x:hidden}
   --ff-display:'Inter',sans-serif;--ff-body:'Inter',sans-serif;
   --nav-h:66px;
 }
-body{background:var(--ink);color:var(--t1);font-family:var(--ff-body);font-size:14px;overflow-x:hidden;-webkit-text-size-adjust:100%;overscroll-behavior-y:contain}
+body{background:var(--ink);color:var(--t1);font-family:var(--ff-body);font-size:14px;overflow-x:hidden;-webkit-text-size-adjust:100%}
 a{color:inherit;text-decoration:none}
 img{display:block;object-fit:cover}
 button{cursor:pointer;font-family:var(--ff-body)}
@@ -131,7 +131,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;opacity:.022;pointer-ev
 
 /* ── TOPNAV ── */
 .topnav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);background:rgba(8,9,13,.88);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 26px;gap:18px;z-index:500}
-.nav-logo img{height:42px;width:auto;display:block}
+.nav-logo img{height:46px;width:auto;display:block;border-radius:6px}
 .nav-live-chip{display:flex;align-items:center;gap:8px;background:rgba(0,229,255,.07);border:1px solid rgba(0,229,255,.2);border-radius:6px;padding:6px 14px;flex-shrink:0}
 .lpulse{width:7px;height:7px;border-radius:50%;background:var(--rose);animation:lp 1.8s ease-in-out infinite;flex-shrink:0}
 @keyframes lp{0%{box-shadow:0 0 0 0 rgba(255,77,141,.7)}70%{box-shadow:0 0 0 7px rgba(255,77,141,0)}100%{box-shadow:0 0 0 0 rgba(255,77,141,0)}}
@@ -441,9 +441,13 @@ body::before{content:'';position:fixed;inset:0;z-index:0;opacity:.022;pointer-ev
 .team-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:16px}
 .team-card{background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:20px 14px;text-align:center;transition:.18s}
 .team-card:hover{border-color:rgba(0,229,255,.2);transform:translateY(-2px)}
-.team-avatar{width:68px;height:68px;border-radius:50%;margin:0 auto 12px;background:linear-gradient(135deg,var(--cyan),var(--violet));display:flex;align-items:center;justify-content:center;font-family:var(--ff-display);font-size:22px;font-weight:800;color:var(--ink);border:2px solid rgba(0,229,255,.2)}
+.team-avatar{width:72px;height:72px;border-radius:50%;margin:0 auto 12px;background:linear-gradient(135deg,var(--cyan),var(--violet));display:flex;align-items:center;justify-content:center;font-family:var(--ff-display);font-size:22px;font-weight:800;color:var(--ink);border:2px solid rgba(0,229,255,.2);overflow:hidden}
+.team-avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%}
 .team-name{font-family:var(--ff-display);font-size:13px;font-weight:700;color:var(--t1);margin-bottom:4px}
-.team-role{font-size:11px;color:var(--t2)}
+.team-role{font-size:11px;color:var(--t2);margin-bottom:8px}
+.team-socials{display:flex;justify-content:center;gap:6px}
+.team-soc{width:28px;height:28px;border-radius:50%;background:var(--ink3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:13px;transition:.18s;color:var(--t2)}
+.team-soc:hover{background:var(--cyan);color:var(--ink);border-color:var(--cyan)}
 
 /* modal */
 .modal-overlay{position:fixed;inset:0;z-index:900;background:rgba(0,0,0,.82);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .3s}
@@ -542,7 +546,7 @@ body.light-mode .glow-bg span{opacity:.03}
   .page{padding-top:56px}
   html{scroll-padding-top:66px}
   .nav-live-chip{display:none}
-  .nav-logo img{height:34px}
+  .nav-logo img{height:38px}
   .foot-top{grid-template-columns:1fr}
   .team-grid,.excl-grid{grid-template-columns:1fr}
   .countdown-banner{padding:16px 14px;gap:12px;justify-content:center;flex-direction:column;align-items:center;text-align:center}
@@ -665,7 +669,7 @@ import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
          signOut, onAuthStateChanged, updateProfile, GoogleAuthProvider, signInWithPopup }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import { getFirestore, collection, addDoc, onSnapshot, query,
-         orderBy, limit, serverTimestamp, doc, updateDoc, increment }
+         orderBy, limit, serverTimestamp, doc, updateDoc, increment, getDoc }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const app  = initializeApp(TSS_CONFIG.FIREBASE);
@@ -680,14 +684,18 @@ onAuthStateChanged(auth, u => {
 
 // Chat en tiempo real
 const chatQ = query(collection(db,"chat_tss"), orderBy("ts","asc"), limit(150));
+let _chatInitial = true;
 onSnapshot(chatQ, snap => {
+  const box = document.getElementById("chatBox");
   snap.docChanges().forEach(ch => {
     if (ch.type === "added") {
       const d = ch.doc.data();
       window.renderMsg({ n: d.displayName||"Usuario", c: d.color||"#00e5ff",
-                         av:(d.displayName||"U")[0].toUpperCase(), text: d.text });
+                         av:(d.displayName||"U")[0].toUpperCase(), text: d.text, _silent: _chatInitial });
     }
   });
+  // After initial batch, scroll chatBox once (not the page)
+  if(_chatInitial && box) { box.scrollTop = box.scrollHeight; _chatInitial = false; }
 });
 
 // Preguntas al aire en tiempo real
@@ -1028,12 +1036,8 @@ window._donar     = (nombre,monto) => addDoc(collection(db,"donantes"),{nombre,m
     <div class="eyebrow">El equipo</div>
     <div class="sec-heading">Quiénes hacen <span class="neon-text">TSS</span></div>
     <div class="sec-sub">El mismo equipo que durante más de 13 años hizo periodismo en Canal 4. Ahora independientes.</div>
-    <div class="team-grid">
-      <div class="team-card fade-up"><div class="team-avatar">NA</div><div class="team-name">Nacho Álvarez</div><div class="team-role">Conductor · Periodista</div></div>
-      <div class="team-card fade-up"><div class="team-avatar">BW</div><div class="team-name">Bernardo Wolloch</div><div class="team-role">Periodista</div></div>
-      <div class="team-card fade-up"><div class="team-avatar">AA</div><div class="team-name">Alejandro Amaral</div><div class="team-role">Periodista · Bicho</div></div>
-      <div class="team-card fade-up"><div class="team-avatar">LP</div><div class="team-name">Leonardo Pereyra</div><div class="team-role">Periodista</div></div>
-      <div class="team-card fade-up"><div class="team-avatar">PM</div><div class="team-name">Patricia Martín</div><div class="team-role">Productora General</div></div>
+    <div class="team-grid" id="teamGrid">
+      <!-- Rendered dynamically from config -->
     </div>
   </div>
 </section>
@@ -1110,6 +1114,47 @@ window._donar     = (nombre,monto) => addDoc(collection(db,"donantes"),{nombre,m
 <div class="toast" id="toast"><span class="toast-icon" id="tI">✅</span><span id="tM">ok</span></div>
 
 <script>
+// ── EQUIPO (dynamic from config) ──
+const DEFAULT_TEAM = [
+  {name:"Nacho Álvarez",role:"Conductor · Periodista",initials:"NA",photo:"",ig:"",tw:"",yt:"",tt:""},
+  {name:"Bernardo Wolloch",role:"Periodista",initials:"BW",photo:"",ig:"",tw:"",yt:"",tt:""},
+  {name:"Alejandro Amaral",role:"Periodista · Bicho",initials:"AA",photo:"",ig:"",tw:"",yt:"",tt:""},
+  {name:"Leonardo Pereyra",role:"Periodista",initials:"LP",photo:"",ig:"",tw:"",yt:"",tt:""},
+  {name:"Patricia Martín",role:"Productora General",initials:"PM",photo:"",ig:"",tw:"",yt:"",tt:""}
+];
+function renderTeamUI(team) {
+  const grid = document.getElementById("teamGrid");
+  if(!grid) return;
+  grid.innerHTML = team.map(m => {
+    const ini = m.initials || m.name.split(' ').map(w=>w[0]).join('');
+    const avatar = m.photo
+      ? `<img src="${m.photo}" alt="${m.name}" onerror="this.style.display='none';this.parentElement.textContent='${ini}'">`
+      : ini;
+    let soc = '';
+    if(m.ig) soc += `<a href="https://instagram.com/${m.ig}" target="_blank" rel="noopener" class="team-soc" title="Instagram">📷</a>`;
+    if(m.tw) soc += `<a href="https://x.com/${m.tw}" target="_blank" rel="noopener" class="team-soc" title="X">𝕏</a>`;
+    if(m.yt) soc += `<a href="https://youtube.com/@${m.yt}" target="_blank" rel="noopener" class="team-soc" title="YouTube">▶</a>`;
+    if(m.tt) soc += `<a href="https://tiktok.com/@${m.tt}" target="_blank" rel="noopener" class="team-soc" title="TikTok">♪</a>`;
+    return `<div class="team-card"><div class="team-avatar">${avatar}</div><div class="team-name">${m.name}</div><div class="team-role">${m.role}</div>${soc?`<div class="team-socials">${soc}</div>`:''}</div>`;
+  }).join('');
+}
+// Load team: try Firestore first, fallback to localStorage, then defaults
+(async function loadTeam(){
+  let team = DEFAULT_TEAM;
+  try {
+    const snap = await getDoc(doc(db,"site_config","content"));
+    if(snap.exists() && snap.data().team && snap.data().team.length) {
+      team = snap.data().team;
+    }
+  } catch(e){
+    try {
+      const cfg = JSON.parse(localStorage.getItem("tss_admin_config")||"{}");
+      if(cfg.cfgTeam && cfg.cfgTeam.length) team = cfg.cfgTeam;
+    } catch(e2){}
+  }
+  renderTeamUI(team);
+})();
+
 // ── LOGO ──
 const LOGO = ""; // Logo removed - use icon-192.png instead
 ["navLogo","footLogo","modalLogo"].forEach(id => {
@@ -1232,17 +1277,15 @@ async function doGoogle()  { try{await window._google();}catch(e){if(e.code!=="a
 async function doLogout()  { await window._logout(); toggleMenu(true); showToast("👋","Sesión cerrada"); }
 
 // ── CHAT ──
-let _chatLoaded = false;
-window.renderMsg = ({n,c,av,text}) => {
+window.renderMsg = ({n,c,av,text,_silent}) => {
   const box=document.getElementById("chatBox");
   if(!box) return;
   const wasAtBottom = box.scrollHeight - box.scrollTop - box.clientHeight < 80;
   const d=document.createElement("div"); d.className="cmsg";
   d.innerHTML=`<div class="cavatar" style="background:${c}">${av}</div><div class="cbubble"><div class="cuser" style="color:${c}">${n}</div><div class="ctext">${text}</div></div>`;
   box.appendChild(d);
-  // Only auto-scroll if user was already at bottom or initial load finished
-  if(wasAtBottom || !_chatLoaded) box.scrollTop=box.scrollHeight;
-  if(!_chatLoaded) setTimeout(()=>{_chatLoaded=true;},3000);
+  // Only auto-scroll chatBox (not page) when user is at bottom and not initial batch
+  if(!_silent && wasAtBottom) box.scrollTop = box.scrollHeight;
 };
 async function sendChat() {
   const inp=document.getElementById("chatIn"); if(!inp)return;
