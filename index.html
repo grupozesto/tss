@@ -125,10 +125,10 @@ body::before{content:'';position:fixed;inset:0;z-index:0;opacity:.022;pointer-ev
 .topnav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);background:rgba(8,9,13,.88);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 26px;gap:18px;z-index:500}
 .nav-logo img{height:42px;width:auto;display:block}
 .nav-live-chip{display:flex;align-items:center;gap:8px;background:rgba(0,229,255,.07);border:1px solid rgba(0,229,255,.2);border-radius:6px;padding:6px 14px;flex-shrink:0}
-.lpulse{width:7px;height:7px;border-radius:50%;background:var(--rose);animation:lp 1.8s ease-in-out infinite}
+.lpulse{width:7px;height:7px;border-radius:50%;background:var(--rose);animation:lp 1.8s ease-in-out infinite;flex-shrink:0}
 @keyframes lp{0%{box-shadow:0 0 0 0 rgba(255,77,141,.7)}70%{box-shadow:0 0 0 7px rgba(255,77,141,0)}100%{box-shadow:0 0 0 0 rgba(255,77,141,0)}}
-.chip-live{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--cyan)}
-.chip-prog{font-size:12px;font-weight:500;color:var(--t1);max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chip-live{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--cyan);line-height:1.2}
+.chip-prog{font-size:12px;font-weight:500;color:var(--t1);max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2}
 .nav-spacer{flex:1}
 .nav-links{display:flex;align-items:center;gap:2px}
 .nlnk{padding:7px 13px;border-radius:6px;font-family:var(--ff-display);font-size:13px;font-weight:600;color:var(--t2);transition:.18s}
@@ -213,12 +213,12 @@ body::before{content:'';position:fixed;inset:0;z-index:0;opacity:.022;pointer-ev
 /* sidebar */
 .live-sidebar{border-left:1px solid var(--border);display:flex;flex-direction:column;background:var(--ink2)}
 .ls-tabs{display:flex;border-bottom:1px solid var(--border)}
-.ls-tab{flex:1;padding:11px 6px;border:none;background:transparent;font-family:var(--ff-display);font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--t3);border-bottom:2px solid transparent;transition:.18s;cursor:pointer}
+.ls-tab{flex:1;padding:11px 6px;border:none;background:transparent;font-family:var(--ff-display);font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--t3);border-bottom:2px solid transparent;transition:.18s;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:4px;line-height:1}
 .ls-tab.active{color:var(--cyan);border-bottom-color:var(--cyan)}
 .ls-tab:hover{color:var(--t2)}
-.ls-head{display:flex;align-items:center;justify-content:space-between;padding:10px 14px 0}
-.ls-head-t{font-family:var(--ff-display);font-size:13px;font-weight:700;color:var(--t1)}
-.ls-count{font-size:12px;font-weight:700;color:var(--rose)}
+.ls-head{display:flex;align-items:center;justify-content:space-between;padding:12px 14px 8px}
+.ls-head-t{font-family:var(--ff-display);font-size:14px;font-weight:700;color:var(--t1);letter-spacing:.5px}
+.ls-count{font-size:11px;font-weight:700;color:var(--rose);display:flex;align-items:center;gap:4px}
 .tab-panel{display:none;flex:1;flex-direction:column;overflow:hidden;min-height:300px}
 .tab-panel.active{display:flex}
 
@@ -656,7 +656,6 @@ window._donar     = (nombre,monto) => addDoc(collection(db,"donantes"),{nombre,m
 
 <div class="read-progress"><div class="read-progress-fill" id="readProgress"></div></div>
 <button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Volver arriba">↑</button>
-<button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Cambiar tema">🌙</button>
 <div class="glow-bg"><span class="g1"></span><span class="g2"></span><span class="g3"></span></div>
 
 <!-- TOPNAV -->
@@ -664,7 +663,7 @@ window._donar     = (nombre,monto) => addDoc(collection(db,"donantes"),{nombre,m
   <div class="nav-logo"><img id="navLogo" alt="TSS Todo Se Sabe"></div>
   <div class="nav-live-chip">
     <div class="lpulse"></div>
-    <div><div class="chip-live">En Vivo</div><div class="chip-prog">Todo Se Sabe — Jueves 20:30</div></div>
+    <div><div class="chip-live">En Vivo</div><div class="chip-prog">Jueves 20:30hs</div></div>
   </div>
   <div class="nav-spacer"></div>
   <div class="nav-links">
@@ -673,9 +672,9 @@ window._donar     = (nombre,monto) => addDoc(collection(db,"donantes"),{nombre,m
     <a href="#noticias"  class="nlnk"         onclick="setActive(this)">Noticias</a>
     <a href="#exclusivo" class="nlnk"         onclick="setActive(this)">Exclusivo</a>
     <a href="#equipo"    class="nlnk"         onclick="setActive(this)">Equipo</a>
-    <a href="https://t.me/todosesabe_tss" target="_blank" class="nlnk" style="color:var(--cyan);display:flex;align-items:center;gap:5px">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.96 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
-      Telegram
+    <a href="mailto:denuncias@todosesabe.uy" class="nlnk" style="color:var(--cyan);display:flex;align-items:center;gap:5px">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+      Denuncias
     </a>
   </div>
   <div class="nav-search">
@@ -720,7 +719,7 @@ window._donar     = (nombre,monto) => addDoc(collection(db,"donantes"),{nombre,m
           <button class="src-btn" onclick="switchSrc('ms',this)">📡 Mediastream</button>
         </div>
       </div>
-      <div class="yt-loader">
+      <div class="yt-loader" style="display:none">
         <label>🎬 Video ID del live</label>
         <input id="ytIn" type="text" placeholder="Pegá el ID de tu live...">
         <button onclick="loadYT()">Cargar</button>
@@ -732,10 +731,10 @@ window._donar     = (nombre,monto) => addDoc(collection(db,"donantes"),{nombre,m
         <span class="ls-count" id="vcCount">🔴 En vivo</span>
       </div>
       <div class="ls-tabs">
-        <button class="ls-tab active" onclick="switchTab('chat',this)">💬 Chat</button>
-        <button class="ls-tab" onclick="switchTab('preguntas',this)">🙋 Al Aire</button>
-        <button class="ls-tab" onclick="switchTab('viewers',this)">👥 Viewers</button>
-        <button class="ls-tab" onclick="switchTab('poll',this)">📊 Encuesta</button>
+        <button class="ls-tab active" onclick="switchTab('chat',this)"><span style="font-size:14px">💬</span> Chat</button>
+        <button class="ls-tab" onclick="switchTab('preguntas',this)"><span style="font-size:14px">🙋</span> Al Aire</button>
+        <button class="ls-tab" onclick="switchTab('viewers',this)"><span style="font-size:14px">👥</span> Viewers</button>
+        <button class="ls-tab" onclick="switchTab('poll',this)"><span style="font-size:14px">📊</span> Encuesta</button>
       </div>
             <!-- Chat -->
       <div class="tab-panel active" id="panel-chat">
@@ -1209,6 +1208,14 @@ async function votarPregunta(id) {
 
 // ── PLAYER ──
 window.addEventListener("load", () => {
+  // Auto-load live video ID from admin config
+  try {
+    const cfg = JSON.parse(localStorage.getItem('tss_admin_config')||'{}');
+    if (cfg.cfgLiveId && !TSS_CONFIG.LIVE_VIDEO_ID) {
+      TSS_CONFIG.LIVE_VIDEO_ID = cfg.cfgLiveId;
+      document.getElementById('ytIn').value = cfg.cfgLiveId;
+    }
+  } catch(e){}
   initSmartPlayer();
   loadChannelVideos();
   buildViewers();
