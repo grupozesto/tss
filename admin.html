@@ -793,6 +793,14 @@ document.addEventListener('keydown', e => { if (e.key==='Escape') closeConfirm()
     <div class="sb-item" onclick="goPanel('noticias',this)" id="nav-noticias"><span class="sb-icon">📰</span> Noticias <span class="sb-badge" id="badgeCount">0</span></div>
     <div class="sb-item" onclick="goPanel('cats',this);renderCats()" id="nav-cats"><span class="sb-icon">🏷️</span> Categorías</div>
 
+    <div class="sb-section">Sitio web</div>
+    <div class="sb-item" onclick="goPanel('header',this);loadSiteContent()" id="nav-header"><span class="sb-icon">🧭</span> Header y nav</div>
+    <div class="sb-item" onclick="goPanel('secciones',this);loadSiteContent()" id="nav-secciones"><span class="sb-icon">📐</span> Secciones</div>
+    <div class="sb-item" onclick="goPanel('exclusivo',this);loadSiteContent()" id="nav-exclusivo"><span class="sb-icon">⭐</span> Exclusivo</div>
+    <div class="sb-item" onclick="goPanel('donacion',this);loadSiteContent()" id="nav-donacion"><span class="sb-icon">💰</span> Donación</div>
+    <div class="sb-item" onclick="goPanel('newsletterCfg',this);loadSiteContent()" id="nav-newsletterCfg"><span class="sb-icon">✉️</span> Newsletter texto</div>
+    <div class="sb-item" onclick="goPanel('footerCfg',this);loadSiteContent()" id="nav-footerCfg"><span class="sb-icon">🦶</span> Footer</div>
+
     <div class="sb-section">Comunidad</div>
     <div class="sb-item" onclick="goPanel('donantes',this);loadDonantes()" id="nav-donantes"><span class="sb-icon">💛</span> Donantes</div>
     <div class="sb-item" onclick="goPanel('votacion',this);loadVotacion()" id="nav-votacion"><span class="sb-icon">🗳️</span> Votación temas</div>
@@ -1053,6 +1061,178 @@ document.addEventListener('keydown', e => { if (e.key==='Escape') closeConfirm()
       </div>
 
       <!-- CONFIGURACION -->
+
+      <!-- ═══ CMS: HEADER Y NAV ═══ -->
+      <div class="panel" id="panel-header">
+        <div class="config-grid">
+          <div class="config-card full-width">
+            <h3>🧭 Navegación principal</h3>
+            <p style="font-size:12px;color:var(--t2);margin-bottom:14px">Editá los textos del menú de navegación y el chip "En Vivo" del header.</p>
+            <div class="fld"><label>Texto chip live</label><input type="text" id="cms_chipLive" placeholder="En Vivo"></div>
+            <div class="fld"><label>Subtítulo chip</label><input type="text" id="cms_chipProg" placeholder="Todo Se Sabe — Jueves 20:30"></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+              <div class="fld"><label>Link nav 1</label><input type="text" id="cms_nav1" placeholder="En Vivo"></div>
+              <div class="fld"><label>Link nav 2</label><input type="text" id="cms_nav2" placeholder="Videos"></div>
+              <div class="fld"><label>Link nav 3</label><input type="text" id="cms_nav3" placeholder="Noticias"></div>
+              <div class="fld"><label>Link nav 4</label><input type="text" id="cms_nav4" placeholder="Exclusivo"></div>
+              <div class="fld"><label>Link nav 5</label><input type="text" id="cms_nav5" placeholder="Equipo"></div>
+              <div class="fld"><label>Link Telegram texto</label><input type="text" id="cms_nav6" placeholder="Telegram"></div>
+            </div>
+            <div class="fld"><label>Placeholder buscador</label><input type="text" id="cms_searchPlaceholder" placeholder="Buscar videos..."></div>
+            <div class="fld"><label>Botón login</label><input type="text" id="cms_btnLogin" placeholder="Iniciar sesión"></div>
+            <div class="fld"><label>Botón registro</label><input type="text" id="cms_btnRegister" placeholder="Registrarse"></div>
+            <button class="btn-sm btn-cyan" onclick="saveSiteContent()">💾 Guardar header</button>
+            <div class="save-indicator" id="saveIndHeader">✅ Guardado</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ CMS: SECCIONES ═══ -->
+      <div class="panel" id="panel-secciones">
+        <div class="config-grid">
+          <div class="config-card full-width">
+            <h3>📐 Sección "Videos"</h3>
+            <div class="fld"><label>Eyebrow</label><input type="text" id="cms_vidEyebrow" placeholder="Canal oficial"></div>
+            <div class="fld"><label>Título</label><input type="text" id="cms_vidTitle" placeholder="Videos de Todo Se Sabe"></div>
+            <div class="fld"><label>Subtítulo</label><input type="text" id="cms_vidSub" placeholder="Todos los programas, clips e informes..."></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px">
+              <div class="fld"><label>Filtro 1</label><input type="text" id="cms_vidF1" placeholder="Todos"></div>
+              <div class="fld"><label>Filtro 2</label><input type="text" id="cms_vidF2" placeholder="Programas"></div>
+              <div class="fld"><label>Filtro 3</label><input type="text" id="cms_vidF3" placeholder="Clips"></div>
+              <div class="fld"><label>Filtro 4</label><input type="text" id="cms_vidF4" placeholder="Informes"></div>
+            </div>
+            <button class="btn-sm btn-cyan" onclick="saveSiteContent()">💾 Guardar</button>
+          </div>
+
+          <div class="config-card full-width">
+            <h3>📐 Sección "Donantes"</h3>
+            <div class="fld"><label>Eyebrow</label><input type="text" id="cms_donEyebrow" placeholder="Comunidad"></div>
+            <div class="fld"><label>Título</label><input type="text" id="cms_donTitle" placeholder="Quiénes sostienen TSS"></div>
+            <div class="fld"><label>Subtítulo</label><input type="text" id="cms_donSub" placeholder="Las personas que hacen posible el periodismo independiente."></div>
+            <button class="btn-sm btn-cyan" onclick="saveSiteContent()">💾 Guardar</button>
+          </div>
+
+          <div class="config-card full-width">
+            <h3>📐 Sección "Votación"</h3>
+            <div class="fld"><label>Eyebrow</label><input type="text" id="cms_voteEyebrow" placeholder="Participá"></div>
+            <div class="fld"><label>Título</label><input type="text" id="cms_voteTitle" placeholder="¿Qué querés que trate TSS?"></div>
+            <div class="fld"><label>Subtítulo</label><input type="text" id="cms_voteSub" placeholder="Los más votados llegan al programa"></div>
+            <div class="fld"><label>Placeholder proponer tema</label><input type="text" id="cms_votePlaceholder" placeholder="Proponé un tema para el próximo programa..."></div>
+            <button class="btn-sm btn-cyan" onclick="saveSiteContent()">💾 Guardar</button>
+          </div>
+
+          <div class="config-card full-width">
+            <h3>📐 Sección "Equipo"</h3>
+            <div class="fld"><label>Eyebrow</label><input type="text" id="cms_teamEyebrow" placeholder="El equipo"></div>
+            <div class="fld"><label>Título</label><input type="text" id="cms_teamTitle" placeholder="Quiénes hacen TSS"></div>
+            <div class="fld"><label>Subtítulo</label><input type="text" id="cms_teamSub" placeholder="El mismo equipo que durante más de 13 años hizo periodismo..."></div>
+            <button class="btn-sm btn-cyan" onclick="saveSiteContent()">💾 Guardar</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ CMS: EXCLUSIVO ═══ -->
+      <div class="panel" id="panel-exclusivo">
+        <div class="config-grid">
+          <div class="config-card full-width">
+            <h3>⭐ Banner exclusivo</h3>
+            <div class="fld"><label>Badge texto</label><input type="text" id="cms_exclBadge" placeholder="⭐ Contenido exclusivo"></div>
+            <div class="fld"><label>Título</label><input type="text" id="cms_exclTitle" placeholder="Suscribite y accedé a todo"></div>
+            <div class="fld"><label>Descripción</label><textarea id="cms_exclDesc" placeholder="Programas completos sin cortes, detrás de escena..."></textarea></div>
+            <div class="fld"><label>Texto del botón</label><input type="text" id="cms_exclBtn" placeholder="Crear cuenta gratis"></div>
+            <button class="btn-sm btn-cyan" onclick="saveSiteContent()">💾 Guardar</button>
+          </div>
+          <div class="config-card full-width">
+            <h3>⭐ Cards exclusivas (3 tarjetas)</h3>
+            <p style="font-size:12px;color:var(--t2);margin-bottom:14px">Cada tarjeta tiene un título, duración e imagen.</p>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
+              <div>
+                <div class="fld"><label>Card 1 — Título</label><input type="text" id="cms_exclC1Title" placeholder="Programa completo — Ep 1"></div>
+                <div class="fld"><label>Card 1 — Subtítulo</label><input type="text" id="cms_exclC1Sub" placeholder="4h · Solo suscriptores"></div>
+                <div class="fld"><label>Card 1 — URL imagen</label><input type="url" id="cms_exclC1Img" placeholder="https://..."></div>
+              </div>
+              <div>
+                <div class="fld"><label>Card 2 — Título</label><input type="text" id="cms_exclC2Title" placeholder="Detrás de escena"></div>
+                <div class="fld"><label>Card 2 — Subtítulo</label><input type="text" id="cms_exclC2Sub" placeholder="45 min · Solo suscriptores"></div>
+                <div class="fld"><label>Card 2 — URL imagen</label><input type="url" id="cms_exclC2Img" placeholder="https://..."></div>
+              </div>
+              <div>
+                <div class="fld"><label>Card 3 — Título</label><input type="text" id="cms_exclC3Title" placeholder="Entrevista extendida"></div>
+                <div class="fld"><label>Card 3 — Subtítulo</label><input type="text" id="cms_exclC3Sub" placeholder="1h 20min · Solo suscriptores"></div>
+                <div class="fld"><label>Card 3 — URL imagen</label><input type="url" id="cms_exclC3Img" placeholder="https://..."></div>
+              </div>
+            </div>
+            <button class="btn-sm btn-cyan" style="margin-top:12px" onclick="saveSiteContent()">💾 Guardar cards</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ CMS: DONACIÓN ═══ -->
+      <div class="panel" id="panel-donacion">
+        <div class="config-grid">
+          <div class="config-card full-width">
+            <h3>💰 Barra de donación</h3>
+            <div class="fld"><label>Título</label><input type="text" id="cms_donBarTitle" placeholder="Apoyá el periodismo independiente"></div>
+            <div class="fld"><label>Subtítulo</label><input type="text" id="cms_donBarSub" placeholder="Tu donación mantiene a TSS libre e independiente"></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px">
+              <div class="fld"><label>Monto 1</label><input type="number" id="cms_donM1" placeholder="100"></div>
+              <div class="fld"><label>Monto 2</label><input type="number" id="cms_donM2" placeholder="300"></div>
+              <div class="fld"><label>Monto 3 (destacado)</label><input type="number" id="cms_donM3" placeholder="500"></div>
+              <div class="fld"><label>Texto libre</label><input type="text" id="cms_donFree" placeholder="Libre"></div>
+            </div>
+            <button class="btn-sm btn-cyan" onclick="saveSiteContent()">💾 Guardar</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ CMS: NEWSLETTER TEXTO ═══ -->
+      <div class="panel" id="panel-newsletterCfg">
+        <div class="config-grid">
+          <div class="config-card full-width">
+            <h3>✉️ Sección newsletter (textos del sitio)</h3>
+            <div class="fld"><label>Eyebrow</label><input type="text" id="cms_nlEyebrow" placeholder="Newsletter semanal"></div>
+            <div class="fld"><label>Título</label><input type="text" id="cms_nlTitle" placeholder="Que no se te escape nada de TSS"></div>
+            <div class="fld"><label>Descripción</label><textarea id="cms_nlDesc" placeholder="Recibí cada semana un resumen con los mejores momentos..."></textarea></div>
+            <div class="fld"><label>Placeholder email</label><input type="text" id="cms_nlPlaceholder" placeholder="tu@email.com"></div>
+            <div class="fld"><label>Texto botón</label><input type="text" id="cms_nlBtn" placeholder="Suscribirme"></div>
+            <div class="fld"><label>Texto legal debajo</label><input type="text" id="cms_nlLegal" placeholder="Sin spam. Un email por semana."></div>
+            <button class="btn-sm btn-cyan" onclick="saveSiteContent()">💾 Guardar</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ CMS: FOOTER ═══ -->
+      <div class="panel" id="panel-footerCfg">
+        <div class="config-grid">
+          <div class="config-card full-width">
+            <h3>🦶 Footer del sitio</h3>
+            <div class="fld"><label>Texto de marca</label><textarea id="cms_footBrand" placeholder="El periodismo independiente de Nacho Álvarez. Todos los jueves a las 20:30 en vivo por YouTube."></textarea></div>
+            <div class="fld"><label>Copyright</label><input type="text" id="cms_footCopy" placeholder="© 2026 TSS — Todo Se Sabe · Nacho Álvarez"></div>
+            <div class="fld"><label>Texto derecho</label><input type="text" id="cms_footRight" placeholder="Stream vía YouTube & Mediastream"></div>
+          </div>
+          <div class="config-card full-width">
+            <h3>🦶 Columnas del footer</h3>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px">
+              <div>
+                <div class="fld"><label>Col 1 título</label><input type="text" id="cms_footCol1Title" placeholder="Plataforma"></div>
+                <div class="fld"><label>Col 1 items (uno por línea)</label><textarea id="cms_footCol1Items" placeholder="En Vivo&#10;Videos&#10;Noticias&#10;Exclusivo" style="min-height:100px"></textarea></div>
+              </div>
+              <div>
+                <div class="fld"><label>Col 2 título</label><input type="text" id="cms_footCol2Title" placeholder="Canal"></div>
+                <div class="fld"><label>Col 2 items</label><textarea id="cms_footCol2Items" placeholder="YouTube @todosesabe_tss&#10;Twitter&#10;Instagram" style="min-height:100px"></textarea></div>
+              </div>
+              <div>
+                <div class="fld"><label>Col 3 título</label><input type="text" id="cms_footCol3Title" placeholder="Info"></div>
+                <div class="fld"><label>Col 3 items</label><textarea id="cms_footCol3Items" placeholder="El equipo&#10;Contacto&#10;Términos&#10;Privacidad" style="min-height:100px"></textarea></div>
+              </div>
+            </div>
+            <button class="btn-sm btn-cyan" style="margin-top:12px" onclick="saveSiteContent()">💾 Guardar footer</button>
+            <div class="save-indicator" id="saveIndFooter">✅ Guardado</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CONFIGURACION -->
       <div class="panel" id="panel-config">
         <div class="config-grid">
 
@@ -1160,7 +1340,7 @@ service cloud.firestore {
 
 <script>
 // ── NAVIGATION ──
-const panels = ['dashboard','noticias','nueva','cats','donantes','votacion','newsletter','config'];
+const panels = ['dashboard','noticias','nueva','cats','header','secciones','exclusivo','donacion','newsletterCfg','footerCfg','donantes','votacion','newsletter','config'];
 window.goPanel = (name, navEl) => {
   panels.forEach(p => {
     document.getElementById('panel-'+p)?.classList.toggle('active', p===name);
@@ -1171,7 +1351,10 @@ window.goPanel = (name, navEl) => {
 
   const titles = {
     dashboard:'Dashboard',noticias:'Noticias',nueva:window._editingId?'Editar noticia':'Nueva noticia',
-    cats:'Categorías',donantes:'Donantes',votacion:'Votación de temas',newsletter:'Newsletter',config:'Configuración'
+    cats:'Categorías',
+    header:'Header y navegación',secciones:'Secciones del sitio',exclusivo:'Contenido exclusivo',
+    donacion:'Barra de donación',newsletterCfg:'Newsletter (textos)',footerCfg:'Footer',
+    donantes:'Donantes',votacion:'Votación de temas',newsletter:'Newsletter',config:'Configuración'
   };
   document.getElementById('topbarTitle').textContent = titles[name]||name;
 
@@ -1183,6 +1366,12 @@ window.goPanel = (name, navEl) => {
     config:    `<button class="btn-sm btn-cyan" onclick="saveConfig()">💾 Guardar todo</button>`,
     nueva:     `<button class="btn-sm btn-outline" onclick="goPanel('noticias')">← Volver</button>`,
     cats:      `<button class="btn-sm btn-cyan" onclick="addCat()">+ Agregar</button>`,
+    header:    `<button class="btn-sm btn-cyan" onclick="saveSiteContent()">💾 Guardar</button>`,
+    secciones: `<button class="btn-sm btn-cyan" onclick="saveSiteContent()">💾 Guardar</button>`,
+    exclusivo: `<button class="btn-sm btn-cyan" onclick="saveSiteContent()">💾 Guardar</button>`,
+    donacion:  `<button class="btn-sm btn-cyan" onclick="saveSiteContent()">💾 Guardar</button>`,
+    newsletterCfg:`<button class="btn-sm btn-cyan" onclick="saveSiteContent()">💾 Guardar</button>`,
+    footerCfg: `<button class="btn-sm btn-cyan" onclick="saveSiteContent()">💾 Guardar</button>`,
   };
   document.getElementById('topbarActions').innerHTML = actions[name]||'';
 };
@@ -1291,6 +1480,65 @@ updateConfigPreview();
 
 // Enter key handlers
 document.getElementById('adPass').addEventListener('keydown', e => { if(e.key==='Enter') doAdminLogin(); });
+
+// ═══ CMS: SITE CONTENT MANAGEMENT ═══
+const CMS_KEY = 'tss_site_content';
+
+// All CMS field IDs
+const CMS_FIELDS = [
+  'cms_chipLive','cms_chipProg','cms_nav1','cms_nav2','cms_nav3','cms_nav4','cms_nav5','cms_nav6',
+  'cms_searchPlaceholder','cms_btnLogin','cms_btnRegister',
+  'cms_vidEyebrow','cms_vidTitle','cms_vidSub','cms_vidF1','cms_vidF2','cms_vidF3','cms_vidF4',
+  'cms_donEyebrow','cms_donTitle','cms_donSub',
+  'cms_voteEyebrow','cms_voteTitle','cms_voteSub','cms_votePlaceholder',
+  'cms_teamEyebrow','cms_teamTitle','cms_teamSub',
+  'cms_exclBadge','cms_exclTitle','cms_exclDesc','cms_exclBtn',
+  'cms_exclC1Title','cms_exclC1Sub','cms_exclC1Img',
+  'cms_exclC2Title','cms_exclC2Sub','cms_exclC2Img',
+  'cms_exclC3Title','cms_exclC3Sub','cms_exclC3Img',
+  'cms_donBarTitle','cms_donBarSub','cms_donM1','cms_donM2','cms_donM3','cms_donFree',
+  'cms_nlEyebrow','cms_nlTitle','cms_nlDesc','cms_nlPlaceholder','cms_nlBtn','cms_nlLegal',
+  'cms_footBrand','cms_footCopy','cms_footRight',
+  'cms_footCol1Title','cms_footCol1Items','cms_footCol2Title','cms_footCol2Items','cms_footCol3Title','cms_footCol3Items'
+];
+
+window.saveSiteContent = () => {
+  const data = {};
+  CMS_FIELDS.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) data[id] = el.value;
+  });
+  localStorage.setItem(CMS_KEY, JSON.stringify(data));
+
+  // Also save to Firestore if available
+  if (window._db2) {
+    import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js').then(({doc, setDoc}) => {
+      setDoc(doc(window._db2, 'site_config', 'content'), data).catch(()=>{});
+    });
+  }
+
+  toast('✅', 'Contenido del sitio guardado');
+  // Flash all save indicators
+  document.querySelectorAll('.save-indicator').forEach(el => {
+    el.classList.add('show');
+    setTimeout(() => el.classList.remove('show'), 2500);
+  });
+};
+
+window.loadSiteContent = () => {
+  const raw = localStorage.getItem(CMS_KEY);
+  if (!raw) return;
+  try {
+    const data = JSON.parse(raw);
+    CMS_FIELDS.forEach(id => {
+      const el = document.getElementById(id);
+      if (el && data[id] !== undefined) el.value = data[id];
+    });
+  } catch(e) {}
+};
+
+// Load on init
+loadSiteContent();
 </script>
 </body>
 </html>
