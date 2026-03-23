@@ -441,13 +441,16 @@ body::before{content:'';position:fixed;inset:0;z-index:0;opacity:.022;pointer-ev
 .team-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:16px}
 .team-card{background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:20px 14px;text-align:center;transition:.18s}
 .team-card:hover{border-color:rgba(0,229,255,.2);transform:translateY(-2px)}
-.team-avatar{width:72px;height:72px;border-radius:50%;margin:0 auto 12px;background:linear-gradient(135deg,var(--cyan),var(--violet));display:flex;align-items:center;justify-content:center;font-family:var(--ff-display);font-size:22px;font-weight:800;color:var(--ink);border:2px solid rgba(0,229,255,.2);overflow:hidden}
+.team-avatar{width:80px;height:80px;border-radius:50%;margin:0 auto 12px;background:linear-gradient(135deg,var(--cyan),var(--violet));display:flex;align-items:center;justify-content:center;font-family:var(--ff-display);font-size:22px;font-weight:800;color:var(--ink);border:2px solid rgba(0,229,255,.2);overflow:hidden}
 .team-avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%}
 .team-name{font-family:var(--ff-display);font-size:13px;font-weight:700;color:var(--t1);margin-bottom:4px}
 .team-role{font-size:11px;color:var(--t2);margin-bottom:8px}
 .team-socials{display:flex;justify-content:center;gap:6px}
 .team-soc{width:28px;height:28px;border-radius:50%;background:var(--ink3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:13px;transition:.18s;color:var(--t2)}
 .team-soc:hover{background:var(--cyan);color:var(--ink);border-color:var(--cyan)}
+.team-dots{display:none;justify-content:center;gap:6px;margin-top:14px}
+.team-dot{width:8px;height:8px;border-radius:50%;background:var(--border2);border:none;padding:0;cursor:pointer;transition:.18s}
+.team-dot.active{background:var(--cyan);width:20px;border-radius:4px}
 
 /* modal */
 .modal-overlay{position:fixed;inset:0;z-index:900;background:rgba(0,0,0,.82);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .3s}
@@ -548,7 +551,11 @@ body.light-mode .glow-bg span{opacity:.03}
   .nav-live-chip{display:none}
   .nav-logo img{height:38px}
   .foot-top{grid-template-columns:1fr}
-  .team-grid,.excl-grid{grid-template-columns:1fr}
+  .team-grid{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;gap:12px;padding-bottom:6px;scrollbar-width:none}
+  .team-grid::-webkit-scrollbar{display:none}
+  .team-card{min-width:200px;flex-shrink:0;scroll-snap-align:center}
+  .team-dots{display:flex}
+  .excl-grid{grid-template-columns:1fr}
   .countdown-banner{padding:16px 14px;gap:12px;justify-content:center;flex-direction:column;align-items:center;text-align:center}
   .cd-blocks{gap:8px;flex-wrap:nowrap;justify-content:center}
   .cd-block{min-width:60px;padding:8px 10px;flex:1}
@@ -1039,6 +1046,7 @@ window._donar     = (nombre,monto) => addDoc(collection(db,"donantes"),{nombre,m
     <div class="team-grid" id="teamGrid">
       <!-- Rendered dynamically from config -->
     </div>
+    <div class="team-dots" id="teamDots"></div>
   </div>
 </section>
 
@@ -1124,6 +1132,7 @@ const DEFAULT_TEAM = [
 ];
 function renderTeamUI(team) {
   const grid = document.getElementById("teamGrid");
+  const dotsEl = document.getElementById("teamDots");
   if(!grid) return;
   grid.innerHTML = team.map(m => {
     const ini = m.initials || m.name.split(' ').map(w=>w[0]).join('');
@@ -1137,6 +1146,22 @@ function renderTeamUI(team) {
     if(m.tt) soc += `<a href="https://tiktok.com/@${m.tt}" target="_blank" rel="noopener" class="team-soc" title="TikTok">♪</a>`;
     return `<div class="team-card"><div class="team-avatar">${avatar}</div><div class="team-name">${m.name}</div><div class="team-role">${m.role}</div>${soc?`<div class="team-socials">${soc}</div>`:''}</div>`;
   }).join('');
+  // Dots for mobile carousel
+  if(dotsEl && window.innerWidth <= 580) {
+    dotsEl.innerHTML = team.map((_,i) => `<button class="team-dot${i===0?' active':''}" data-i="${i}"></button>`).join('');
+    dotsEl.querySelectorAll('.team-dot').forEach(dot => {
+      dot.addEventListener('click', () => {
+        const card = grid.children[dot.dataset.i];
+        if(card) card.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
+      });
+    });
+    grid.addEventListener('scroll', () => {
+      const scrollLeft = grid.scrollLeft;
+      const cardW = grid.children[0]?.offsetWidth || 200;
+      const active = Math.round(scrollLeft / (cardW + 12));
+      dotsEl.querySelectorAll('.team-dot').forEach((d,i) => d.classList.toggle('active', i===active));
+    }, {passive:true});
+  }
 }
 // Load team: try Firestore first, fallback to localStorage, then defaults
 (async function loadTeam(){

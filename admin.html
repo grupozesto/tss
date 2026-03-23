@@ -1672,21 +1672,38 @@ function loadTeam() {
 function renderTeamAdmin() {
   const list = document.getElementById("teamList");
   if(!list) return;
-  list.innerHTML = teamData.map((m,i) => `
+  list.innerHTML = teamData.map((m,i) => {
+    const photoPreview = m.photo ? `<img src="${m.photo}" style="width:40px;height:40px;border-radius:50%;object-fit:cover;border:2px solid var(--border)">` : `<div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#0891b2,#7c3aed);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;color:#fff">${m.initials||m.name.split(' ').map(w=>w[0]).join('')}</div>`;
+    return `
     <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:10px;position:relative">
-      <button onclick="removeTeamMember(${i})" style="position:absolute;top:8px;right:8px;background:none;border:none;color:var(--t3);cursor:pointer;font-size:16px" title="Eliminar">✕</button>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+        ${photoPreview}
+        <div style="flex:1"><strong style="color:var(--t1)">${m.name}</strong><div style="font-size:11px;color:var(--t2)">${m.role}</div></div>
+        <div style="display:flex;gap:4px">
+          <button onclick="moveTeam(${i},-1)" style="background:var(--ink3);border:1px solid var(--border);border-radius:6px;padding:4px 8px;cursor:pointer;color:var(--t2);font-size:14px" title="Subir" ${i===0?'disabled':''}>↑</button>
+          <button onclick="moveTeam(${i},1)" style="background:var(--ink3);border:1px solid var(--border);border-radius:6px;padding:4px 8px;cursor:pointer;color:var(--t2);font-size:14px" title="Bajar" ${i===teamData.length-1?'disabled':''}>↓</button>
+          <button onclick="removeTeamMember(${i})" style="background:rgba(225,29,72,.1);border:1px solid rgba(225,29,72,.3);border-radius:6px;padding:4px 8px;cursor:pointer;color:#e11d48;font-size:14px" title="Eliminar">✕</button>
+        </div>
+      </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-        <div class="fld"><label>Nombre</label><input type="text" value="${m.name}" onchange="teamData[${i}].name=this.value"></div>
-        <div class="fld"><label>Rol</label><input type="text" value="${m.role}" onchange="teamData[${i}].role=this.value"></div>
-        <div class="fld"><label>Foto URL</label><input type="text" value="${m.photo||''}" placeholder="https://..." onchange="teamData[${i}].photo=this.value"></div>
+        <div class="fld"><label>Nombre</label><input type="text" value="${m.name}" onchange="teamData[${i}].name=this.value;renderTeamAdmin()"></div>
+        <div class="fld"><label>Rol</label><input type="text" value="${m.role}" onchange="teamData[${i}].role=this.value;renderTeamAdmin()"></div>
+        <div class="fld"><label>Foto URL</label><input type="text" value="${m.photo||''}" placeholder="https://..." onchange="teamData[${i}].photo=this.value;renderTeamAdmin()"></div>
         <div class="fld"><label>Iniciales (fallback)</label><input type="text" value="${m.initials||''}" maxlength="3" onchange="teamData[${i}].initials=this.value"></div>
         <div class="fld"><label>📷 Instagram @</label><input type="text" value="${m.ig||''}" placeholder="usuario" onchange="teamData[${i}].ig=this.value"></div>
         <div class="fld"><label>𝕏 Twitter/X @</label><input type="text" value="${m.tw||''}" placeholder="usuario" onchange="teamData[${i}].tw=this.value"></div>
         <div class="fld"><label>▶ YouTube @</label><input type="text" value="${m.yt||''}" placeholder="canal" onchange="teamData[${i}].yt=this.value"></div>
         <div class="fld"><label>♪ TikTok @</label><input type="text" value="${m.tt||''}" placeholder="usuario" onchange="teamData[${i}].tt=this.value"></div>
       </div>
-    </div>
-  `).join('');
+    </div>`;
+  }).join('');
+}
+
+function moveTeam(i, dir) {
+  const j = i + dir;
+  if(j < 0 || j >= teamData.length) return;
+  [teamData[i], teamData[j]] = [teamData[j], teamData[i]];
+  renderTeamAdmin();
 }
 
 function addTeamMember() {
