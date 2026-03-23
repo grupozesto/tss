@@ -34,7 +34,7 @@
 }">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;500;600;700;800;900&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
 
 <script>
 const TSS_CONFIG = {
@@ -67,7 +67,7 @@ html{scroll-behavior:smooth}
   --violet:#9f7aea;--violet-dim:rgba(159,122,234,.12);
   --rose:#ff4d8d;--gold:#ffc947;
   --t1:#f0f2ff;--t2:#9094b0;--t3:#50536a;
-  --ff-display:'Barlow Condensed',sans-serif;--ff-body:'Barlow',sans-serif;
+  --ff-display:'Inter',sans-serif;--ff-body:'Inter',sans-serif;
   --nav-h:66px;
 }
 body{background:var(--ink);color:var(--t1);font-family:var(--ff-body);font-size:14px;overflow-x:hidden}
@@ -121,7 +121,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;opacity:.022;pointer-ev
   border-bottom:1px solid rgba(0,229,255,.15);
   padding:16px 28px;display:flex;align-items:center;gap:24px;flex-wrap:wrap;
 }
-.cd-label{font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--cyan);flex-shrink:0}
+.cd-label{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--cyan);flex-shrink:0}
 .cd-blocks{display:flex;gap:10px}
 .cd-block{background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:8px 14px;text-align:center;min-width:62px}
 .cd-num{font-family:var(--ff-display);font-size:22px;font-weight:800;color:var(--cyan);line-height:1}
@@ -247,14 +247,13 @@ body::before{content:'';position:fixed;inset:0;z-index:0;opacity:.022;pointer-ev
 
 /* ── SECTIONS ── */
 .section-wrap{padding:52px 28px;max-width:1400px;margin:0 auto}
-.eyebrow{font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--cyan);margin-bottom:7px}
+.eyebrow{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--cyan);margin-bottom:7px}
 .sec-heading{font-family:var(--ff-display);font-size:34px;font-weight:800;color:var(--t1);margin-bottom:6px;line-height:1.1}
 .sec-sub{font-size:14px;color:var(--t2);margin-bottom:32px;line-height:1.6}
 .divider{height:1px;background:var(--border)}
 .neon-text{background:linear-gradient(90deg,var(--cyan) 0%,var(--violet) 50%,var(--cyan) 100%);background-size:200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 4s linear infinite}
 @keyframes shimmer{to{background-position:200% center}}
 
-/* sched */
 
 
 /* videos */
@@ -295,51 +294,49 @@ body::before{content:'';position:fixed;inset:0;z-index:0;opacity:.022;pointer-ev
 
 /* noticias — diario editorial */
 .news-outer{background:var(--ink2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
-.news-wrap{padding:56px 28px;max-width:1400px;margin:0 auto}
-.news-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:6px;padding-bottom:14px;border-bottom:3px solid var(--cyan)}
-.news-header h2{font-family:var(--ff-display);font-size:44px;font-weight:900;letter-spacing:1px;color:var(--t1);line-height:1;text-transform:uppercase}
-.news-header-meta{text-align:right;display:flex;flex-direction:column;gap:3px}
-.news-header-meta span{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--t2)}
-.news-header-meta a{font-size:11px;color:var(--cyan);font-weight:600;letter-spacing:1px}
-.news-date-line{font-size:11px;color:var(--t3);letter-spacing:1px;text-transform:uppercase;margin-bottom:22px;padding-bottom:10px;border-bottom:1px solid var(--border)}
-
+.news-wrap{padding:52px 28px;max-width:1400px;margin:0 auto}
+.news-masthead{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:4px;padding-bottom:12px;border-bottom:3px solid var(--cyan)}
+.news-masthead h2{font-family:var(--ff-display);font-size:42px;font-weight:900;letter-spacing:-1px;color:var(--t1);line-height:1}
+.news-masthead-right{display:flex;flex-direction:column;align-items:flex-end;gap:3px}
+.news-masthead-right span{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--t2)}
+.news-masthead-right a{font-size:12px;color:var(--cyan);font-weight:600;transition:.18s}
+.news-masthead-right a:hover{color:#33eeff}
+.news-dateline{font-size:11px;color:var(--t3);letter-spacing:1px;text-transform:uppercase;margin-bottom:20px;padding-bottom:10px;border-bottom:1px solid var(--border)}
 .news-layout{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;border:1px solid var(--border);border-radius:12px;overflow:hidden}
 .news-main{grid-column:1/3;cursor:pointer;position:relative;background:var(--ink);border-right:1px solid var(--border)}
-.news-main-img{height:310px;overflow:hidden;position:relative;background:var(--ink3)}
+.news-main-img{height:300px;overflow:hidden;position:relative;background:var(--ink3)}
 .news-main-img img{height:100%;width:100%;object-fit:cover;transition:transform .6s}
 .news-main:hover .news-main-img img{transform:scale(1.03)}
 .news-main-img::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.92) 0%,rgba(0,0,0,.15) 60%,transparent 100%)}
-.news-main-overlay{position:absolute;bottom:0;left:0;right:0;padding:26px;z-index:1}
-.news-cat{display:inline-block;background:var(--cyan);color:var(--ink);font-family:var(--ff-display);font-size:9px;font-weight:900;letter-spacing:2.5px;text-transform:uppercase;border-radius:3px;padding:3px 10px;margin-bottom:12px}
-.news-main-overlay h3{font-family:var(--ff-display);font-size:28px;font-weight:900;line-height:1.18;color:#fff;margin-bottom:8px;text-transform:uppercase}
-.news-main-overlay p{font-size:13px;color:rgba(255,255,255,.62);line-height:1.55;margin-bottom:10px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.news-meta{font-size:10px;color:rgba(255,255,255,.42);display:flex;gap:8px;align-items:center}
-.news-read-more{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--cyan);margin-top:10px;transition:gap .18s}
-.news-main:hover .news-read-more{gap:9px}
-
+.news-main-body{position:absolute;bottom:0;left:0;right:0;padding:24px;z-index:1}
+.news-cat{display:inline-block;background:var(--cyan);color:var(--ink);font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;border-radius:3px;padding:3px 10px;margin-bottom:10px}
+.news-main-body h3{font-size:24px;font-weight:800;line-height:1.2;color:#fff;margin-bottom:6px;letter-spacing:-.5px}
+.news-main-body p{font-size:13px;color:rgba(255,255,255,.6);line-height:1.55;margin-bottom:8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.news-meta{font-size:10px;color:rgba(255,255,255,.4);display:flex;gap:8px;align-items:center}
+.news-read{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--cyan);margin-top:8px;transition:gap .18s}
+.news-main:hover .news-read{gap:8px}
 .news-stack{display:flex;flex-direction:column}
 .ncard{cursor:pointer;transition:.18s;border-bottom:1px solid var(--border);background:var(--surface);display:flex;flex-direction:column}
 .ncard:last-child{border-bottom:none}
 .ncard:hover{background:var(--surface2)}
-.ncard-img{height:112px;overflow:hidden;background:var(--ink3);flex-shrink:0}
+.ncard-img{height:110px;overflow:hidden;background:var(--ink3);flex-shrink:0}
 .ncard-img img{height:100%;width:100%;object-fit:cover;transition:transform .4s}
 .ncard:hover .ncard-img img{transform:scale(1.05)}
-.ncard-body{padding:14px 16px;flex:1;display:flex;flex-direction:column}
-.ntag{font-size:9px;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:var(--cyan);margin-bottom:6px}
-.ntitle{font-family:var(--ff-display);font-size:15px;font-weight:800;line-height:1.22;color:var(--t1);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:auto;padding-bottom:6px;text-transform:uppercase}
-.ndate{font-size:10px;color:var(--t3);margin-top:8px;letter-spacing:.5px}
-
-/* Editoriales */
-.editorial-row{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-top:18px}
-.ed-card{background:var(--surface);padding:22px 20px;cursor:pointer;transition:.18s;position:relative;overflow:hidden}
+.ncard-body{padding:12px 14px;flex:1;display:flex;flex-direction:column}
+.ntag{font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--cyan);margin-bottom:5px}
+.ntitle{font-size:13px;font-weight:700;line-height:1.3;color:var(--t1);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:auto;letter-spacing:-.2px}
+.ndate{font-size:10px;color:var(--t3);margin-top:8px}
+/* Editorials */
+.editorial-row{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-top:16px}
+.ed-card{background:var(--surface);padding:20px;cursor:pointer;transition:.18s;position:relative;overflow:hidden}
 .ed-card::after{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--cyan),var(--violet));opacity:0;transition:.18s}
 .ed-card:hover{background:var(--surface2)}
 .ed-card:hover::after{opacity:1}
-.ed-tag{font-size:9px;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:var(--violet);margin-bottom:10px;display:flex;align-items:center;gap:8px}
-.ed-tag::before{content:"";width:18px;height:2px;background:var(--violet);display:inline-block;flex-shrink:0}
-.ed-title{font-family:var(--ff-display);font-size:19px;font-weight:900;line-height:1.18;color:var(--t1);margin-bottom:10px;text-transform:uppercase}
+.ed-tag{font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--violet);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.ed-tag::before{content:"";width:16px;height:2px;background:var(--violet);display:inline-block;flex-shrink:0}
+.ed-title{font-size:17px;font-weight:800;line-height:1.22;color:var(--t1);margin-bottom:9px;letter-spacing:-.3px}
 .ed-desc{font-size:12px;color:var(--t2);line-height:1.65;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
-.ed-meta{font-size:10px;color:var(--t3);margin-top:14px;display:flex;align-items:center;gap:6px;padding-top:12px;border-top:1px solid var(--border)}
+.ed-meta{font-size:10px;color:var(--t3);margin-top:12px;padding-top:10px;border-top:1px solid var(--border);display:flex;gap:6px}
 .ed-author{color:var(--cyan);font-weight:600}
 
 /* exclusivo */
@@ -463,6 +460,17 @@ body::before{content:'';position:fixed;inset:0;z-index:0;opacity:.022;pointer-ev
 .foot-bottom{border-top:1px solid var(--border);padding-top:18px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-size:11px;color:var(--t3)}
 .foot-bottom a{color:var(--cyan)}
 
+
+/* Progress bar */
+.read-progress{position:fixed;top:var(--nav-h);left:0;right:0;height:2px;background:transparent;z-index:499}
+.read-progress-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--cyan),var(--violet));transition:width .1s linear}
+/* Scroll to top */
+.scroll-top{position:fixed;bottom:28px;left:28px;width:40px;height:40px;border-radius:50%;background:var(--surface2);border:1px solid var(--border2);color:var(--t2);font-size:18px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.22s;opacity:0;transform:translateY(10px);z-index:490}
+.scroll-top.show{opacity:1;transform:translateY(0)}
+.scroll-top:hover{background:var(--cyan-dim);border-color:rgba(0,229,255,.3);color:var(--cyan)}
+/* Dark/light mode toggle */
+.theme-toggle{position:fixed;bottom:28px;left:76px;width:40px;height:40px;border-radius:50%;background:var(--surface2);border:1px solid var(--border2);color:var(--t2);font-size:16px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.22s;z-index:490}
+.theme-toggle:hover{background:var(--cyan-dim);border-color:rgba(0,229,255,.3);color:var(--cyan)}
 .fade-up{opacity:0;transform:translateY(20px);animation:fuA .55s ease forwards}
 @keyframes fuA{to{opacity:1;transform:translateY(0)}}
 .fade-up:nth-child(1){animation-delay:.04s}.fade-up:nth-child(2){animation-delay:.1s}
@@ -470,7 +478,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;opacity:.022;pointer-ev
 .fade-up:nth-child(5){animation-delay:.28s}.fade-up:nth-child(6){animation-delay:.34s}
 
 @media(max-width:1200px){.hero-live{grid-template-columns:1fr}.live-sidebar{display:none}.videos-grid{grid-template-columns:repeat(3,1fr)}.team-grid{grid-template-columns:repeat(3,1fr)}.foot-top{grid-template-columns:1fr 1fr}}
-@media(max-width:900px){.nav-links,.nav-search{display:none}.videos-grid,.excl-grid{grid-template-columns:repeat(2,1fr)}.news-layout{grid-template-columns:1fr}.news-main{grid-column:1}.team-grid{grid-template-columns:repeat(2,1fr)}.excl-banner{flex-direction:column;padding:26px;gap:22px}.nl-form{flex-direction:column}.countdown-banner{justify-content:center}.editorial-row{grid-template-columns:1fr}.news-wrap{padding:36px 16px}}
+@media(max-width:900px){.nav-links,.nav-search{display:none}.videos-grid,.excl-grid{grid-template-columns:repeat(2,1fr)}.news-layout{grid-template-columns:1fr}.news-main{grid-column:1}.team-grid{grid-template-columns:repeat(2,1fr)}.excl-banner{flex-direction:column;padding:26px;gap:22px}.nl-form{flex-direction:column}.countdown-banner{justify-content:center}}
 @media(max-width:580px){.videos-grid{grid-template-columns:1fr}.section-wrap{padding:36px 16px}.topnav{padding:0 14px;gap:10px}.nav-live-chip{display:none}.foot-top{grid-template-columns:1fr}.team-grid,.excl-grid{grid-template-columns:1fr}.cd-blocks{gap:6px}.cd-block{min-width:52px;padding:7px 10px}}
 </style>
 
@@ -535,6 +543,9 @@ window._reaccion   = (tipo) => addDoc(collection(db,"reacciones_tss"),{tipo, ts:
 </head>
 <body>
 
+<div class="read-progress"><div class="read-progress-fill" id="readProgress"></div></div>
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Volver arriba">↑</button>
+<button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Cambiar tema">🌙</button>
 <div class="glow-bg"><span class="g1"></span><span class="g2"></span><span class="g3"></span></div>
 
 <!-- TOPNAV -->
@@ -548,9 +559,13 @@ window._reaccion   = (tipo) => addDoc(collection(db,"reacciones_tss"),{tipo, ts:
   <div class="nav-links">
     <a href="#live"      class="nlnk active"  onclick="setActive(this)">En Vivo</a>
     <a href="#videos"    class="nlnk"         onclick="setActive(this)">Videos</a>
-    <a href="noticias.html" class="nlnk">Noticias</a>
+    <a href="#noticias"  class="nlnk"         onclick="setActive(this)">Noticias</a>
     <a href="#exclusivo" class="nlnk"         onclick="setActive(this)">Exclusivo</a>
     <a href="#equipo"    class="nlnk"         onclick="setActive(this)">Equipo</a>
+    <a href="https://t.me/todosesabe_tss" target="_blank" class="nlnk" style="color:var(--cyan);display:flex;align-items:center;gap:5px">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.96 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+      Telegram
+    </a>
   </div>
   <div class="nav-search">
     <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
@@ -611,7 +626,7 @@ window._reaccion   = (tipo) => addDoc(collection(db,"reacciones_tss"),{tipo, ts:
         <button class="ls-tab" onclick="switchTab('viewers',this)">👥 Viewers</button>
         <button class="ls-tab" onclick="switchTab('poll',this)">📊 Encuesta</button>
       </div>
-      <!-- Chat -->
+            <!-- Chat -->
       <div class="tab-panel active" id="panel-chat">
         <div class="reactions-bar">
           <button class="react-btn" onclick="sendReaccion('🔥')">🔥 <span id="r1">0</span></button>
@@ -620,26 +635,24 @@ window._reaccion   = (tipo) => addDoc(collection(db,"reacciones_tss"),{tipo, ts:
           <button class="react-btn" onclick="sendReaccion('😮')">😮 <span id="r4">0</span></button>
           <button class="react-btn" onclick="sendReaccion('❤️')">❤️ <span id="r5">0</span></button>
         </div>
-        <!-- YouTube Live Chat embed — se actualiza automáticamente con el video -->
-        <div id="ytChatWrap" style="flex:1;display:flex;flex-direction:column;min-height:260px">
-          <iframe id="ytChatFrame"
-            src="about:blank"
-            style="flex:1;border:none;min-height:260px;background:var(--ink3)"
+        <!-- Chat de YouTube — solo activo cuando hay live -->
+        <div id="chatLiveWrap" style="flex:1;display:none;flex-direction:column">
+          <iframe id="ytChatFrame" src="about:blank"
+            style="flex:1;border:none;width:100%;min-height:260px;background:#000"
             allow="autoplay"></iframe>
-          <div id="chatNoLive" style="display:none;flex:1;align-items:center;justify-content:center;flex-direction:column;gap:10px;padding:20px;text-align:center;min-height:200px">
-            <div style="font-size:28px">💬</div>
-            <div style="font-size:13px;font-weight:600;color:var(--t1)">Chat del programa</div>
-            <div style="font-size:12px;color:var(--t2);line-height:1.5">El chat en vivo aparece automáticamente los jueves cuando empieza el programa.</div>
-            <div style="font-size:11px;color:var(--t3);margin-top:4px">El chat guardado de la última emisión aparece cuando reproducís el programa completo.</div>
-          </div>
         </div>
-        <div id="chatFormArea">
-          <div class="chat-login-prompt" style="padding:10px;border-top:1px solid var(--border);text-align:center">
-            <p style="font-size:11px;color:var(--t2)">Escribí en el chat de YouTube directamente ↑</p>
+        <!-- Estado fuera de vivo -->
+        <div id="chatOfflineWrap" style="flex:1;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;padding:20px;text-align:center">
+          <div style="font-size:32px">📅</div>
+          <div style="font-size:13px;font-weight:700;color:var(--t1)">Chat disponible los jueves</div>
+          <div style="font-size:12px;color:var(--t2);line-height:1.6;max-width:220px">
+            El chat en vivo se activa automáticamente cuando empieza el programa.
           </div>
+          <div style="font-size:11px;color:var(--cyan);font-weight:600;margin-top:4px" id="chatNextShow"></div>
         </div>
+        <div id="chatFormArea"></div>
       </div>
-      <!-- Preguntas Al Aire -->
+<!-- Preguntas Al Aire -->
       <div class="tab-panel" id="panel-preguntas">
         <div class="preguntas-panel">
           <div class="preguntas-list" id="preguntasList"></div>
@@ -667,7 +680,6 @@ window._reaccion   = (tipo) => addDoc(collection(db,"reacciones_tss"),{tipo, ts:
   </div>
 </section>
 
-
 <div class="divider"></div>
 
 <!-- VIDEOS -->
@@ -684,7 +696,95 @@ window._reaccion   = (tipo) => addDoc(collection(db,"reacciones_tss"),{tipo, ts:
       <input class="yt-search-field" type="text" placeholder="🔍 Buscar..." oninput="filterVids(this.value)" id="vidSearch">
     </div>
     <div id="videosGrid" class="videos-grid">
-      <div class="yt-loading"><div class="yt-spinner"></div>Cargando @todosesabe_tss...</div>
+      <div id="videoSkeletons" style="display:contents">
+  <div class="skel-card">
+    <div class="skel-thumb"></div>
+    <div class="skel-body">
+      <div class="skel-line"></div>
+      <div class="skel-line short"></div>
+      <div style="display:flex;justify-content:space-between;margin-top:4px">
+        <div class="skel-line xshort" style="margin:0;height:10px"></div>
+        <div class="skel-line xshort" style="margin:0;height:10px;width:30%"></div>
+      </div>
+    </div>
+  </div>
+  <div class="skel-card">
+    <div class="skel-thumb"></div>
+    <div class="skel-body">
+      <div class="skel-line"></div>
+      <div class="skel-line short"></div>
+      <div style="display:flex;justify-content:space-between;margin-top:4px">
+        <div class="skel-line xshort" style="margin:0;height:10px"></div>
+        <div class="skel-line xshort" style="margin:0;height:10px;width:30%"></div>
+      </div>
+    </div>
+  </div>
+  <div class="skel-card">
+    <div class="skel-thumb"></div>
+    <div class="skel-body">
+      <div class="skel-line"></div>
+      <div class="skel-line short"></div>
+      <div style="display:flex;justify-content:space-between;margin-top:4px">
+        <div class="skel-line xshort" style="margin:0;height:10px"></div>
+        <div class="skel-line xshort" style="margin:0;height:10px;width:30%"></div>
+      </div>
+    </div>
+  </div>
+  <div class="skel-card">
+    <div class="skel-thumb"></div>
+    <div class="skel-body">
+      <div class="skel-line"></div>
+      <div class="skel-line short"></div>
+      <div style="display:flex;justify-content:space-between;margin-top:4px">
+        <div class="skel-line xshort" style="margin:0;height:10px"></div>
+        <div class="skel-line xshort" style="margin:0;height:10px;width:30%"></div>
+      </div>
+    </div>
+  </div>
+  <div class="skel-card">
+    <div class="skel-thumb"></div>
+    <div class="skel-body">
+      <div class="skel-line"></div>
+      <div class="skel-line short"></div>
+      <div style="display:flex;justify-content:space-between;margin-top:4px">
+        <div class="skel-line xshort" style="margin:0;height:10px"></div>
+        <div class="skel-line xshort" style="margin:0;height:10px;width:30%"></div>
+      </div>
+    </div>
+  </div>
+  <div class="skel-card">
+    <div class="skel-thumb"></div>
+    <div class="skel-body">
+      <div class="skel-line"></div>
+      <div class="skel-line short"></div>
+      <div style="display:flex;justify-content:space-between;margin-top:4px">
+        <div class="skel-line xshort" style="margin:0;height:10px"></div>
+        <div class="skel-line xshort" style="margin:0;height:10px;width:30%"></div>
+      </div>
+    </div>
+  </div>
+  <div class="skel-card">
+    <div class="skel-thumb"></div>
+    <div class="skel-body">
+      <div class="skel-line"></div>
+      <div class="skel-line short"></div>
+      <div style="display:flex;justify-content:space-between;margin-top:4px">
+        <div class="skel-line xshort" style="margin:0;height:10px"></div>
+        <div class="skel-line xshort" style="margin:0;height:10px;width:30%"></div>
+      </div>
+    </div>
+  </div>
+  <div class="skel-card">
+    <div class="skel-thumb"></div>
+    <div class="skel-body">
+      <div class="skel-line"></div>
+      <div class="skel-line short"></div>
+      <div style="display:flex;justify-content:space-between;margin-top:4px">
+        <div class="skel-line xshort" style="margin:0;height:10px"></div>
+        <div class="skel-line xshort" style="margin:0;height:10px;width:30%"></div>
+      </div>
+    </div>
+  </div></div>
     </div>
     <div class="load-more-wrap">
       <button class="btn-load-more" onclick="loadMore()" id="loadMoreBtn" style="display:none">Cargar más</button>
@@ -696,23 +796,23 @@ window._reaccion   = (tipo) => addDoc(collection(db,"reacciones_tss"),{tipo, ts:
 <!-- NOTICIAS -->
 <section id="noticias" class="news-outer">
   <div class="news-wrap">
-    <div class="news-header">
+    <div class="news-masthead">
       <h2>Noticias &amp; Editorial</h2>
-      <div class="news-header-meta">
-        <span id="newsDateStr">Cargando...</span>
+      <div class="news-masthead-right">
+        <span id="newsDateStr">—</span>
         <a href="noticias.html">Ver todas las noticias →</a>
       </div>
     </div>
-
+    <div class="news-dateline">Periodismo independiente · Todo Se Sabe</div>
     <div class="news-layout">
       <div class="news-main">
         <div class="news-main-img"><img src="https://cdn.dl.uy//solimg/894x503/39/39554.jpg" alt=""></div>
-        <div class="news-main-overlay">
+        <div class="news-main-body">
           <div class="news-cat">Política</div>
           <h3>El análisis que Canal 4 no quiso emitir</h3>
-          <p>Nacho Álvarez repasa los episodios que generaron polémica y los datos que los grandes medios omiten en el Uruguay de hoy.</p>
-          <div class="news-meta"><span>Por Nacho Álvarez</span><span>·</span><span>21/03/2026</span><span>·</span><span>5 min</span></div>
-          <div class="news-read-more">Leer nota →</div>
+          <p>Nacho Álvarez repasa los episodios que generaron polémica y los datos que los grandes medios omiten.</p>
+          <div class="news-meta"><span>Por Nacho Álvarez</span><span>·</span><span>21/03/2026</span></div>
+          <div class="news-read">Leer nota →</div>
         </div>
       </div>
       <div class="news-stack">
@@ -721,26 +821,10 @@ window._reaccion   = (tipo) => addDoc(collection(db,"reacciones_tss"),{tipo, ts:
         <div class="ncard"><div class="ncard-img"><img src="https://cdn.dl.uy//solimg/320X180/39/39548.jpg" alt=""></div><div class="ncard-body"><div class="ntag">Canal 4</div><div class="ntitle">La disputa por el nombre del programa y el registro de marcas</div><div class="ndate">18/03/2026</div></div></div>
       </div>
     </div>
-
     <div class="editorial-row">
-      <div class="ed-card">
-        <div class="ed-tag">Editorial</div>
-        <div class="ed-title">Por qué el periodismo independiente es la única salida</div>
-        <div class="ed-desc">Durante 13 años trabajamos dentro del sistema. Hoy entendemos que la única forma de hacer periodismo de verdad es fuera de él.</div>
-        <div class="ed-meta"><span class="ed-author">Nacho Álvarez</span><span>·</span><span>21/03/2026</span></div>
-      </div>
-      <div class="ed-card">
-        <div class="ed-tag">Análisis</div>
-        <div class="ed-title">El narco en Uruguay: lo que los datos oficiales no dicen</div>
-        <div class="ed-desc">Un repaso por las cifras reales del crimen organizado y cómo el gobierno maneja la comunicación.</div>
-        <div class="ed-meta"><span class="ed-author">Bernardo Wolloch</span><span>·</span><span>20/03/2026</span></div>
-      </div>
-      <div class="ed-card">
-        <div class="ed-tag">Investigación</div>
-        <div class="ed-title">Marset: todo lo que se sabe y lo que aún falta revelar</div>
-        <div class="ed-desc">La historia completa del caso que sacudió al Uruguay y conectó funcionarios con el crimen transnacional.</div>
-        <div class="ed-meta"><span class="ed-author">Alejandro Amaral</span><span>·</span><span>18/03/2026</span></div>
-      </div>
+      <div class="ed-card"><div class="ed-tag">Editorial</div><div class="ed-title">Por qué el periodismo independiente es la única salida</div><div class="ed-desc">Durante 13 años trabajamos dentro del sistema. Hoy entendemos que la única forma de hacer periodismo de verdad es fuera de él.</div><div class="ed-meta"><span class="ed-author">Nacho Álvarez</span><span>·</span><span>21/03/2026</span></div></div>
+      <div class="ed-card"><div class="ed-tag">Análisis</div><div class="ed-title">El narco en Uruguay: lo que los datos oficiales no dicen</div><div class="ed-desc">Un repaso por las cifras reales del crimen organizado y cómo el gobierno maneja la comunicación pública.</div><div class="ed-meta"><span class="ed-author">Bernardo Wolloch</span><span>·</span><span>20/03/2026</span></div></div>
+      <div class="ed-card"><div class="ed-tag">Investigación</div><div class="ed-title">Marset: todo lo que se sabe y lo que falta revelar</div><div class="ed-desc">La historia completa del caso que sacudió al Uruguay y conectó funcionarios con el crimen transnacional.</div><div class="ed-meta"><span class="ed-author">Alejandro Amaral</span><span>·</span><span>18/03/2026</span></div></div>
     </div>
   </div>
 </section>
@@ -783,7 +867,7 @@ window._reaccion   = (tipo) => addDoc(collection(db,"reacciones_tss"),{tipo, ts:
 <!-- NEWSLETTER -->
 <section class="newsletter-section">
   <div class="nl-inner">
-    <div style="font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--cyan);margin-bottom:10px">Newsletter semanal</div>
+    <div style="font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--cyan);margin-bottom:10px">Newsletter semanal</div>
     <h2>Que no se te escape nada de TSS</h2>
     <p>Recibí cada semana un resumen con los mejores momentos del programa, los clips más vistos y lo que viene.</p>
     <div class="nl-form">
@@ -1062,50 +1146,65 @@ async function votarPregunta(id) {
 }
 
 // ── PLAYER ──
-window.addEventListener("load",()=>{
+window.addEventListener("load", () => {
   initSmartPlayer();
   loadChannelVideos();
   buildViewers();
   buildPoll();
+  initChatState();
 });
 
 function setFrame(src) {
-  const f = document.getElementById("ytFrame");
-  if (f) f.src = src;
-  setTimeout(syncYTChat, 900);
+  document.getElementById("ytFrame").src = src;
 }
-function syncYTChat() {
-  const f  = document.getElementById("ytFrame");
-  const cf = document.getElementById("ytChatFrame");
-  const nl = document.getElementById("chatNoLive");
-  if (!f || !cf) return;
-  const m  = (f.src||"").match(/embed\/([a-zA-Z0-9_-]{11})/);
-  const vid = m ? m[1] : "";
-  if (vid) {
-    cf.src = "https://www.youtube.com/live_chat?v="+vid+"&embed_domain=grupozesto.github.io";
-    cf.style.display = "block";
-    if (nl) nl.style.display = "none";
+
+function isLiveNow() {
+  const now = new Date();
+  return now.getDay() === 4 && now.getHours() >= 20;
+}
+
+function initChatState() {
+  const liveWrap    = document.getElementById("chatLiveWrap");
+  const offlineWrap = document.getElementById("chatOfflineWrap");
+  const nextShow    = document.getElementById("chatNextShow");
+  const live = TSS_CONFIG.LIVE_VIDEO_ID || isLiveNow();
+  if (live) {
+    liveWrap.style.display    = "flex";
+    offlineWrap.style.display = "none";
+    const vid = TSS_CONFIG.LIVE_VIDEO_ID || "";
+    if (vid) {
+      document.getElementById("ytChatFrame").src =
+        "https://www.youtube.com/live_chat?v=" + vid + "&embed_domain=grupozesto.github.io";
+    }
   } else {
-    cf.src = "about:blank";
-    cf.style.display = "none";
-    if (nl) nl.style.display = "flex";
+    liveWrap.style.display    = "none";
+    offlineWrap.style.display = "flex";
+    // Compute next thursday
+    const d = new Date();
+    const daysUntilThursday = (4 - d.getDay() + 7) % 7 || 7;
+    const nextThursday = new Date(d);
+    nextThursday.setDate(d.getDate() + daysUntilThursday);
+    nextThursday.setHours(20, 30, 0, 0);
+    if (nextShow) {
+      const diff = nextThursday - d;
+      const days = Math.floor(diff / 86400000);
+      const hrs  = Math.floor((diff % 86400000) / 3600000);
+      nextShow.textContent = `Próximo jueves en ${days}d ${hrs}h`;
+    }
   }
 }
+
 async function initSmartPlayer() {
   if (TSS_CONFIG.LIVE_VIDEO_ID) {
     setFrame(`https://www.youtube.com/embed/${TSS_CONFIG.LIVE_VIDEO_ID}?rel=0&modestbranding=1`);
     return;
   }
-  const now  = new Date();
-  const day  = now.getDay();
-  const hour = now.getHours();
-  if (day === 4 && hour >= 20) {
+  if (isLiveNow()) {
     setFrame(`https://www.youtube.com/embed?listType=user_uploads&list=todosesabe_tss&rel=0&modestbranding=1`);
-    const sub = document.querySelector(".pc-sub");
-    if (sub) sub.innerHTML = `<span class="pc-dot"></span> EN VIVO AHORA`;
-  } else {
-    await loadLatestProgram();
+    document.querySelector(".pc-sub").innerHTML = `<span class="pc-dot"></span> EN VIVO AHORA`;
+    return;
   }
+  await loadLatestProgram();
 }
 
 async function loadLatestProgram() {
@@ -1135,7 +1234,7 @@ async function loadLatestProgram() {
     const prog = document.querySelector(".pc-prog");
     const sub  = document.querySelector(".pc-sub");
     if (prog) prog.textContent = title;
-    if (sub)  sub.innerHTML=`<span style="width:6px;height:6px;border-radius:50%;background:var(--violet);display:inline-block;margin-right:6px"></span> ÚLTIMA EMISIÓN &nbsp;·&nbsp; Próximo jueves 20:30`;
+    if (sub)  sub.innerHTML = `<span style="width:6px;height:6px;border-radius:50%;background:var(--violet);display:inline-block;margin-right:6px"></span> ÚLTIMA EMISIÓN &nbsp;·&nbsp; Próximo jueves 20:30`;
   } catch(e) {
     setFrame(`https://www.youtube.com/embed?listType=user_uploads&list=todosesabe_tss&rel=0&modestbranding=1`);
   }
@@ -1150,7 +1249,7 @@ function loadYT() {
 document.getElementById("ytIn").addEventListener("keydown",e=>{if(e.key==="Enter")loadYT();});
 function switchSrc(src,btn) {
   document.querySelectorAll(".src-btn").forEach(b=>b.classList.remove("active")); btn.classList.add("active");
-  if(src==="ms"){ if(TSS_CONFIG.MEDIASTREAM_URL){setFrame(TSS_CONFIG.MEDIASTREAM_URL);showToast("📡","Mediastream activo");}else showToast("📡","Configurá MEDIASTREAM_URL en TSS_CONFIG"); }
+  if(src==="ms"){ if(TSS_CONFIG.MEDIASTREAM_URL){document.getElementById("ytFrame").src=TSS_CONFIG.MEDIASTREAM_URL;showToast("📡","Mediastream activo");}else showToast("📡","Configurá MEDIASTREAM_URL en TSS_CONFIG"); }
   else{ const id=TSS_CONFIG.LIVE_VIDEO_ID; initSmartPlayer(); showToast("▶️","YouTube activo"); }
 }
 
@@ -1261,13 +1360,41 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeModal();closeS
 function toggleMenu(close){const m=document.getElementById("userMenu");m.classList.toggle("open",!close&&!m.classList.contains("open"));}
 document.addEventListener("click",e=>{if(!e.target.closest("#navUser"))document.getElementById("userMenu")?.classList.remove("open");});
 function requireLogin(){if(window._currentUser)showToast("🔒","Contenido exclusivo — próximamente para suscriptores");else{showToast("🔐","Registrate para acceder");openModal("register");}}
+// ── DATE ──
 (function(){
   const ds=["Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"];
   const ms=["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
   const n=new Date();
   const el=document.getElementById("newsDateStr");
-  if(el) el.textContent=ds[n.getDay()]+", "+n.getDate()+" de "+ms[n.getMonth()]+" "+n.getFullYear();
+  if(el) el.textContent=ds[n.getDay()]+", "+n.getDate()+" de "+ms[n.getMonth()]+" de "+n.getFullYear();
 })();
+
+// ── PROGRESS BAR + SCROLL TO TOP ──
+window.addEventListener("scroll", () => {
+  const doc    = document.documentElement;
+  const scroll = doc.scrollTop;
+  const max    = doc.scrollHeight - doc.clientHeight;
+  const pct    = max > 0 ? (scroll/max*100) : 0;
+  const bar    = document.getElementById("readProgress");
+  const btn    = document.getElementById("scrollTop");
+  if (bar) bar.style.width = pct + "%";
+  if (btn) btn.classList.toggle("show", scroll > 400);
+}, { passive: true });
+
+// ── DARK/LIGHT MODE ──
+function toggleTheme() {
+  const isLight = document.body.classList.toggle("light-mode");
+  const btn = document.getElementById("themeToggle");
+  if (btn) btn.textContent = isLight ? "🌞" : "🌙";
+  localStorage.setItem("tss-theme", isLight ? "light" : "dark");
+}
+// Restore saved theme
+if (localStorage.getItem("tss-theme") === "light") {
+  document.body.classList.add("light-mode");
+  const btn = document.getElementById("themeToggle");
+  if (btn) btn.textContent = "🌞";
+}
+
 let toastT;
 function showToast(icon,msg){document.getElementById("tI").textContent=icon;document.getElementById("tM").textContent=msg;const t=document.getElementById("toast");t.classList.add("show");clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove("show"),3200);}
 
