@@ -674,10 +674,6 @@ body.light-mode .glow-bg span{opacity:.03}
 .onb-next:hover{background:#33eeff}
 .onb-skip{background:none;border:none;color:var(--t3);font-size:12px;cursor:pointer;transition:.18s}
 .onb-skip:hover{color:var(--t2)}
-
-/* ── SCROLL ANIMATIONS ── */
-.fade-up{opacity:0;transform:translateY(30px);transition:opacity .6s ease,transform .6s ease}
-.fade-up.visible{opacity:1;transform:translateY(0)}
 </style>
 
 <!-- Firebase -->
@@ -808,6 +804,7 @@ window._donar     = (nombre,monto) => addDoc(collection(db,"donantes"),{nombre,m
   </div>
 </nav>
 
+<script>window.scrollTo(0,0);if(window.location.hash)history.replaceState(null,null," ");</script>
 <div class="page" role="main">
 
 <!-- COUNTDOWN / LIVE BANNER -->
@@ -1387,7 +1384,6 @@ document.addEventListener('error', e => {
 }, true);
 
 // ── PLAYER ──
-window.scrollTo(0,0);
 window.addEventListener("load", () => {
   // Auto-load live video ID from admin config
   try {
@@ -1893,18 +1889,5 @@ import { getFirestore, collection, addDoc, serverTimestamp, doc, setDoc, deleteD
 })();
 </script>
 
-<script>
-// Scroll animations
-document.addEventListener('DOMContentLoaded', () => {
-  window.scrollTo(0,0);
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(e => { if(e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }});
-  }, {threshold:0.1, rootMargin:'0px 0px -40px 0px'});
-  document.querySelectorAll('.section-wrap,.news-wrap,.votacion-wrap,.donors-wrap,.foot-inner,.team-card,.vcard,.ncard,.ed-card,.excl-card').forEach(el => {
-    el.classList.add('fade-up');
-    observer.observe(el);
-  });
-});
-</script>
 </body>
 </html>
