@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Redacción — TSS Todo Se Sabe</title>
+<link rel="icon" href="icon-192.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#f5f6fa;--surface:#fff;--border:#e2e4ea;--t1:#1a1a2e;--t2:#6b7280;--t3:#9ca3af;--cyan:#0891b2;--cyan-light:#ecfeff;--violet:#7c3aed;--red:#e11d48;--green:#059669;--shadow:0 1px 3px rgba(0,0,0,.08)}
+body{background:var(--bg);color:var(--t1);font-family:'Inter',sans-serif;font-size:14px}
+
+/* Layout */
+.rd-shell{display:flex;min-height:100vh}
+.rd-sidebar{width:260px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;bottom:0;left:0;z-index:50}
+.rd-sidebar-head{padding:20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px}
+.rd-sidebar-head img{height:36px;border-radius:8px}
+.rd-sidebar-head span{font-weight:800;font-size:15px;color:var(--t1)}
+.rd-sidebar-head small{font-size:10px;color:var(--cyan);font-weight:600;text-transform:uppercase;letter-spacing:1px}
+.rd-nav{flex:1;padding:12px;overflow-y:auto}
+.rd-nav-item{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:500;color:var(--t2);transition:.15s;margin-bottom:2px}
+.rd-nav-item:hover{background:var(--bg);color:var(--t1)}
+.rd-nav-item.active{background:var(--cyan-light);color:var(--cyan);font-weight:600}
+.rd-nav-item .badge{margin-left:auto;font-size:10px;font-weight:700;background:var(--cyan);color:#fff;border-radius:10px;padding:2px 7px}
+.rd-nav-section{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--t3);padding:18px 14px 6px}
+.rd-sidebar-foot{padding:14px;border-top:1px solid var(--border);font-size:11px;color:var(--t3);text-align:center}
+.rd-sidebar-foot a{color:var(--cyan);text-decoration:none}
+
+.rd-main{margin-left:260px;flex:1;min-height:100vh}
+.rd-topbar{position:sticky;top:0;background:rgba(245,246,250,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:14px 28px;display:flex;align-items:center;gap:14px;z-index:40}
+.rd-topbar-title{font-weight:700;font-size:15px;color:var(--t1);flex:1}
+.rd-topbar .autosave{font-size:11px;color:var(--green);display:none;align-items:center;gap:4px}
+.rd-topbar .autosave.show{display:flex}
+.rd-content{padding:28px}
+
+/* Buttons */
+.rd-btn{padding:8px 18px;border-radius:8px;font-size:12px;font-weight:600;border:none;cursor:pointer;transition:.15s;display:inline-flex;align-items:center;gap:6px}
+.rd-btn-primary{background:var(--cyan);color:#fff}
+.rd-btn-primary:hover{background:#0e7490}
+.rd-btn-outline{background:none;border:1px solid var(--border);color:var(--t2)}
+.rd-btn-outline:hover{border-color:var(--cyan);color:var(--cyan)}
+.rd-btn-danger{background:rgba(225,29,72,.1);color:var(--red);border:1px solid rgba(225,29,72,.2)}
+.rd-btn-success{background:var(--green);color:#fff}
+
+/* Cards */
+.rd-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;box-shadow:var(--shadow)}
+
+/* Editor */
+.rd-editor-wrap{display:grid;grid-template-columns:1fr 300px;gap:20px;align-items:start}
+.rd-editor-meta{display:flex;flex-direction:column;gap:14px}
+.rd-field{display:flex;flex-direction:column;gap:4px}
+.rd-field label{font-size:11px;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:.5px}
+.rd-field input,.rd-field select,.rd-field textarea{padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:13px;color:var(--t1);font-family:'Inter',sans-serif;outline:none;transition:.18s}
+.rd-field input:focus,.rd-field select:focus,.rd-field textarea:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(8,145,178,.08)}
+
+/* Rich text editor */
+.rd-rte-toolbar{display:flex;gap:4px;padding:8px;border-bottom:1px solid var(--border);flex-wrap:wrap}
+.rd-rte-btn{width:32px;height:32px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--t2);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.15s}
+.rd-rte-btn:hover{background:var(--bg);color:var(--t1)}
+.rd-rte-btn.active{background:var(--cyan-light);color:var(--cyan);border-color:var(--cyan)}
+.rd-rte-body{min-height:400px;padding:20px 24px;outline:none;font-size:15px;line-height:1.8;color:var(--t1)}
+.rd-rte-body:empty::before{content:attr(data-placeholder);color:var(--t3)}
+.rd-rte-body h2{font-size:20px;font-weight:700;margin:18px 0 8px}
+.rd-rte-body h3{font-size:17px;font-weight:600;margin:14px 0 6px}
+.rd-rte-body blockquote{border-left:3px solid var(--cyan);padding:8px 16px;margin:12px 0;color:var(--t2);font-style:italic;background:var(--cyan-light);border-radius:0 8px 8px 0}
+.rd-rte-body img{max-width:100%;border-radius:8px;margin:12px 0}
+.rd-rte-body a{color:var(--cyan)}
+
+/* Preview */
+.rd-preview{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.rd-preview-img{width:100%;height:180px;object-fit:cover;background:var(--bg);display:block}
+.rd-preview-body{padding:16px}
+.rd-preview-cat{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--cyan);margin-bottom:6px}
+.rd-preview-title{font-size:16px;font-weight:700;line-height:1.3;margin-bottom:6px}
+.rd-preview-sub{font-size:12px;color:var(--t2);line-height:1.5;margin-bottom:8px}
+.rd-preview-meta{font-size:11px;color:var(--t3)}
+
+/* Articles list */
+.rd-articles-list{display:flex;flex-direction:column;gap:8px}
+.rd-art-row{display:flex;align-items:center;gap:14px;padding:14px 16px;background:var(--surface);border:1px solid var(--border);border-radius:10px;cursor:pointer;transition:.15s}
+.rd-art-row:hover{border-color:var(--cyan);transform:translateX(2px)}
+.rd-art-thumb{width:80px;height:50px;border-radius:6px;object-fit:cover;background:var(--bg);flex-shrink:0}
+.rd-art-info{flex:1;min-width:0}
+.rd-art-title{font-size:13px;font-weight:600;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rd-art-meta{font-size:11px;color:var(--t3);margin-top:2px}
+.rd-art-status{font-size:10px;font-weight:700;padding:3px 10px;border-radius:10px;flex-shrink:0}
+.rd-art-status.pub{background:rgba(5,150,105,.1);color:var(--green)}
+.rd-art-status.draft{background:rgba(156,163,175,.15);color:var(--t3)}
+
+/* Stats */
+.rd-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
+.rd-stat{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;text-align:center}
+.rd-stat-num{font-size:28px;font-weight:800;color:var(--t1);line-height:1}
+.rd-stat-label{font-size:10px;color:var(--t2);margin-top:4px;text-transform:uppercase;letter-spacing:.5px}
+
+/* Responsive */
+@media(max-width:900px){
+  .rd-sidebar{display:none}
+  .rd-main{margin-left:0}
+  .rd-editor-wrap{grid-template-columns:1fr}
+  .rd-stats{grid-template-columns:repeat(2,1fr)}
+}
+
+/* Panels */
+.rd-panel{display:none}
+.rd-panel.active{display:block}
+
+/* Login gate */
+.rd-login-gate{display:flex;align-items:center;justify-content:center;min-height:100vh;flex-direction:column;gap:16px;padding:40px}
+.rd-login-gate img{height:56px;border-radius:12px;margin-bottom:8px}
+.rd-login-gate h2{font-size:20px;font-weight:800}
+.rd-login-gate p{color:var(--t2);font-size:13px;max-width:300px;text-align:center;line-height:1.6}
+</style>
+</head>
+<body>
+
+<!-- Login Gate -->
+<div id="loginGate" class="rd-login-gate">
+  <img src="icon-192.png" alt="TSS">
+  <h2>Redacción TSS</h2>
+  <p>Portal exclusivo para el equipo editorial de Todo Se Sabe. Iniciá sesión con tu cuenta autorizada.</p>
+  <button class="rd-btn rd-btn-primary" onclick="doGoogleLogin()" style="font-size:14px;padding:12px 28px">🔐 Iniciar sesión con Google</button>
+  <a href="/" style="font-size:12px;color:var(--t3);margin-top:8px">← Volver al sitio</a>
+</div>
+
+<!-- Main App (hidden until auth) -->
+<div id="rdApp" class="rd-shell" style="display:none">
+  <aside class="rd-sidebar">
+    <div class="rd-sidebar-head">
+      <img src="icon-192.png" alt="TSS">
+      <div><span>TSS</span><br><small>Redacción</small></div>
+    </div>
+    <nav class="rd-nav">
+      <div class="rd-nav-item active" onclick="rdPanel('dashboard',this)">📊 Dashboard</div>
+      <div class="rd-nav-item" onclick="rdPanel('nueva',this)">✍️ Nueva nota</div>
+      <div class="rd-nav-item" onclick="rdPanel('mis-notas',this)">📄 Mis notas</div>
+      <div class="rd-nav-section">Publicadas</div>
+      <div class="rd-nav-item" onclick="rdPanel('publicadas',this)">🌐 En el sitio</div>
+      <div class="rd-nav-item" onclick="rdPanel('borradores',this)">📝 Borradores</div>
+    </nav>
+    <div class="rd-sidebar-foot">
+      <a href="/" target="_blank">Ver sitio</a> · <a href="admin.html">Admin</a><br>
+      <span id="rdUserName" style="margin-top:6px;display:block;color:var(--t2)"></span>
+      <a href="#" onclick="rdLogout()" style="color:var(--red);font-size:10px">Cerrar sesión</a>
+    </div>
+  </aside>
+
+  <main class="rd-main">
+    <div class="rd-topbar">
+      <div class="rd-topbar-title" id="rdTopTitle">Dashboard</div>
+      <div class="autosave" id="autosaveInd">✅ Guardado</div>
+    </div>
+    <div class="rd-content">
+
+      <!-- Dashboard -->
+      <div class="rd-panel active" id="panel-dashboard">
+        <div class="rd-stats">
+          <div class="rd-stat"><div class="rd-stat-num" id="statPub">0</div><div class="rd-stat-label">Publicadas</div></div>
+          <div class="rd-stat"><div class="rd-stat-num" id="statDraft">0</div><div class="rd-stat-label">Borradores</div></div>
+          <div class="rd-stat"><div class="rd-stat-num" id="statTotal">0</div><div class="rd-stat-label">Total notas</div></div>
+          <div class="rd-stat"><div class="rd-stat-num" id="statCats">0</div><div class="rd-stat-label">Categorías</div></div>
+        </div>
+        <h3 style="font-size:15px;font-weight:700;margin-bottom:14px">Últimas notas</h3>
+        <div id="dashArticles" class="rd-articles-list">
+          <div style="color:var(--t3);padding:20px;text-align:center">Cargando...</div>
+        </div>
+      </div>
+
+      <!-- Nueva Nota -->
+      <div class="rd-panel" id="panel-nueva">
+        <div class="rd-editor-wrap">
+          <div>
+            <div class="rd-card" style="margin-bottom:16px">
+              <div class="rd-field" style="margin-bottom:14px">
+                <label>Título</label>
+                <input type="text" id="rdTitle" placeholder="Título de la nota..." style="font-size:18px;font-weight:700" oninput="rdAutoSave();rdUpdatePreview()">
+              </div>
+              <div class="rd-field" style="margin-bottom:14px">
+                <label>Subtítulo / Bajada</label>
+                <input type="text" id="rdSubtitle" placeholder="Breve descripción..." oninput="rdAutoSave();rdUpdatePreview()">
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:14px">
+                <div class="rd-field"><label>Categoría</label><select id="rdCat" onchange="rdUpdatePreview()"><option>Política</option><option>Economía</option><option>Seguridad</option><option>Investigación</option><option>Editorial</option><option>Análisis</option><option>Sociedad</option></select></div>
+                <div class="rd-field"><label>Autor</label><input type="text" id="rdAuthor" placeholder="Nombre..." oninput="rdUpdatePreview()"></div>
+                <div class="rd-field"><label>Imagen URL</label><input type="text" id="rdImage" placeholder="https://..." oninput="rdUpdatePreview()"></div>
+              </div>
+            </div>
+            <div class="rd-card">
+              <div class="rd-rte-toolbar">
+                <button class="rd-rte-btn" onclick="rdRTE('bold')" title="Negrita"><b>B</b></button>
+                <button class="rd-rte-btn" onclick="rdRTE('italic')" title="Cursiva"><i>I</i></button>
+                <button class="rd-rte-btn" onclick="rdRTE('underline')" title="Subrayado"><u>U</u></button>
+                <button class="rd-rte-btn" onclick="rdRTE('formatBlock','h2')" title="Subtítulo">H2</button>
+                <button class="rd-rte-btn" onclick="rdRTE('formatBlock','h3')" title="Subtítulo 3">H3</button>
+                <button class="rd-rte-btn" onclick="rdRTE('formatBlock','blockquote')" title="Cita">❝</button>
+                <button class="rd-rte-btn" onclick="rdRTE('insertUnorderedList')" title="Lista">☰</button>
+                <button class="rd-rte-btn" onclick="rdInsertLink()" title="Link">🔗</button>
+                <button class="rd-rte-btn" onclick="rdInsertImage()" title="Imagen">🖼️</button>
+              </div>
+              <div class="rd-rte-body" id="rdBody" contenteditable="true" data-placeholder="Escribí el contenido de la nota..." oninput="rdAutoSave()"></div>
+            </div>
+          </div>
+          <div class="rd-editor-meta">
+            <div class="rd-card">
+              <h4 style="font-size:13px;font-weight:700;margin-bottom:12px">Vista previa</h4>
+              <div class="rd-preview" id="rdPreview">
+                <img class="rd-preview-img" id="rdPrevImg" src="https://placehold.co/600x300/f0f0f0/ccc?text=Imagen">
+                <div class="rd-preview-body">
+                  <div class="rd-preview-cat" id="rdPrevCat">Categoría</div>
+                  <div class="rd-preview-title" id="rdPrevTitle">Título de la nota</div>
+                  <div class="rd-preview-sub" id="rdPrevSub">Subtítulo</div>
+                  <div class="rd-preview-meta" id="rdPrevMeta">Por Autor · Fecha</div>
+                </div>
+              </div>
+            </div>
+            <div class="rd-card">
+              <h4 style="font-size:13px;font-weight:700;margin-bottom:12px">Publicar</h4>
+              <div class="rd-field" style="margin-bottom:12px">
+                <label>Estado</label>
+                <select id="rdStatus"><option value="borrador">📝 Borrador</option><option value="publicado">🌐 Publicado</option></select>
+              </div>
+              <div style="display:flex;gap:8px">
+                <button class="rd-btn rd-btn-success" onclick="rdSave()" style="flex:1">💾 Guardar</button>
+                <button class="rd-btn rd-btn-outline" onclick="rdClear()">🗑️</button>
+              </div>
+              <div id="rdSaveMsg" style="font-size:11px;color:var(--green);margin-top:8px;display:none">✅ Guardado correctamente</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mis notas / Publicadas / Borradores -->
+      <div class="rd-panel" id="panel-mis-notas">
+        <div id="misNotasList" class="rd-articles-list"><div style="color:var(--t3);padding:20px;text-align:center">Cargando...</div></div>
+      </div>
+      <div class="rd-panel" id="panel-publicadas">
+        <div id="pubNotasList" class="rd-articles-list"><div style="color:var(--t3);padding:20px;text-align:center">Cargando...</div></div>
+      </div>
+      <div class="rd-panel" id="panel-borradores">
+        <div id="draftNotasList" class="rd-articles-list"><div style="color:var(--t3);padding:20px;text-align:center">Cargando...</div></div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, onAuthStateChanged, signInWithPopup, GoogleAuthProvider, signOut }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc,
+         query, orderBy, where, limit, serverTimestamp }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyA6CXpPiPhMN69aGJ2sRpNytuoYNZtfenc",
+  authDomain: "todo-se-sabe-3616d.firebaseapp.com",
+  projectId: "todo-se-sabe-3616d",
+  storageBucket: "todo-se-sabe-3616d.firebasestorage.app",
+  messagingSenderId: "1010749478252",
+  appId: "1:1010749478252:web:ca04e32c0af1a68f3e0f49"
+};
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// Auth
+window.doGoogleLogin = async () => {
+  try { await signInWithPopup(auth, new GoogleAuthProvider()); } catch(e) { alert(e.message); }
+};
+window.rdLogout = async () => { await signOut(auth); location.reload(); };
+
+onAuthStateChanged(auth, user => {
+  if (user) {
+    document.getElementById('loginGate').style.display = 'none';
+    document.getElementById('rdApp').style.display = 'flex';
+    document.getElementById('rdUserName').textContent = user.displayName || user.email;
+    document.getElementById('rdAuthor').value = user.displayName || '';
+    loadAllArticles();
+  } else {
+    document.getElementById('loginGate').style.display = 'flex';
+    document.getElementById('rdApp').style.display = 'none';
+  }
+});
+
+// Navigation
+window.rdPanel = (name, el) => {
+  document.querySelectorAll('.rd-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.rd-nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('panel-'+name)?.classList.add('active');
+  el?.classList.add('active');
+  const titles = {dashboard:'Dashboard',nueva:'Nueva nota','mis-notas':'Mis notas',publicadas:'Publicadas',borradores:'Borradores'};
+  document.getElementById('rdTopTitle').textContent = titles[name]||name;
+  if(name!=='nueva') loadAllArticles();
+};
+
+// Rich Text Editor
+window.rdRTE = (cmd, val) => { document.execCommand(cmd, false, val||null); document.getElementById('rdBody').focus(); };
+window.rdInsertLink = () => { const url = prompt('URL del link:'); if(url) document.execCommand('createLink',false,url); };
+window.rdInsertImage = () => { const url = prompt('URL de la imagen:'); if(url) document.execCommand('insertImage',false,url); };
+
+// Preview
+window.rdUpdatePreview = () => {
+  const img = document.getElementById('rdImage')?.value;
+  document.getElementById('rdPrevImg').src = img || 'https://placehold.co/600x300/f0f0f0/ccc?text=Imagen';
+  document.getElementById('rdPrevCat').textContent = document.getElementById('rdCat')?.value || 'Categoría';
+  document.getElementById('rdPrevTitle').textContent = document.getElementById('rdTitle')?.value || 'Título de la nota';
+  document.getElementById('rdPrevSub').textContent = document.getElementById('rdSubtitle')?.value || 'Subtítulo';
+  document.getElementById('rdPrevMeta').textContent = `Por ${document.getElementById('rdAuthor')?.value||'Autor'} · Hoy`;
+};
+
+// Autosave
+let _autoTimer;
+window.rdAutoSave = () => {
+  clearTimeout(_autoTimer);
+  _autoTimer = setTimeout(() => {
+    const data = { title: document.getElementById('rdTitle')?.value, subtitle: document.getElementById('rdSubtitle')?.value,
+      body: document.getElementById('rdBody')?.innerHTML, cat: document.getElementById('rdCat')?.value,
+      author: document.getElementById('rdAuthor')?.value, image: document.getElementById('rdImage')?.value };
+    localStorage.setItem('tss_rd_draft', JSON.stringify(data));
+    const ind = document.getElementById('autosaveInd');
+    ind.classList.add('show');
+    setTimeout(() => ind.classList.remove('show'), 2000);
+  }, 1500);
+};
+
+// Restore draft
+try {
+  const draft = JSON.parse(localStorage.getItem('tss_rd_draft')||'{}');
+  if(draft.title) {
+    setTimeout(() => {
+      if(document.getElementById('rdTitle')) document.getElementById('rdTitle').value = draft.title || '';
+      if(document.getElementById('rdSubtitle')) document.getElementById('rdSubtitle').value = draft.subtitle || '';
+      if(document.getElementById('rdBody')) document.getElementById('rdBody').innerHTML = draft.body || '';
+      if(document.getElementById('rdCat')) document.getElementById('rdCat').value = draft.cat || 'Política';
+      if(document.getElementById('rdAuthor')) document.getElementById('rdAuthor').value = draft.author || '';
+      if(document.getElementById('rdImage')) document.getElementById('rdImage').value = draft.image || '';
+      rdUpdatePreview();
+    }, 500);
+  }
+} catch(e){}
+
+// Save article
+let _editingId = null;
+window.rdSave = async () => {
+  const data = {
+    titulo: document.getElementById('rdTitle')?.value?.trim(),
+    subtitulo: document.getElementById('rdSubtitle')?.value?.trim(),
+    contenido: document.getElementById('rdBody')?.innerHTML,
+    categoria: document.getElementById('rdCat')?.value,
+    autor: document.getElementById('rdAuthor')?.value?.trim(),
+    imagen: document.getElementById('rdImage')?.value?.trim(),
+    estado: document.getElementById('rdStatus')?.value,
+  };
+  if(!data.titulo) { alert('El título es obligatorio'); return; }
+  try {
+    if(_editingId) {
+      await updateDoc(doc(db,'noticias',_editingId), data);
+    } else {
+      data.createdAt = serverTimestamp();
+      await addDoc(collection(db,'noticias'), data);
+    }
+    const msg = document.getElementById('rdSaveMsg');
+    msg.style.display = 'block';
+    setTimeout(() => msg.style.display = 'none', 3000);
+    localStorage.removeItem('tss_rd_draft');
+    if(!_editingId) rdClear();
+    loadAllArticles();
+  } catch(e) { alert('Error: '+e.message); }
+};
+
+window.rdClear = () => {
+  _editingId = null;
+  ['rdTitle','rdSubtitle','rdImage','rdAuthor'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
+  const body = document.getElementById('rdBody'); if(body) body.innerHTML = '';
+  document.getElementById('rdStatus').value = 'borrador';
+  localStorage.removeItem('tss_rd_draft');
+  rdUpdatePreview();
+};
+
+// Load articles
+let _allArticles = [];
+async function loadAllArticles() {
+  try {
+    const q = query(collection(db,'noticias'), orderBy('createdAt','desc'), limit(100));
+    const snap = await getDocs(q);
+    _allArticles = snap.docs.map(d => ({id:d.id,...d.data()}));
+    renderLists();
+  } catch(e) {}
+}
+
+function renderLists() {
+  const fmtDate = ts => {
+    if(!ts) return '—';
+    const d = ts.seconds ? new Date(ts.seconds*1000) : new Date(ts);
+    return d.toLocaleDateString('es-UY',{day:'2-digit',month:'2-digit',year:'numeric'});
+  };
+  const renderRow = a => `
+    <div class="rd-art-row" onclick="rdEditArticle('${a.id}')">
+      <img class="rd-art-thumb" src="${a.imagen||'https://placehold.co/80x50/eee/ccc?text=·'}" alt="">
+      <div class="rd-art-info">
+        <div class="rd-art-title">${a.titulo||'Sin título'}</div>
+        <div class="rd-art-meta">${a.autor||'—'} · ${a.categoria||'—'} · ${fmtDate(a.createdAt)}</div>
+      </div>
+      <span class="rd-art-status ${a.estado==='publicado'?'pub':'draft'}">${a.estado==='publicado'?'Publicado':'Borrador'}</span>
+    </div>`;
+
+  const pub = _allArticles.filter(a => a.estado === 'publicado');
+  const drafts = _allArticles.filter(a => a.estado !== 'publicado');
+  const cats = new Set(_allArticles.map(a => a.categoria).filter(Boolean));
+
+  document.getElementById('statPub').textContent = pub.length;
+  document.getElementById('statDraft').textContent = drafts.length;
+  document.getElementById('statTotal').textContent = _allArticles.length;
+  document.getElementById('statCats').textContent = cats.size;
+
+  document.getElementById('dashArticles').innerHTML = _allArticles.slice(0,10).map(renderRow).join('') || '<div style="color:var(--t3);padding:20px;text-align:center">Sin notas todavía.</div>';
+  document.getElementById('misNotasList').innerHTML = _allArticles.map(renderRow).join('') || '<div style="color:var(--t3);padding:20px;text-align:center">Sin notas.</div>';
+  document.getElementById('pubNotasList').innerHTML = pub.map(renderRow).join('') || '<div style="color:var(--t3);padding:20px;text-align:center">Sin publicaciones.</div>';
+  document.getElementById('draftNotasList').innerHTML = drafts.map(renderRow).join('') || '<div style="color:var(--t3);padding:20px;text-align:center">Sin borradores.</div>';
+}
+
+window.rdEditArticle = (id) => {
+  const a = _allArticles.find(x => x.id === id);
+  if(!a) return;
+  _editingId = id;
+  document.getElementById('rdTitle').value = a.titulo || '';
+  document.getElementById('rdSubtitle').value = a.subtitulo || '';
+  document.getElementById('rdBody').innerHTML = a.contenido || '';
+  document.getElementById('rdCat').value = a.categoria || 'Política';
+  document.getElementById('rdAuthor').value = a.autor || '';
+  document.getElementById('rdImage').value = a.imagen || '';
+  document.getElementById('rdStatus').value = a.estado || 'borrador';
+  rdUpdatePreview();
+  rdPanel('nueva', document.querySelectorAll('.rd-nav-item')[1]);
+};
+</script>
+</body>
+</html>

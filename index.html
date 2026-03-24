@@ -732,7 +732,7 @@ import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
          signOut, onAuthStateChanged, updateProfile, GoogleAuthProvider, signInWithPopup }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import { getFirestore, collection, addDoc, onSnapshot, query,
-         orderBy, limit, serverTimestamp, doc, updateDoc, increment, getDoc }
+         orderBy, limit, serverTimestamp, doc, updateDoc, increment, getDoc, getDocs, where }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const app  = initializeApp(TSS_CONFIG.FIREBASE);
@@ -1010,27 +1010,8 @@ window._donar     = (nombre,monto) => addDoc(collection(db,"donantes"),{nombre,m
       </div>
     </div>
     <div class="news-dateline">Periodismo independiente · Todo Se Sabe</div>
-    <div class="news-layout">
-      <a href="noticias.html" class="news-main" style="text-decoration:none;color:inherit">
-        <div class="news-main-img"><img loading="lazy" src="https://cdn.dl.uy/solimg/894x503/39/39554.jpg" alt="Análisis de Canal 4 - Todo Se Sabe"></div>
-        <div class="news-main-body">
-          <div class="news-cat">Política</div>
-          <h3>El análisis que Canal 4 no quiso emitir</h3>
-          <p>Nacho Álvarez repasa los episodios que generaron polémica y los datos que los grandes medios omiten.</p>
-          <div class="news-meta"><span>Por Nacho Álvarez</span><span>·</span><span>21/03/2026</span></div>
-          <div class="news-read">Leer nota →</div>
-        </div>
-      </a>
-      <div class="news-stack">
-        <a href="noticias.html" class="ncard" style="text-decoration:none;color:inherit"><div class="ncard-img"><img loading="lazy" src="https://cdn.dl.uy/solimg/320X180/39/39545.jpg" alt="Noticias de economía"></div><div class="ncard-body"><div class="ntag">Economía</div><div class="ntitle">Los números que el Ministerio prefería que no veas</div><div class="ndate">20/03/2026</div></div></a>
-        <a href="noticias.html" class="ncard" style="text-decoration:none;color:inherit"><div class="ncard-img"><img loading="lazy" src="https://cdn.dl.uy/solimg/320X180/39/39534.jpg" alt="Noticias de seguridad"></div><div class="ncard-body"><div class="ntag">Seguridad</div><div class="ntitle">El debate sobre narco y política que sacudió la semana</div><div class="ndate">19/03/2026</div></div></a>
-        <a href="noticias.html" class="ncard" style="text-decoration:none;color:inherit"><div class="ncard-img"><img loading="lazy" src="https://cdn.dl.uy/solimg/320X180/39/39548.jpg" alt="Noticias Canal 4"></div><div class="ncard-body"><div class="ntag">Canal 4</div><div class="ntitle">La disputa por el nombre del programa y el registro de marcas</div><div class="ndate">18/03/2026</div></div></a>
-      </div>
-    </div>
-    <div class="editorial-row">
-      <div class="ed-card"><div class="ed-tag">Editorial</div><div class="ed-title">Por qué el periodismo independiente es la única salida</div><div class="ed-desc">Durante 13 años trabajamos dentro del sistema. Hoy entendemos que la única forma de hacer periodismo de verdad es fuera de él.</div><div class="ed-meta"><span class="ed-author">Nacho Álvarez</span><span>·</span><span>21/03/2026</span></div></div>
-      <div class="ed-card"><div class="ed-tag">Análisis</div><div class="ed-title">El narco en Uruguay: lo que los datos oficiales no dicen</div><div class="ed-desc">Un repaso por las cifras reales del crimen organizado y cómo el gobierno maneja la comunicación pública.</div><div class="ed-meta"><span class="ed-author">Bernardo Wolloch</span><span>·</span><span>20/03/2026</span></div></div>
-      <div class="ed-card"><div class="ed-tag">Investigación</div><div class="ed-title">Marset: todo lo que se sabe y lo que falta revelar</div><div class="ed-desc">La historia completa del caso que sacudió al Uruguay y conectó funcionarios con el crimen transnacional.</div><div class="ed-meta"><span class="ed-author">Alejandro Amaral</span><span>·</span><span>18/03/2026</span></div></div>
+    <div id="homeNewsContainer">
+      <div style="display:flex;align-items:center;justify-content:center;padding:40px;color:var(--t3);font-size:13px">Cargando noticias...</div>
     </div>
   </div>
 </section>
@@ -1257,6 +1238,60 @@ function renderTeamUI(team) {
     } catch(e2){}
   }
   renderTeamUI(team);
+})();
+
+// ── HOME NOTICIAS (dynamic from Firestore) ──
+(async function loadHomeNews(){
+  const container = document.getElementById('homeNewsContainer');
+  if(!container) return;
+  try {
+    const q = query(collection(db,'noticias'), where('estado','==','publicado'), orderBy('createdAt','desc'), limit(7));
+    const snap = await getDocs(q);
+    const arts = snap.docs.map(d => ({id:d.id,...d.data()}));
+    if(!arts.length) {
+      container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--t3)">Próximamente: noticias del equipo de TSS</div>';
+      return;
+    }
+    const fmtDate = ts => {
+      if(!ts) return '';
+      const d = ts.seconds ? new Date(ts.seconds*1000) : new Date(ts);
+      return d.toLocaleDateString('es-UY',{day:'2-digit',month:'2-digit',year:'numeric'});
+    };
+    const main = arts[0];
+    const side = arts.slice(1,4);
+    const editorial = arts.slice(4,7);
+    let html = '<div class="news-layout">';
+    // Main article
+    html += `<a href="noticias.html" class="news-main" style="text-decoration:none;color:inherit">
+      <div class="news-main-img"><img loading="lazy" src="${main.imagen||'https://placehold.co/894x503/1c1e2a/00e5ff?text=TSS'}" alt="${main.titulo||''}"></div>
+      <div class="news-main-body">
+        <div class="news-cat">${main.categoria||'Noticias'}</div>
+        <h3>${main.titulo||''}</h3>
+        <p>${main.subtitulo||''}</p>
+        <div class="news-meta"><span>Por ${main.autor||'TSS'}</span><span>·</span><span>${fmtDate(main.createdAt)}</span></div>
+        <div class="news-read">Leer nota →</div>
+      </div></a>`;
+    // Side articles
+    if(side.length) {
+      html += '<div class="news-stack">';
+      side.forEach(a => {
+        html += `<a href="noticias.html" class="ncard" style="text-decoration:none;color:inherit"><div class="ncard-img"><img loading="lazy" src="${a.imagen||'https://placehold.co/320x180/1c1e2a/00e5ff?text=TSS'}" alt="${a.titulo||''}"></div><div class="ncard-body"><div class="ntag">${a.categoria||'Noticias'}</div><div class="ntitle">${a.titulo||''}</div><div class="ndate">${fmtDate(a.createdAt)}</div></div></a>`;
+      });
+      html += '</div>';
+    }
+    html += '</div>';
+    // Editorial row
+    if(editorial.length) {
+      html += '<div class="editorial-row">';
+      editorial.forEach(a => {
+        html += `<div class="ed-card"><div class="ed-tag">${a.categoria||'Nota'}</div><div class="ed-title">${a.titulo||''}</div><div class="ed-desc">${a.subtitulo||''}</div><div class="ed-meta"><span class="ed-author">${a.autor||'TSS'}</span><span>·</span><span>${fmtDate(a.createdAt)}</span></div></div>`;
+      });
+      html += '</div>';
+    }
+    container.innerHTML = html;
+  } catch(e) {
+    container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--t3)">Próximamente: noticias del equipo de TSS</div>';
+  }
 })();
 
 // ── LOGO ──
