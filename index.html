@@ -659,7 +659,7 @@ body.light-mode .glow-bg span{opacity:.03}
 .donor-name{font-size:12px;font-weight:600;color:var(--t1)}
 /* ── MODAL DONACION ── */
 .don-modal-box{max-width:340px}
-@media(max-width:700px){.votacion-grid{grid-template-columns:1fr}.vote-add-form{flex-direction:column}}
+@media(max-width:700px){.votacion-grid{grid-template-columns:1fr}.vote-add-form{flex-direction:column}.votacion-wrap>div{grid-template-columns:1fr !important}}
 
 /* ── ONBOARDING ── */
 .onb-overlay{position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.85);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .3s}
@@ -1111,11 +1111,21 @@ window._donar     = (nombre,monto) => addDoc(collection(db,"donantes"),{nombre,m
 <!-- MURO DONANTES -->
 <section class="donors-section">
   <div class="donors-wrap">
-    <div class="eyebrow">Comunidad</div>
-    <div class="sec-heading" style="margin-bottom:6px">Quiénes sostienen TSS</div>
-    <div style="font-size:13px;color:var(--t2)">Las personas que hacen posible el periodismo independiente.</div>
-    <div class="donors-grid" id="donantesGrid">
-      <div style="font-size:13px;color:var(--t3)">Cargando donantes...</div>
+    <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap">
+      <div style="flex:1;min-width:260px">
+        <div class="eyebrow">Comunidad</div>
+        <div class="sec-heading" style="margin-bottom:6px">Quiénes sostienen TSS</div>
+        <div style="font-size:13px;color:var(--t2)">Las personas que hacen posible el periodismo independiente.</div>
+      </div>
+      <div id="donantesGrid" style="flex:2;min-width:260px">
+        <div style="display:flex;align-items:center;gap:16px;padding:24px;background:var(--surface);border:1px solid var(--border);border-radius:12px">
+          <div style="font-size:36px">💛</div>
+          <div>
+            <div style="font-size:14px;font-weight:700;color:var(--t1);margin-bottom:4px">Sumate al muro de apoyo</div>
+            <div style="font-size:12px;color:var(--t2);line-height:1.6">Cuando se activen las donaciones, los nombres de quienes apoyen aparecerán acá. Sé parte del periodismo libre.</div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -1124,34 +1134,47 @@ window._donar     = (nombre,monto) => addDoc(collection(db,"donantes"),{nombre,m
 <!-- VOTACION TEMAS -->
 <section id="votacion" class="votacion-section">
   <div class="votacion-wrap">
-    <div class="votacion-header">
+    <div style="display:grid;grid-template-columns:1fr 380px;gap:28px;align-items:start">
       <div>
         <div class="eyebrow">Participá</div>
-        <div class="sec-heading" style="margin-bottom:0">¿Qué querés que trate TSS?</div>
+        <div class="sec-heading" style="margin-bottom:6px">¿Qué querés que trate TSS?</div>
+        <div style="font-size:13px;color:var(--t2);margin-bottom:20px">Los más votados llegan al programa</div>
+        <div class="votacion-grid" id="votacionGrid">
+          <!-- Populated by Firestore real-time -->
+          <div style="display:flex;align-items:center;gap:16px;padding:28px;background:var(--surface);border:1px solid var(--border);border-radius:12px;grid-column:1/-1">
+            <div style="font-size:36px">🗳️</div>
+            <div>
+              <div style="font-size:14px;font-weight:700;color:var(--t1);margin-bottom:4px">Todavía no hay temas propuestos</div>
+              <div style="font-size:12px;color:var(--t2);line-height:1.6">Sé el primero en proponer un tema para el próximo programa. Los más votados por la comunidad llegan al aire.</div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div style="font-size:13px;color:var(--t2)">Los más votados llegan al programa</div>
-    </div>
-    <div class="votacion-grid" id="votacionGrid">
-      <!-- Populated by Firestore real-time -->
-    </div>
-    <div style="display:flex;gap:8px;margin-top:18px">
-      <input class="vote-add-input" type="text" id="voteInput" placeholder="Proponé un tema para el próximo programa..." maxlength="120" onkeydown="if(event.key==='Enter')addVoteTopic()">
-      <button class="vote-add-btn" onclick="addVoteTopic()">Proponer tema</button>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px">
+        <div style="font-family:var(--ff-display);font-size:14px;font-weight:700;color:var(--t1);margin-bottom:12px">💡 Proponé un tema</div>
+        <input class="vote-add-input" type="text" id="voteInput" placeholder="Describí el tema..." maxlength="120" onkeydown="if(event.key==='Enter')addVoteTopic()" style="width:100%;margin-bottom:8px">
+        <button class="vote-add-btn" onclick="addVoteTopic()" style="width:100%">Proponer tema</button>
+        <div style="font-size:10px;color:var(--t3);margin-top:8px;line-height:1.5">Tu propuesta será revisada por el equipo antes de aparecer públicamente.</div>
+      </div>
     </div>
   </div>
 </section>
 <div class="divider"></div>
 <!-- NEWSLETTER -->
 <section class="newsletter-section">
-  <div class="nl-inner">
-    <div style="font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--cyan);margin-bottom:10px">Newsletter semanal</div>
-    <h2>Que no se te escape nada de TSS</h2>
-    <p>Recibí cada semana un resumen con los mejores momentos del programa, los clips más vistos y lo que viene.</p>
-    <div class="nl-form">
-      <input class="nl-input" type="email" id="nlEmail" placeholder="tu@email.com">
-      <button class="nl-btn" onclick="suscribirNewsletter()">Suscribirme</button>
+  <div class="nl-inner" style="display:flex;align-items:center;gap:40px;flex-wrap:wrap;text-align:left">
+    <div style="flex:1;min-width:260px">
+      <div style="font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--cyan);margin-bottom:10px">Newsletter semanal</div>
+      <h2 style="font-size:22px;margin-bottom:8px">Que no se te escape nada de TSS</h2>
+      <p style="font-size:13px;color:var(--t2);line-height:1.6;margin:0">Recibí cada semana un resumen con los mejores momentos, los clips más vistos y lo que viene.</p>
     </div>
-    <div class="nl-sub">Sin spam. Un email por semana. Te podés dar de baja cuando quieras.</div>
+    <div style="flex:1;min-width:280px">
+      <div class="nl-form" style="margin:0">
+        <input class="nl-input" type="email" id="nlEmail" placeholder="tu@email.com">
+        <button class="nl-btn" onclick="suscribirNewsletter()">Suscribirme</button>
+      </div>
+      <div class="nl-sub" style="text-align:left;margin-top:8px">Sin spam. Un email por semana. Te podés dar de baja cuando quieras.</div>
+    </div>
   </div>
 </section>
 
