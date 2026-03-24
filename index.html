@@ -742,9 +742,9 @@ window._newsletter = (email) => addDoc(collection(db,"newsletter"),{email, ts:se
 window._reaccion   = (tipo) => addDoc(collection(db,"reacciones_tss"),{tipo, ts:serverTimestamp()});
 
 // Votacion temas — real-time
-const vQ = query(collection(db,"vote_topics"), orderBy("votes","desc"), limit(9));
+const vQ = query(collection(db,"vote_topics"), orderBy("votes","desc"), limit(30));
 onSnapshot(vQ, snap => {
-  window._voteTopics = snap.docs.map(d => ({id:d.id, ...d.data()}));
+  window._voteTopics = snap.docs.map(d => ({id:d.id, ...d.data()})).filter(t => t.approved !== false);
   window.renderVotacion && window.renderVotacion();
 });
 
@@ -756,7 +756,7 @@ onSnapshot(dQ, snap => {
 });
 
 window._voteTopic = id => updateDoc(doc(db,"vote_topics",id),{votes:increment(1)});
-window._addTopic  = (text,autor) => addDoc(collection(db,"vote_topics"),{text,autor,votes:0,ts:serverTimestamp()});
+window._addTopic  = (text,autor) => addDoc(collection(db,"vote_topics"),{text,autor,votes:0,approved:false,ts:serverTimestamp()});
 window._donar     = (nombre,monto) => addDoc(collection(db,"donantes"),{nombre,monto,ts:serverTimestamp()});
 </script>
 </head>
@@ -1019,10 +1019,7 @@ window._donar     = (nombre,monto) => addDoc(collection(db,"donantes"),{nombre,m
       <div style="font-size:13px;color:var(--t2)">Los más votados llegan al programa</div>
     </div>
     <div class="votacion-grid" id="votacionGrid">
-      <!-- Populated by JS/Firebase -->
-      <div class="vote-card"><div class="vote-card-title">El narco en Uruguay y sus conexiones políticas</div><div class="vote-bar"><div class="vote-bar-fill" style="width:72%"></div></div><div class="vote-meta"><span>Comunidad</span><span class="vote-count">127 votos</span></div></div>
-      <div class="vote-card"><div class="vote-card-title">El caso Canal 4 y la libertad de prensa</div><div class="vote-bar"><div class="vote-bar-fill" style="width:54%"></div></div><div class="vote-meta"><span>Comunidad</span><span class="vote-count">95 votos</span></div></div>
-      <div class="vote-card"><div class="vote-card-title">Crisis de seguridad: ¿qué falló?</div><div class="vote-bar"><div class="vote-bar-fill" style="width:38%"></div></div><div class="vote-meta"><span>Comunidad</span><span class="vote-count">67 votos</span></div></div>
+      <!-- Populated by Firestore real-time -->
     </div>
     <div style="display:flex;gap:8px;margin-top:18px">
       <input class="vote-add-input" type="text" id="voteInput" placeholder="Proponé un tema para el próximo programa..." maxlength="120" onkeydown="if(event.key==='Enter')addVoteTopic()">
@@ -1725,7 +1722,7 @@ window.addVoteTopic = async () => {
   inp.value = '';
   try {
     await window._addTopic(text, window._currentUser.displayName || window._currentUser.email.split('@')[0]);
-    showToast('✅','¡Tema propuesto!');
+    showToast('✅','¡Tema enviado! Será visible una vez aprobado por el equipo.');
   } catch(e) { showToast('❌', e.message); }
 };
 

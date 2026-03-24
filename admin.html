@@ -515,7 +515,7 @@ window.deleteDonante = async (id) => {
 // ── VOTACION ADMIN ──
 window.loadVotacion = async () => {
   try {
-    const q = query(collection(db,'vote_topics'), orderBy('votes','desc'), limit(20));
+    const q = query(collection(db,'vote_topics'), orderBy('ts','desc'), limit(50));
     const snap = await getDocs(q);
     window._votesData = snap.docs.map(d => ({id:d.id,...d.data()}));
     renderVotesAdmin();
@@ -523,17 +523,43 @@ window.loadVotacion = async () => {
 };
 
 window.renderVotesAdmin = () => {
-  const el = document.getElementById('votesAdminList');
-  if (!el) return;
-  const votes = window._votesData || [];
-  const maxV  = Math.max(...votes.map(v=>v.votes||0),1);
-  el.innerHTML = votes.map(v => `
+  const approvedEl = document.getElementById('votesAdminList');
+  const pendingEl = document.getElementById('pendingVotesList');
+  const pendingCard = document.getElementById('pendingVotesCard');
+  if (!approvedEl) return;
+  const all = window._votesData || [];
+  const pending = all.filter(v => v.approved === false);
+  const approved = all.filter(v => v.approved !== false).sort((a,b) => (b.votes||0) - (a.votes||0));
+  const maxV = Math.max(...approved.map(v=>v.votes||0), 1);
+
+  // Pending
+  if (pendingEl) {
+    pendingEl.innerHTML = pending.length ? pending.map(v => `
+      <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)">
+        <div style="flex:1">
+          <div style="font-size:13px;font-weight:600;color:var(--t1)">${v.text}</div>
+          <div style="font-size:11px;color:var(--t3);margin-top:2px">por ${v.autor||'Anónimo'} · ${v.ts ? new Date(v.ts.seconds*1000).toLocaleDateString('es-UY') : '—'}</div>
+        </div>
+        <button class="btn-sm btn-cyan" style="padding:5px 14px;font-size:11px" onclick="approveVote('${v.id}')">✅ Aprobar</button>
+        <button class="btn-sm" style="padding:5px 14px;font-size:11px;background:rgba(225,29,72,.15);color:#e11d48;border:1px solid rgba(225,29,72,.3);border-radius:6px;cursor:pointer" onclick="deleteVote('${v.id}')">✕ Rechazar</button>
+      </div>`).join('') : '<div style="color:var(--t3);padding:12px;font-size:12px">Sin propuestas pendientes 👍</div>';
+    if (pendingCard) pendingCard.style.display = pending.length ? '' : '';
+  }
+
+  // Approved
+  approvedEl.innerHTML = approved.length ? approved.map(v => `
     <div class="vote-row">
       <div class="vote-row-bar"><div class="vote-row-fill" style="width:${Math.round((v.votes||0)/maxV*100)}%"></div></div>
       <div class="vote-row-text">${v.text}</div>
       <div class="vote-row-count">${v.votes||0} votos</div>
       <button class="row-btn del" onclick="deleteVote('${v.id}')">🗑</button>
-    </div>`).join('') || '<div style="color:var(--t3);padding:20px">Sin temas propuestos todavía.</div>';
+    </div>`).join('') : '<div style="color:var(--t3);padding:20px;font-size:12px">Sin temas aprobados. Aprobá propuestas o agregá uno nuevo.</div>';
+};
+
+window.approveVote = async (id) => {
+  await updateDoc(doc(db,'vote_topics',id), {approved: true});
+  toast('✅','Tema aprobado — ahora es visible en la web');
+  await loadVotacion();
 };
 
 window.deleteVote = async (id) => {
@@ -546,9 +572,9 @@ window.addVoteAdmin = async () => {
   const inp = document.getElementById('newVoteInput');
   const text = inp?.value.trim();
   if (!text) return;
-  await addDoc(collection(db,'vote_topics'),{text,autor:'Admin',votes:0,ts:serverTimestamp()});
+  await addDoc(collection(db,'vote_topics'),{text,autor:'TSS',votes:0,approved:true,ts:serverTimestamp()});
   inp.value = '';
-  toast('✅','Tema agregado');
+  toast('✅','Tema agregado y visible');
   await loadVotacion();
 };
 
@@ -1079,19 +1105,27 @@ document.addEventListener('keydown', e => { if (e.key==='Escape') closeConfirm()
       <!-- VOTACION -->
       <div class="panel" id="panel-votacion">
         <div style="display:grid;grid-template-columns:1fr 300px;gap:16px;align-items:start">
-          <div class="config-card">
-            <h3>Temas propuestos por la comunidad</h3>
-            <div class="votes-list" id="votesAdminList"><div style="color:var(--t3)">Cargando...</div></div>
+          <div>
+            <!-- Pending approval -->
+            <div class="config-card" id="pendingVotesCard" style="margin-bottom:16px;border-color:rgba(255,201,71,.3)">
+              <h3 style="color:var(--gold)">📥 Propuestas pendientes de aprobación</h3>
+              <div id="pendingVotesList"><div style="color:var(--t3);padding:12px">Sin propuestas pendientes.</div></div>
+            </div>
+            <!-- Approved topics -->
+            <div class="config-card">
+              <h3>✅ Temas aprobados (visibles en la web)</h3>
+              <div class="votes-list" id="votesAdminList"><div style="color:var(--t3)">Cargando...</div></div>
+            </div>
           </div>
           <div>
             <div class="config-card">
-              <h3>Agregar tema</h3>
+              <h3>Agregar tema (admin)</h3>
               <div class="fld"><label>Texto del tema</label><textarea id="newVoteInput" placeholder="Describí el tema que querés agregar..." style="width:100%;min-height:80px;resize:vertical"></textarea></div>
               <button class="btn-sm btn-cyan" style="width:100%" onclick="addVoteAdmin()">Agregar tema</button>
             </div>
             <div class="config-card" style="margin-top:12px">
-              <h3>Info</h3>
-              <p style="font-size:12px;color:var(--t2);line-height:1.65">Los temas con más votos aparecen primero en la plataforma. La comunidad puede votar y proponer temas. Podés eliminar temas inapropiados desde aquí.</p>
+              <h3>Cómo funciona</h3>
+              <p style="font-size:12px;color:var(--t2);line-height:1.65">Los usuarios proponen temas desde la web. Aparecen acá como <strong style="color:var(--gold)">pendientes</strong>. Vos aprobás o rechazás. Solo los aprobados se muestran públicamente y reciben votos. También podés agregar temas desde acá directamente.</p>
             </div>
           </div>
         </div>
