@@ -690,38 +690,6 @@ body.light-mode .glow-bg span{opacity:.03}
 .mobile-drawer-divider{height:1px;background:var(--border);margin:8px 0}
 @media(max-width:900px){.nav-hamburger{display:flex;align-items:center}}
 
-/* ── COMMUNITY FORUM ── */
-.community-section{background:var(--ink3);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
-.community-wrap{padding:52px 28px;max-width:1400px;margin:0 auto}
-.community-tabs{display:flex;gap:4px;margin-bottom:20px;background:var(--surface);border-radius:10px;padding:4px;width:fit-content}
-.community-tab{padding:8px 18px;border-radius:8px;border:none;background:transparent;color:var(--t2);font-size:12px;font-weight:600;cursor:pointer;transition:.18s}
-.community-tab.active{background:var(--cyan);color:var(--ink)}
-.forum-grid{display:grid;grid-template-columns:1fr 300px;gap:20px;align-items:start}
-.forum-posts{display:flex;flex-direction:column;gap:8px}
-.forum-post{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;cursor:pointer;transition:.18s}
-.forum-post:hover{border-color:rgba(0,229,255,.25);transform:translateX(2px)}
-.forum-post-head{display:flex;align-items:center;gap:10px;margin-bottom:8px}
-.forum-avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:var(--ink);flex-shrink:0}
-.forum-post-user{font-size:12px;font-weight:600;color:var(--t1)}
-.forum-post-time{font-size:10px;color:var(--t3);margin-left:auto}
-.forum-post-title{font-size:14px;font-weight:700;color:var(--t1);margin-bottom:4px;line-height:1.3}
-.forum-post-body{font-size:13px;color:var(--t2);line-height:1.6;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.forum-post-foot{display:flex;gap:14px;margin-top:10px;font-size:11px;color:var(--t3)}
-.forum-post-foot span{display:flex;align-items:center;gap:4px;cursor:pointer;transition:.18s}
-.forum-post-foot span:hover{color:var(--cyan)}
-.forum-sidebar{display:flex;flex-direction:column;gap:12px}
-.forum-compose{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px}
-.forum-compose textarea{width:100%;min-height:80px;background:var(--ink3);border:1px solid var(--border2);border-radius:8px;padding:10px;color:var(--t1);font-size:13px;font-family:var(--ff-body);outline:none;resize:vertical;transition:.18s}
-.forum-compose textarea:focus{border-color:var(--cyan)}
-.forum-compose textarea::placeholder{color:var(--t3)}
-.forum-rules{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px}
-/* Chat badges */
-.chat-badge{display:inline-block;font-size:8px;font-weight:700;padding:1px 5px;border-radius:3px;margin-left:4px;vertical-align:middle;letter-spacing:.5px}
-.badge-new{background:rgba(0,229,255,.15);color:var(--cyan)}
-.badge-regular{background:rgba(159,122,234,.15);color:var(--violet)}
-.badge-fiel{background:rgba(255,201,71,.15);color:var(--gold)}
-.badge-vip{background:rgba(255,77,141,.15);color:var(--rose)}
-@media(max-width:700px){.forum-grid{grid-template-columns:1fr}}
 </style>
 
 
@@ -902,7 +870,6 @@ window._donar     = (nombre,monto) => addDoc(collection(db,"donantes"),{nombre,m
   <a href="#exclusivo" class="nlnk" onclick="toggleDrawer(false)">⭐ Exclusivo</a>
   <a href="#equipo" class="nlnk" onclick="toggleDrawer(false)">👥 Equipo</a>
   <a href="#votacion" class="nlnk" onclick="toggleDrawer(false)">🗳️ Votación</a>
-  <a href="#comunidad" class="nlnk" onclick="toggleDrawer(false)">💬 Comunidad</a>
   <div class="mobile-drawer-divider"></div>
   <a href="mailto:denuncias@todosesabe.uy" class="nlnk" style="color:var(--cyan)">🚨 Denuncias</a>
   <a href="noticias.html" class="nlnk">📄 Todas las noticias</a>
@@ -1761,16 +1728,7 @@ function donarLibre() {
   showToast("🚧","Donaciones — próximamente");
 }
 
-// ── NEWSLETTER ──
-async function suscribirNewsletter() {
-  const email=document.getElementById("nlEmail").value.trim();
-  if(!email||!email.includes("@")){showToast("⚠️","Ingresá un email válido");return;}
-  try{
-    if(window._newsletter) await window._newsletter(email);
-    document.getElementById("nlEmail").value="";
-    showToast("📧","¡Suscripto! Nos vemos el próximo jueves 🎙️");
-  }catch(e){showToast("❌",e.message);}
-}
+
 
 // ── VIEWERS & POLL ──
 function buildViewers(){
@@ -1869,84 +1827,7 @@ async function checkAutoLive() {
 checkAutoLive();
 setInterval(checkAutoLive, 120000);
 
-// ── COMMUNITY FORUM ──
-document.getElementById('forumBody')?.addEventListener('input', function(){
-  document.getElementById('forumCharCount').textContent = this.value.length + '/500';
-});
 
-window.submitForumPost = async () => {
-  const title = document.getElementById('forumTitle')?.value.trim();
-  const body = document.getElementById('forumBody')?.value.trim();
-  if(!body || body.length < 5) { showToast('⚠️','Escribí al menos 5 caracteres'); return; }
-  if(!window._currentUser) { showToast('🔐','Iniciá sesión para publicar'); openModal('login'); return; }
-  try {
-    await addDoc(collection(db,'forum_posts'),{
-      title: title || '',
-      body: body,
-      autor: window._currentUser.displayName || window._currentUser.email.split('@')[0],
-      autorId: window._currentUser.uid,
-      likes: 0,
-      replies: 0,
-      ts: serverTimestamp()
-    });
-    document.getElementById('forumTitle').value = '';
-    document.getElementById('forumBody').value = '';
-    document.getElementById('forumCharCount').textContent = '0/500';
-    showToast('✅','¡Publicado!');
-  } catch(e) { showToast('❌', e.message); }
-};
-
-window.likeForumPost = async (id) => {
-  if(!window._currentUser) { showToast('🔐','Iniciá sesión'); return; }
-  const liked = JSON.parse(localStorage.getItem('tss_forum_likes')||'[]');
-  if(liked.includes(id)) { showToast('⚠️','Ya le diste like'); return; }
-  try {
-    await updateDoc(doc(db,'forum_posts',id), {likes: increment(1)});
-    liked.push(id);
-    localStorage.setItem('tss_forum_likes', JSON.stringify(liked));
-    showToast('❤️','Like!');
-  } catch(e) {}
-};
-
-// Load forum posts
-const forumQ = query(collection(db,'forum_posts'), orderBy('ts','desc'), limit(20));
-onSnapshot(forumQ, snap => {
-  const posts = snap.docs.map(d => ({id:d.id,...d.data()}));
-  const grid = document.getElementById('forumPosts');
-  if(!grid) return;
-  if(!posts.length) {
-    grid.innerHTML = '<div style="text-align:center;padding:40px;color:var(--t3)"><div style="font-size:32px;margin-bottom:8px">💬</div>Sé el primero en publicar en la comunidad TSS</div>';
-    return;
-  }
-  const timeAgo = ts => {
-    if(!ts || !ts.seconds) return '';
-    const diff = Math.floor((Date.now()/1000) - ts.seconds);
-    if(diff < 60) return 'ahora';
-    if(diff < 3600) return Math.floor(diff/60) + ' min';
-    if(diff < 86400) return Math.floor(diff/3600) + 'h';
-    return Math.floor(diff/86400) + 'd';
-  };
-  const colors = ['#00e5ff','#9f7aea','#ff4d8d','#ffc947','#059669','#f97316'];
-  grid.innerHTML = posts.map(p => {
-    const color = colors[Math.abs(hashStr(p.autorId||p.autor||''))%colors.length];
-    const initial = (p.autor||'U')[0].toUpperCase();
-    return `<div class="forum-post">
-      <div class="forum-post-head">
-        <div class="forum-avatar" style="background:${color}">${initial}</div>
-        <span class="forum-post-user">${p.autor||'Anónimo'}</span>
-        <span class="forum-post-time">${timeAgo(p.ts)}</span>
-      </div>
-      ${p.title ? `<div class="forum-post-title">${p.title}</div>` : ''}
-      <div class="forum-post-body">${p.body}</div>
-      <div class="forum-post-foot">
-        <span onclick="likeForumPost('${p.id}')">❤️ ${p.likes||0}</span>
-        <span>💬 ${p.replies||0} respuestas</span>
-      </div>
-    </div>`;
-  }).join('');
-});
-
-function hashStr(s){ let h=0; for(let i=0;i<s.length;i++){h=((h<<5)-h)+s.charCodeAt(i);h|=0;} return h; }
 
 // ── CHAT BADGES (based on participation) ──
 window.getChatBadge = (userId) => {
