@@ -176,10 +176,9 @@ body::before{content:'';position:fixed;inset:0;z-index:0;opacity:.022;pointer-ev
 .cd-topic-text{font-family:var(--ff-display);font-size:16px;font-weight:700;color:var(--t1);word-wrap:break-word}
 .cd-notif-btn{
   padding:9px 18px;border-radius:8px;
-  background:linear-gradient(135deg,var(--cyan),var(--violet));
+  background:var(--cyan);
   color:var(--ink);font-size:12px;font-weight:700;border:none;
   white-space:nowrap;flex-shrink:0;transition:.18s;
-  box-shadow:0 0 20px var(--cyan-dim);
 }
 .cd-notif-btn:hover{transform:translateY(-1px);box-shadow:0 0 30px var(--cyan-glow)}
 .cd-live-mode{
@@ -242,9 +241,9 @@ body::before{content:'';position:fixed;inset:0;z-index:0;opacity:.022;pointer-ev
 .chat-form{display:flex;gap:7px;padding:10px;border-top:1px solid var(--border)}
 .chat-inp{flex:1;background:var(--surface);border:1px solid var(--border2);border-radius:8px;padding:7px 11px;color:var(--t1);font-size:12px;font-family:var(--ff-body);outline:none;transition:.18s}
 .chat-inp:focus{border-color:var(--cyan)}
-.chat-login-prompt{flex:1;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;padding:16px 12px;border-top:1px solid var(--border);text-align:center;min-height:60px}
-.chat-login-prompt p{font-size:13px;color:var(--t2);margin:0}
-.chat-login-prompt button{padding:10px 28px;border-radius:20px;background:var(--cyan);color:var(--ink);border:none;font-size:13px;font-weight:700;transition:.18s;cursor:pointer}
+.chat-login-prompt{display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;padding:12px 10px;border-top:1px solid var(--border);text-align:center}
+.chat-login-prompt p{font-size:12px;color:var(--t2);margin:0}
+.chat-login-prompt button{padding:8px 22px;border-radius:20px;background:var(--cyan);color:var(--ink);border:none;font-size:12px;font-weight:700;transition:.18s;cursor:pointer}
 .chat-login-prompt button:hover{background:#33eeff;transform:translateY(-1px)}
 .chat-send{width:34px;height:34px;border-radius:8px;background:var(--cyan);border:none;display:flex;align-items:center;justify-content:center;transition:.18s}
 .chat-send:hover{background:#33eeff}
@@ -570,7 +569,7 @@ body.light-mode .glow-bg span{opacity:.03}
   .pc-prog{font-size:13px}
   .pc-sub{font-size:10px}
   .src-switch{display:none}
-  .live-sidebar{max-height:380px}
+  .live-sidebar{max-height:320px}
   .ls-tabs{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
   .ls-tabs::-webkit-scrollbar{display:none}
   .ls-tab{padding:10px 8px;font-size:9px;letter-spacing:0;gap:2px;white-space:nowrap;flex-shrink:0}
@@ -692,7 +691,7 @@ body.light-mode .glow-bg span{opacity:.03}
 
 
 /* ── YOUTUBE LAZY LOAD ── */
-.yt-thumb-overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:#000 center/cover no-repeat;cursor:pointer;z-index:2;display:flex;align-items:center;justify-content:center;transition:opacity .3s}
+.yt-thumb-overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:transparent center/cover no-repeat;cursor:pointer;z-index:2;display:flex;align-items:center;justify-content:center;transition:opacity .3s}
 .yt-thumb-overlay.hidden{opacity:0;pointer-events:none}
 .yt-play-btn{width:72px;height:72px;border-radius:50%;background:rgba(0,229,255,.9);display:flex;align-items:center;justify-content:center;transition:.2s;box-shadow:0 4px 24px rgba(0,229,255,.3)}
 .yt-play-btn:hover{transform:scale(1.1);background:var(--cyan)}
@@ -956,9 +955,9 @@ window._donar     = (nombre,monto) => addDoc(collection(db,"donantes"),{nombre,m
             allow="autoplay"></iframe>
         </div>
         <!-- Estado fuera de vivo -->
-        <div id="chatOfflineWrap" style="flex:1;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px;padding:28px 20px;text-align:center">
-          <div style="font-size:36px;opacity:.7">📅</div>
-          <div style="font-family:var(--ff-display);font-size:15px;font-weight:700;color:var(--t1)">Chat en vivo los jueves</div>
+        <div id="chatOfflineWrap" style="flex:1;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;padding:18px 14px;text-align:center">
+          <div style="font-size:28px;opacity:.7">📅</div>
+          <div style="font-family:var(--ff-display);font-size:14px;font-weight:700;color:var(--t1)">Chat en vivo los jueves</div>
           <div style="font-size:12px;color:var(--t2);line-height:1.7;max-width:240px">
             Se activa automáticamente<br>cuando empieza el programa.
           </div>
