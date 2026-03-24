@@ -1316,11 +1316,14 @@ function renderTeamUI(team) {
 })();
 
 // ── LOGO ──
-const LOGO = ""; // Logo removed - use icon-192.png instead
-["navLogo","footLogo","modalLogo"].forEach(id => {
-  const el = document.getElementById(id);
-  if (el) el.src = "icon-192.png";
-});
+const LOGO = "";
+// Separate logos: nav/footer use wide logo, modal/PWA use square icon
+const el_nav = document.getElementById("navLogo");
+const el_foot = document.getElementById("footLogo");
+const el_modal = document.getElementById("modalLogo");
+if(el_nav) el_nav.src = "logo-nav.png";
+if(el_foot) el_foot.src = "logo-footer.png";
+if(el_modal) el_modal.src = "icon-192.png";
 
 // ── COUNTDOWN ──
 function renderCountdown() {
