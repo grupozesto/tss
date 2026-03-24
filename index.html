@@ -241,10 +241,10 @@ body::before{content:'';position:fixed;inset:0;z-index:0;opacity:.022;pointer-ev
 .chat-form{display:flex;gap:7px;padding:10px;border-top:1px solid var(--border)}
 .chat-inp{flex:1;background:var(--surface);border:1px solid var(--border2);border-radius:8px;padding:7px 11px;color:var(--t1);font-size:12px;font-family:var(--ff-body);outline:none;transition:.18s}
 .chat-inp:focus{border-color:var(--cyan)}
-.chat-login-prompt{display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;padding:12px 10px;border-top:1px solid var(--border);text-align:center}
-.chat-login-prompt p{font-size:12px;color:var(--t2);margin:0}
-.chat-login-prompt button{padding:8px 22px;border-radius:20px;background:var(--cyan);color:var(--ink);border:none;font-size:12px;font-weight:700;transition:.18s;cursor:pointer}
-.chat-login-prompt button:hover{background:#33eeff;transform:translateY(-1px)}
+.chat-login-prompt{display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;padding:10px 10px 14px;border-top:1px solid var(--border);text-align:center;flex-shrink:0}
+.chat-login-prompt p{font-size:11px;color:var(--t2);margin:0}
+.chat-login-prompt button{padding:7px 20px;border-radius:20px;background:var(--cyan);color:var(--ink);border:none;font-size:11px;font-weight:700;transition:.18s;cursor:pointer}
+.chat-login-prompt button:hover{background:#33eeff}
 .chat-send{width:34px;height:34px;border-radius:8px;background:var(--cyan);border:none;display:flex;align-items:center;justify-content:center;transition:.18s}
 .chat-send:hover{background:#33eeff}
 .chat-send svg{width:13px;height:13px;fill:var(--ink)}
@@ -570,9 +570,9 @@ body.light-mode .glow-bg span{opacity:.03}
   .pc-sub{font-size:10px}
   .src-switch{display:none}
   .live-sidebar{max-height:320px}
-  .chat-login-prompt{gap:6px;padding:8px}
-  .chat-login-prompt p{font-size:11px}
-  .chat-login-prompt button{padding:7px 18px;font-size:11px}
+  .chat-login-prompt{gap:4px;padding:6px 8px 10px}
+  .chat-login-prompt p{font-size:10px}
+  .chat-login-prompt button{padding:6px 16px;font-size:10px}
   #chatOfflineWrap{gap:8px !important;padding:12px 10px !important}
   #chatOfflineWrap>div:first-child{font-size:22px !important}
   #chatNextShow{font-size:11px !important;padding:4px 12px !important}
