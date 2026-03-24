@@ -1668,7 +1668,7 @@ function setYTCache(data) {
 
 async function loadChannelVideos() {
   const grid=document.getElementById("videosGrid");
-  // Intentar cache primero
+  // Try cache first
   const cached = getYTCache();
   if (cached) {
     allVids = cached;
@@ -1677,28 +1677,60 @@ async function loadChannelVideos() {
     return;
   }
   try {
-    const key=TSS_CONFIG.YOUTUBE_API_KEY, ch=TSS_CONFIG.YOUTUBE_CHANNEL_ID;
-    const chRes=await fetch(`https://www.googleapis.com/youtube/v3/channels?part=contentDetails&id=${ch}&key=${key}`);
-    const chData=await chRes.json();
-    if(!chData.items?.length)throw new Error("Canal no encontrado");
-    const uploadsId=chData.items[0].contentDetails.relatedPlaylists.uploads;
-    const plRes=await fetch(`https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${uploadsId}&maxResults=50&key=${key}`);
-    const plData=await plRes.json();
-    if(!plData.items?.length)throw new Error("No hay videos");
-    const ids=plData.items.map(i=>i.snippet.resourceId.videoId).join(",");
-    const stRes=await fetch(`https://www.googleapis.com/youtube/v3/videos?part=statistics,contentDetails&id=${ids}&key=${key}`);
-    const stData=await stRes.json();
-    const sm={}; stData.items?.forEach(v=>{sm[v.id]={views:v.statistics?.viewCount,dur:v.contentDetails?.duration};});
-    allVids=plData.items.map(i=>{
-      const vid=i.snippet.resourceId.videoId, s=sm[vid]||{};
-      return{id:vid,title:i.snippet.title,thumb:i.snippet.thumbnails?.high?.url||"",date:fmtDate(i.snippet.publishedAt),views:s.views?fmtViews(parseInt(s.views)):"—",dur:s.dur?fmtDur(s.dur):"",cat:detectCat(i.snippet.title)};
+    // Use YouTube RSS feed via proxy — FREE, no API quota
+    const CID = TSS_CONFIG.YOUTUBE_CHANNEL_ID;
+    const rssUrl = `https://www.youtube.com/feeds/videos.xml?channel_id=${CID}`;
+    const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(rssUrl)}`;
+    const res = await fetch(proxyUrl);
+    if(!res.ok) throw new Error("No se pudo cargar el feed");
+    const xml = await res.text();
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(xml, "text/xml");
+    const entries = doc.querySelectorAll("entry");
+    if(!entries.length) throw new Error("No hay videos");
+    allVids = Array.from(entries).map(e => {
+      const videoId = e.querySelector("videoId")?.textContent || 
+                      (e.querySelector("id")?.textContent||"").split(":").pop();
+      const title = e.querySelector("title")?.textContent || "";
+      const published = e.querySelector("published")?.textContent || "";
+      const thumb = e.querySelector("group thumbnail")?.getAttribute("url") || 
+                    `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+      const views = e.querySelector("group community statistics views")?.textContent || "";
+      return {
+        id: videoId,
+        title: title,
+        thumb: thumb,
+        date: fmtDate(published),
+        views: views ? fmtViews(parseInt(views)) : "—",
+        dur: "",
+        cat: detectCat(title)
+      };
     });
     setYTCache(allVids);
     renderVids(true);
-    // Set main player to last transmisión en vivo
     if(window._setPlayerFromVideos) window._setPlayerFromVideos();
   } catch(e) {
-    grid.innerHTML=`<div class="yt-loading" style="grid-column:1/-1"><div style="font-size:32px;margin-bottom:12px">⚠️</div><div style="color:var(--t1);font-weight:600;margin-bottom:8px">${e.message}</div><a href="https://youtube.com/@todosesabe_tss" target="_blank" style="display:inline-block;margin-top:8px;padding:8px 18px;background:var(--cyan);color:var(--ink);border-radius:7px;font-weight:700;font-size:13px">Ver canal ↗</a></div>`;
+    // Fallback: try YouTube API if RSS fails
+    try {
+      const key=TSS_CONFIG.YOUTUBE_API_KEY, ch=TSS_CONFIG.YOUTUBE_CHANNEL_ID;
+      if(!key) throw new Error("Sin API key");
+      const chRes=await fetch(`https://www.googleapis.com/youtube/v3/channels?part=contentDetails&id=${ch}&key=${key}`);
+      const chData=await chRes.json();
+      if(!chData.items?.length) throw new Error("Canal no encontrado");
+      const uploadsId=chData.items[0].contentDetails.relatedPlaylists.uploads;
+      const plRes=await fetch(`https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${uploadsId}&maxResults=50&key=${key}`);
+      const plData=await plRes.json();
+      if(!plData.items?.length) throw new Error("No hay videos");
+      allVids=plData.items.map(i=>{
+        const vid=i.snippet.resourceId.videoId;
+        return{id:vid,title:i.snippet.title,thumb:i.snippet.thumbnails?.high?.url||"",date:fmtDate(i.snippet.publishedAt),views:"—",dur:"",cat:detectCat(i.snippet.title)};
+      });
+      setYTCache(allVids);
+      renderVids(true);
+      if(window._setPlayerFromVideos) window._setPlayerFromVideos();
+    } catch(e2) {
+      grid.innerHTML=`<div class="yt-loading" style="grid-column:1/-1"><div style="font-size:32px;margin-bottom:12px">⚠️</div><div style="color:var(--t1);font-weight:600;margin-bottom:8px">Error cargando videos</div><a href="https://youtube.com/@todosesabe_tss" target="_blank" style="display:inline-block;margin-top:8px;padding:8px 18px;background:var(--cyan);color:var(--ink);border-radius:7px;font-weight:700;font-size:13px">Ver canal ↗</a></div>`;
+    }
   }
 }
 function detectCat(t){t=t.toLowerCase();if(t.includes("vivo")||t.includes("episodio")||t.includes("programa"))return"prog";if(t.includes("informe")||t.includes("especial"))return"info";return"clip";}
