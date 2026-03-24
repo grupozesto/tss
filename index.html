@@ -851,7 +851,6 @@ window._donar     = (nombre,monto) => addDoc(collection(db,"donantes"),{nombre,m
     <a href="#live"      class="nlnk active"  onclick="setActive(this)">En Vivo</a>
     <a href="#videos"    class="nlnk"         onclick="setActive(this)">Videos</a>
     <a href="#noticias"  class="nlnk"         onclick="setActive(this)">Noticias</a>
-    <a href="noticias.html" class="nlnk">📰 Portal</a>
     <a href="#equipo"    class="nlnk"         onclick="setActive(this)">Equipo</a>
     <a href="mailto:denuncias@todosesabe.uy" class="nlnk" style="color:var(--cyan);display:flex;align-items:center;gap:5px">
       <span style="font-size:15px">🚨</span>
@@ -1816,13 +1815,23 @@ window.toggleTheater = () => {
 let _currentVideoId = null;
 let _isLiveNow = false;
 
-// Load: first check if there's a live NOW, then fallback to last completed live
+// Load: check live → admin ID → last completed → last video (any)
 (async function initPlayer(){
   const thumb = document.getElementById('ytThumb');
   const frame = document.getElementById('ytFrame');
   const API = TSS_CONFIG.YOUTUBE_API_KEY;
   const CID = TSS_CONFIG.YOUTUBE_CHANNEL_ID;
   if(!thumb || !frame || !API || !CID) return;
+
+  // Helper: set thumbnail
+  const setThumb = (id) => {
+    _currentVideoId = id;
+    // Try maxresdefault first, fallback to hqdefault
+    const img = new Image();
+    img.onload = () => { thumb.style.backgroundImage = `url(https://img.youtube.com/vi/${id}/maxresdefault.jpg)`; };
+    img.onerror = () => { thumb.style.backgroundImage = `url(https://img.youtube.com/vi/${id}/hqdefault.jpg)`; };
+    img.src = `https://img.youtube.com/vi/${id}/maxresdefault.jpg`;
+  };
 
   // 1. Check for current live stream
   try {
@@ -1832,7 +1841,6 @@ let _isLiveNow = false;
       const liveId = liveData.items[0].id.videoId;
       _currentVideoId = liveId;
       _isLiveNow = true;
-      // Auto-activate: load player, hide thumb, enable chat
       frame.src = `https://www.youtube.com/embed/${liveId}?autoplay=1&rel=0`;
       thumb.classList.add('hidden');
       document.getElementById('vcCount').textContent = '🔴 En vivo';
@@ -1842,31 +1850,38 @@ let _isLiveNow = false;
       if(offWrap) offWrap.style.display = 'none';
       if(liveWrap) liveWrap.style.display = 'flex';
       if(reactBar) reactBar.style.display = 'flex';
-      return; // Live found, done
+      return;
     }
   } catch(e){}
 
-  // 2. No live — load last completed live stream as thumbnail
+  // 2. Admin-configured video ID
+  if(TSS_CONFIG.LIVE_VIDEO_ID) {
+    setThumb(TSS_CONFIG.LIVE_VIDEO_ID);
+    return;
+  }
+
+  // 3. Last completed live stream
   try {
-    const vid = TSS_CONFIG.LIVE_VIDEO_ID; // Admin-configured ID
-    if(vid) {
-      _currentVideoId = vid;
-      thumb.style.backgroundImage = `url(https://img.youtube.com/vi/${vid}/maxresdefault.jpg)`;
+    const compRes = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CID}&eventType=completed&type=video&order=date&maxResults=1&key=${API}`);
+    const compData = await compRes.json();
+    if(compData.items && compData.items.length > 0) {
+      setThumb(compData.items[0].id.videoId);
       return;
     }
-    // 3. No admin ID — fetch last live/completed from channel
-    const lastRes = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CID}&eventType=completed&type=video&order=date&maxResults=1&key=${API}`);
-    const lastData = await lastRes.json();
-    if(lastData.items && lastData.items.length > 0) {
-      const lastId = lastData.items[0].id.videoId;
-      _currentVideoId = lastId;
-      thumb.style.backgroundImage = `url(https://img.youtube.com/vi/${lastId}/maxresdefault.jpg)`;
-    } else {
-      thumb.style.background = '#0d0e14';
+  } catch(e){}
+
+  // 4. Fallback: most recent video from channel (any type)
+  try {
+    const anyRes = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CID}&type=video&order=date&maxResults=1&key=${API}`);
+    const anyData = await anyRes.json();
+    if(anyData.items && anyData.items.length > 0) {
+      setThumb(anyData.items[0].id.videoId);
+      return;
     }
-  } catch(e){
-    thumb.style.background = '#0d0e14';
-  }
+  } catch(e){}
+
+  // 5. Nothing found — dark bg
+  thumb.style.background = '#0d0e14';
 })();
 
 // Click to play
