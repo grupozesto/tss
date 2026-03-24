@@ -1681,13 +1681,22 @@ async function loadChannelVideos() {
     return;
   }
   try {
-    // Use YouTube RSS feed via proxy — FREE, no API quota
+    // Use YouTube RSS feed via CORS proxies — FREE, no API quota
     const CID = TSS_CONFIG.YOUTUBE_CHANNEL_ID;
     const rssUrl = `https://www.youtube.com/feeds/videos.xml?channel_id=${CID}`;
-    const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(rssUrl)}`;
-    const res = await fetch(proxyUrl);
-    if(!res.ok) throw new Error("No se pudo cargar el feed");
-    const xml = await res.text();
+    const proxies = [
+      `https://corsproxy.io/?url=${encodeURIComponent(rssUrl)}`,
+      `https://api.allorigins.win/raw?url=${encodeURIComponent(rssUrl)}`,
+      `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(rssUrl)}`
+    ];
+    let xml = null;
+    for(const proxy of proxies) {
+      try {
+        const res = await fetch(proxy, {signal: AbortSignal.timeout(5000)});
+        if(res.ok) { xml = await res.text(); if(xml.includes('<entry>')) break; else xml = null; }
+      } catch(e){}
+    }
+    if(!xml) throw new Error("Proxies agotados");
     const parser = new DOMParser();
     const doc = parser.parseFromString(xml, "text/xml");
     const entries = doc.querySelectorAll("entry");
