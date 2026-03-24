@@ -19,7 +19,7 @@
 <meta property="og:url"         content="https://grupozesto.github.io/tss/">
 <meta property="og:title"       content="TSS — Todo Se Sabe">
 <meta property="og:description" content="Periodismo independiente con Nacho Álvarez. En vivo todos los jueves 20:30.">
-<meta property="og:image"       content="https://yt3.googleusercontent.com/ytc/AIdro_kTSS-placeholder-channel-banner.jpg">
+<meta property="og:image"       content="https://grupozesto.github.io/tss/icon-512.png">
 <!-- TODO: Reemplazar con URL real del banner/thumbnail del canal -->
 
 <!-- Twitter Card -->
@@ -78,7 +78,6 @@
  *        match /reacciones/{r} { allow create: if true; }
  *      }
  *    }
- * 3. Reemplazar https://mpago.la/TU_LINK_MP con tu link real de MercadoPago
  * 4. Subir icon-192.png e icon-512.png al repo para PWA
  * 5. Reemplazar la OG image con una URL real del canal
  */
@@ -798,7 +797,7 @@ window._donar     = (nombre,monto) => addDoc(collection(db,"donantes"),{nombre,m
     <div class="nav-avatar" id="userAv" onclick="toggleMenu()">?</div>
     <div class="user-menu" id="userMenu">
       <div class="umitem">👤 <span id="menuName">Mi cuenta</span></div>
-      <div class="umitem" onclick="requireLogin()">⭐ Contenido exclusivo</div>
+      <div class="umitem" onclick="showToast('🚧','Próximamente')">⭐ Contenido exclusivo <span style="font-size:9px;color:var(--t3);margin-left:4px">pronto</span></div>
       <div class="umitem danger" onclick="doLogout()">↩ Cerrar sesión</div>
     </div>
   </div>
@@ -972,22 +971,19 @@ window._donar     = (nombre,monto) => addDoc(collection(db,"donantes"),{nombre,m
       <span class="don-icon">💛</span>
       <div class="don-text">
         <strong>Apoyá el periodismo independiente</strong>
-        <span>Tu donación mantiene a TSS libre e independiente</span>
+        <span>Muy pronto vas a poder colaborar con TSS directamente desde acá.</span>
       </div>
       <div class="don-amounts">
-        <button class="don-btn" onclick="donar(100)">$100</button>
-        <button class="don-btn" onclick="donar(300)">$300</button>
-        <button class="don-btn featured" onclick="donar(500)">$500 💛</button>
-        <button class="don-btn" onclick="donarLibre()">Libre</button>
+        <span style="font-size:12px;color:var(--gold);font-weight:600;padding:8px 18px;border:1px solid rgba(255,201,71,.25);border-radius:20px;background:rgba(255,201,71,.06)">🚧 Próximamente</span>
       </div>
     </div>
     <div class="excl-banner">
       <div class="excl-text">
         <div class="excl-badge">⭐ Contenido exclusivo</div>
-        <h2>Suscribite y accedé a todo</h2>
-        <p>Programas completos sin cortes, detrás de escena, entrevistas extendidas y archivos de más de 13 años de periodismo independiente.</p>
+        <h2>Próximamente: contenido exclusivo para suscriptores</h2>
+        <p>Programas completos sin cortes, detrás de escena, entrevistas extendidas y archivos de más de 13 años de periodismo independiente. Estamos preparando algo especial.</p>
       </div>
-      <button class="btn-violet" onclick="openModal('register')">Crear cuenta gratis</button>
+      <span style="padding:10px 24px;border-radius:20px;background:rgba(159,122,234,.15);border:1px solid rgba(159,122,234,.3);color:var(--violet);font-size:13px;font-weight:700;white-space:nowrap">🚧 Próximamente</span>
     </div>
     <div class="excl-grid">
       <div class="excl-card fade-up" onclick="requireLogin()"><div class="excl-card-thumb"><img loading="lazy" src="https://cdn.dl.uy/solimg/894x503/39/39554.jpg" alt=""><div class="excl-lock-ov"><div class="excl-lock-icon"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg></div></div></div><div class="excl-card-body"><h4>Programa completo — Episodio 1</h4><p>4h · Solo suscriptores</p></div></div>
@@ -1591,14 +1587,10 @@ function copyLink()      { navigator.clipboard.writeText(shareUrl).then(()=>{sho
 
 // ── DONACIÓN ──
 function donar(monto) {
-  // Reemplazá este link con tu link de MercadoPago
-  const mp="https://mpago.la/TU_LINK_MP";
-  showToast("💛",`Redirigiendo a MercadoPago — $${monto}`);
-  setTimeout(()=>window.open(mp+"?amount="+monto,"_blank"),500);
+  showToast("🚧","Donaciones — próximamente");
 }
 function donarLibre() {
-  const monto=prompt("¿Cuánto querés donar? (en pesos)");
-  if(monto&&!isNaN(monto)) donar(parseInt(monto));
+  showToast("🚧","Donaciones — próximamente");
 }
 
 // ── NEWSLETTER ──
@@ -1639,7 +1631,7 @@ function swTab(tab){document.getElementById("tbL").classList.toggle("active",tab
 document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeModal();closeShare();}});
 function toggleMenu(close){const m=document.getElementById("userMenu");m.classList.toggle("open",!close&&!m.classList.contains("open"));}
 document.addEventListener("click",e=>{if(!e.target.closest("#navUser"))document.getElementById("userMenu")?.classList.remove("open");});
-function requireLogin(){if(window._currentUser)showToast("🔒","Contenido exclusivo — próximamente para suscriptores");else{showToast("🔐","Registrate para acceder");openModal("register");}}
+function requireLogin(){showToast("🚧","Contenido exclusivo — próximamente");}
 // ── DATE ──
 (function(){
   const ds=["Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"];
@@ -1772,8 +1764,7 @@ window.confirmarDonacion = async () => {
   if (monto < 50) { showToast('⚠️','El monto mínimo es $50'); return; }
   if (window._donar) await window._donar(nombre, monto);
   closeDon();
-  showToast('💛','¡Gracias '+nombre+'! Serás redirigido...');
-  setTimeout(() => window.open('https://mpago.la/TU_LINK_MP','_blank'), 800);
+  showToast('🚧','Donaciones — próximamente. ¡Gracias '+nombre+'!');
 };
 
 </script>
