@@ -1655,6 +1655,7 @@ async function loadChannelVideos() {
   if (cached) {
     allVids = cached;
     renderVids(true);
+    if(window._setPlayerFromVideos) window._setPlayerFromVideos();
     return;
   }
   try {
@@ -1676,6 +1677,8 @@ async function loadChannelVideos() {
     });
     setYTCache(allVids);
     renderVids(true);
+    // Set main player to last transmisión en vivo
+    if(window._setPlayerFromVideos) window._setPlayerFromVideos();
   } catch(e) {
     grid.innerHTML=`<div class="yt-loading" style="grid-column:1/-1"><div style="font-size:32px;margin-bottom:12px">⚠️</div><div style="color:var(--t1);font-weight:600;margin-bottom:8px">${e.message}</div><a href="https://youtube.com/@todosesabe_tss" target="_blank" style="display:inline-block;margin-top:8px;padding:8px 18px;background:var(--cyan);color:var(--ink);border-radius:7px;font-weight:700;font-size:13px">Ver canal ↗</a></div>`;
   }
@@ -1833,19 +1836,24 @@ const _setThumb = (id) => {
   _currentVideoId = id;
   const thumb = document.getElementById('ytThumb');
   if(!thumb) return;
-  // Use hqdefault (always exists) then upgrade to maxres if available
   thumb.style.backgroundImage = `url(https://img.youtube.com/vi/${id}/hqdefault.jpg)`;
   const hi = new Image();
   hi.onload = () => { thumb.style.backgroundImage = `url(https://img.youtube.com/vi/${id}/maxresdefault.jpg)`; };
   hi.src = `https://img.youtube.com/vi/${id}/maxresdefault.jpg`;
 };
 
+// Called after videos section loads — sets the main player thumbnail
+window._setPlayerFromVideos = () => {
+  if(_isLiveNow || _currentVideoId) return; // Already set
+  // Find the first "programa" (en vivo / transmisión) from loaded videos
+  const prog = allVids.find(v => v.cat === 'prog');
+  const video = prog || allVids[0]; // Fallback to most recent video
+  if(video) _setThumb(video.id);
+};
+
 (async function initPlayer(){
-  const thumb = document.getElementById('ytThumb');
-  const frame = document.getElementById('ytFrame');
   const API = TSS_CONFIG.YOUTUBE_API_KEY;
   const CID = TSS_CONFIG.YOUTUBE_CHANNEL_ID;
-  if(!thumb || !frame) return;
 
   // 1. Check for current live stream
   if(API && CID) {
@@ -1859,34 +1867,7 @@ const _setThumb = (id) => {
   // 2. Admin-configured video ID
   if(TSS_CONFIG.LIVE_VIDEO_ID) { _setThumb(TSS_CONFIG.LIVE_VIDEO_ID); return; }
 
-  // 3. Fetch latest video from channel via API
-  if(API && CID) {
-    // Try completed lives first
-    try {
-      const r = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CID}&eventType=completed&type=video&order=date&maxResults=1&key=${API}`);
-      const d = await r.json();
-      if(d.items && d.items.length > 0) { _setThumb(d.items[0].id.videoId); return; }
-    } catch(e){}
-    // Then any video
-    try {
-      const r = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CID}&type=video&order=date&maxResults=1&key=${API}`);
-      const d = await r.json();
-      if(d.items && d.items.length > 0) { _setThumb(d.items[0].id.videoId); return; }
-    } catch(e){}
-  }
-
-  // 4. Wait for videos section to load and grab the first one
-  const waitForVideos = () => {
-    const cards = document.querySelectorAll('.vcard');
-    if(cards.length > 0) {
-      const href = cards[0].getAttribute('href') || '';
-      const m = href.match(/[?&]v=([^&]+)/);
-      if(m) { _setThumb(m[1]); return; }
-    }
-    // Retry in 2 seconds
-    setTimeout(waitForVideos, 2000);
-  };
-  setTimeout(waitForVideos, 3000);
+  // 3. Will be set by _setPlayerFromVideos() when videos section loads
 })();
 
 // Click to play
