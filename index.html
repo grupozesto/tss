@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta http-equiv="X-Content-Type-Options" content="nosniff">
 <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
 <meta name="referrer" content="strict-origin-when-cross-origin">
@@ -727,6 +727,10 @@ body.light-mode .glow-bg span{opacity:.03}
 .team-modal-socials{display:flex;justify-content:center;gap:10px}
 .team-modal-socials a{width:38px;height:38px;border-radius:50%;background:var(--surface2);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:16px;transition:.18s;color:var(--t2)}
 .team-modal-socials a:hover{background:var(--cyan);color:var(--ink);border-color:var(--cyan)}
+
+/* ── SAFARI ZOOM PREVENTION ── */
+body,html{touch-action:manipulation;-ms-touch-action:manipulation}
+input,select,textarea{font-size:16px !important}
 </style>
 
 
@@ -1968,7 +1972,7 @@ window._setPlayerFromVideos = () => {
   // 3. Load latest video directly — no API needed
   // Use uploads playlist embed which always shows the latest video
   if(frame && thumb) {
-    frame.src = `https://www.youtube.com/embed/videoseries?list=UUSlUxzqTuLnnvhicqMurTdg&rel=0&modestbranding=1`;
+    frame.src = `https://www.youtube.com/embed/videoseries?list=UULVSlUxzqTuLnnvhicqMurTdg&rel=0&modestbranding=1`;
     thumb.classList.add('hidden');
   }
 })();
