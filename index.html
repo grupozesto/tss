@@ -1633,41 +1633,10 @@ async function initSmartPlayer() {
     document.querySelector(".pc-sub").innerHTML = `<span class="pc-dot"></span> EN VIVO AHORA`;
     return;
   }
-  await loadLatestProgram();
+  // Player thumbnail set by _setPlayerFromVideos when videos load
 }
 
-async function loadLatestProgram() {
-  try {
-    const key = TSS_CONFIG.YOUTUBE_API_KEY;
-    const ch  = TSS_CONFIG.YOUTUBE_CHANNEL_ID;
-    const r1  = await fetch(`https://www.googleapis.com/youtube/v3/channels?part=contentDetails&id=${ch}&key=${key}`);
-    const d1  = await r1.json();
-    if (!d1.items?.length) throw new Error("canal");
-    const pid = d1.items[0].contentDetails.relatedPlaylists.uploads;
-    const r2  = await fetch(`https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${pid}&maxResults=20&key=${key}`);
-    const d2  = await r2.json();
-    if (!d2.items?.length) throw new Error("sin videos");
-    const ids = d2.items.map(i=>i.snippet.resourceId.videoId).join(",");
-    const r3  = await fetch(`https://www.googleapis.com/youtube/v3/videos?part=contentDetails&id=${ids}&key=${key}`);
-    const d3  = await r3.json();
-    const dm  = {};
-    d3.items?.forEach(v=>{ dm[v.id]=v.contentDetails?.duration||""; });
-    function secs(iso){ const m=iso.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/); if(!m)return 0; return(parseInt(m[1]||0)*3600)+(parseInt(m[2]||0)*60)+parseInt(m[3]||0); }
-    const long = d2.items.filter(i=>secs(dm[i.snippet.resourceId.videoId]||"")>600);
-    const kw   = ["en vivo","programa","episodio","completo","todo se sabe","tss #"];
-    const best = long.find(i=>kw.some(k=>i.snippet.title.toLowerCase().includes(k)))||long[0];
-    if (!best) throw new Error("sin programa");
-    const vid   = best.snippet.resourceId.videoId;
-    const title = best.snippet.title;
-    setFrame(`https://www.youtube.com/embed/${vid}?rel=0&modestbranding=1`);
-    const prog = document.querySelector(".pc-prog");
-    const sub  = document.querySelector(".pc-sub");
-    if (prog) prog.textContent = title;
-    if (sub)  sub.innerHTML = `<span style="width:6px;height:6px;border-radius:50%;background:var(--violet);display:inline-block;margin-right:6px"></span> ÚLTIMA EMISIÓN &nbsp;·&nbsp; Próximo jueves 20:30`;
-  } catch(e) {
-    setFrame(`https://www.youtube.com/embed?listType=user_uploads&list=todosesabe_tss&rel=0&modestbranding=1`);
-  }
-}
+// loadLatestProgram removed — player thumbnail set by _setPlayerFromVideos()
 function loadYT() {
   const raw=document.getElementById("ytIn").value.trim(); if(!raw)return;
   let id=raw; const m=raw.match(/(?:v=|youtu\.be\/|\/live\/|\/embed\/)([a-zA-Z0-9_-]{11})/);
@@ -1685,7 +1654,7 @@ function switchSrc(src,btn) {
 // ── YOUTUBE API ──
 let allVids=[],curCat="all",curSearch="",curPage=0; const PAGE=8;
 const YT_CACHE_KEY = "tss_yt_cache";
-const YT_CACHE_TTL = 3600000; // 1 hora
+const YT_CACHE_TTL = 21600000; // 6 horas
 
 function getYTCache() {
   try {
@@ -1934,8 +1903,13 @@ window._setPlayerFromVideos = () => {
   const API = TSS_CONFIG.YOUTUBE_API_KEY;
   const CID = TSS_CONFIG.YOUTUBE_CHANNEL_ID;
 
-  // 1. Check for current live stream
-  if(API && CID) {
+  // 1. Check if it's Thursday show time (19:00-23:59 UY time) — only then check for live
+  const now = new Date();
+  const uyHour = now.getUTCHours() - 3; // UTC-3
+  const isThursday = now.getUTCDay() === 4 || (now.getUTCDay() === 5 && uyHour < 0);
+  const isShowTime = isThursday && (uyHour >= 19 || uyHour < 0);
+  
+  if(isShowTime && API && CID) {
     try {
       const r = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CID}&eventType=live&type=video&key=${API}`);
       const d = await r.json();
@@ -1959,9 +1933,13 @@ window.activatePlayer = () => {
   }
 };
 
-// Periodic live check (every 2 min)
+// Periodic live check — only on Thursdays during show time, every 5 min
 setInterval(async () => {
   if(_isLiveNow) return;
+  const now = new Date();
+  const uyHour = now.getUTCHours() - 3;
+  const isThursday = now.getUTCDay() === 4 || (now.getUTCDay() === 5 && uyHour < 0);
+  if(!isThursday || uyHour < 19) return; // Only check Thursday evenings
   const API = TSS_CONFIG.YOUTUBE_API_KEY;
   const CID = TSS_CONFIG.YOUTUBE_CHANNEL_ID;
   if(!API || !CID) return;
@@ -1973,7 +1951,7 @@ setInterval(async () => {
       showToast('🔴','¡El programa está en vivo!');
     }
   } catch(e){}
-}, 120000);
+}, 300000);
 
 
 
