@@ -1921,20 +1921,36 @@ const _setThumb = (id) => {
 
 // Called after videos section loads — sets the main player thumbnail
 window._setPlayerFromVideos = () => {
-  if(_isLiveNow || _currentVideoId) return; // Already set
+  if(_isLiveNow) return;
   // Find the first "programa" (en vivo / transmisión) from loaded videos
   const prog = allVids.find(v => v.cat === 'prog');
-  const video = prog || allVids[0]; // Fallback to most recent video
-  if(video) _setThumb(video.id);
+  const video = prog || allVids[0];
+  if(video) {
+    // Update the player to show this specific program
+    const frame = document.getElementById('ytFrame');
+    const thumb = document.getElementById('ytThumb');
+    if(frame && video.id) {
+      _currentVideoId = video.id;
+      frame.src = `https://www.youtube.com/embed/${video.id}?rel=0&modestbranding=1`;
+      if(thumb) thumb.classList.add('hidden');
+      // Update title bar
+      const prog_el = document.querySelector('.pc-prog');
+      const sub_el = document.querySelector('.pc-sub');
+      if(prog_el) prog_el.textContent = video.title;
+      if(sub_el) sub_el.innerHTML = '<span style="width:6px;height:6px;border-radius:50%;background:var(--violet);display:inline-block;margin-right:6px"></span> ÚLTIMA EMISIÓN · Próximo jueves 20:30';
+    }
+  }
 };
 
 (async function initPlayer(){
+  const thumb = document.getElementById('ytThumb');
+  const frame = document.getElementById('ytFrame');
   const API = TSS_CONFIG.YOUTUBE_API_KEY;
   const CID = TSS_CONFIG.YOUTUBE_CHANNEL_ID;
 
-  // 1. Check if it's Thursday show time (19:00-23:59 UY time) — only then check for live
+  // 1. Check if it's Thursday show time — only then check for live
   const now = new Date();
-  const uyHour = now.getUTCHours() - 3; // UTC-3
+  const uyHour = now.getUTCHours() - 3;
   const isThursday = now.getUTCDay() === 4 || (now.getUTCDay() === 5 && uyHour < 0);
   const isShowTime = isThursday && (uyHour >= 19 || uyHour < 0);
   
@@ -1949,7 +1965,12 @@ window._setPlayerFromVideos = () => {
   // 2. Admin-configured video ID
   if(TSS_CONFIG.LIVE_VIDEO_ID) { _setThumb(TSS_CONFIG.LIVE_VIDEO_ID); return; }
 
-  // 3. Will be set by _setPlayerFromVideos() when videos section loads
+  // 3. Load latest video directly — no API needed
+  // Use uploads playlist embed which always shows the latest video
+  if(frame && thumb) {
+    frame.src = `https://www.youtube.com/embed/videoseries?list=UUSlUxzqTuLnnvhicqMurTdg&rel=0&modestbranding=1`;
+    thumb.classList.add('hidden');
+  }
 })();
 
 // Click to play
