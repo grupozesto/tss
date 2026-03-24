@@ -711,6 +711,22 @@ body.light-mode .glow-bg span{opacity:.03}
 .hero-live.theater .live-sidebar{display:none}
 .theater-btn{background:var(--surface2);border:1px solid var(--border2);border-radius:6px;padding:5px 10px;color:var(--t2);font-size:11px;cursor:pointer;transition:.18s;display:flex;align-items:center;gap:4px}
 .theater-btn:hover{color:var(--t1);border-color:var(--cyan)}
+
+/* ── TEAM MEMBER MODAL ── */
+.team-modal-overlay{position:fixed;inset:0;z-index:900;background:rgba(0,0,0,.75);display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .3s}
+.team-modal-overlay.open{opacity:1;pointer-events:auto}
+.team-modal{background:var(--ink2);border:1px solid var(--border);border-radius:16px;max-width:400px;width:100%;padding:32px 28px;text-align:center;position:relative;transform:translateY(20px);transition:transform .3s}
+.team-modal-overlay.open .team-modal{transform:translateY(0)}
+.team-modal-close{position:absolute;top:12px;right:14px;background:none;border:none;color:var(--t3);font-size:20px;cursor:pointer}
+.team-modal-close:hover{color:var(--t1)}
+.team-modal-avatar{width:90px;height:90px;border-radius:50%;margin:0 auto 16px;background:linear-gradient(135deg,var(--cyan),var(--violet));display:flex;align-items:center;justify-content:center;font-family:var(--ff-display);font-size:28px;font-weight:800;color:var(--ink);border:3px solid rgba(0,229,255,.3);overflow:hidden}
+.team-modal-avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.team-modal-name{font-family:var(--ff-display);font-size:18px;font-weight:800;color:var(--t1);margin-bottom:4px}
+.team-modal-role{font-size:12px;color:var(--cyan);font-weight:600;margin-bottom:14px;text-transform:uppercase;letter-spacing:.5px}
+.team-modal-bio{font-size:13px;color:var(--t2);line-height:1.7;margin-bottom:18px}
+.team-modal-socials{display:flex;justify-content:center;gap:10px}
+.team-modal-socials a{width:38px;height:38px;border-radius:50%;background:var(--surface2);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:16px;transition:.18s;color:var(--t2)}
+.team-modal-socials a:hover{background:var(--cyan);color:var(--ink);border-color:var(--cyan)}
 </style>
 
 
@@ -1226,22 +1242,35 @@ if(window.matchMedia('(display-mode: standalone)').matches || window.navigator.s
   </div>
 </div>
 
+
+<!-- TEAM MEMBER MODAL -->
+<div class="team-modal-overlay" id="teamModal" onclick="if(event.target===this)closeTeamModal()">
+  <div class="team-modal">
+    <button class="team-modal-close" onclick="closeTeamModal()">✕</button>
+    <div class="team-modal-avatar" id="tmAvatar"></div>
+    <div class="team-modal-name" id="tmName"></div>
+    <div class="team-modal-role" id="tmRole"></div>
+    <div class="team-modal-bio" id="tmBio"></div>
+    <div class="team-modal-socials" id="tmSocials"></div>
+  </div>
+</div>
 <div class="toast" id="toast"><span class="toast-icon" id="tI">✅</span><span id="tM">ok</span></div>
 
 <script>
 // ── EQUIPO (dynamic from config) ──
 const DEFAULT_TEAM = [
-  {name:"Nacho Álvarez",role:"Conductor · Periodista",initials:"NA",photo:"",ig:"",tw:"",yt:"",tt:""},
-  {name:"Bernardo Wolloch",role:"Periodista",initials:"BW",photo:"",ig:"",tw:"",yt:"",tt:""},
-  {name:"Alejandro Amaral",role:"Periodista · Bicho",initials:"AA",photo:"",ig:"",tw:"",yt:"",tt:""},
-  {name:"Leonardo Pereyra",role:"Periodista",initials:"LP",photo:"",ig:"",tw:"",yt:"",tt:""},
-  {name:"Patricia Martín",role:"Productora General",initials:"PM",photo:"",ig:"",tw:"",yt:"",tt:""}
+  {name:"Nacho Álvarez",role:"Conductor · Periodista",initials:"NA",photo:"",bio:"Periodista con más de 13 años de trayectoria. Ex conductor de Canal 4. Fundador de Todo Se Sabe.",ig:"nacho.alvarez71",tw:"",yt:"todosesabe_tss",tt:""},
+  {name:"Bernardo Wolloch",role:"Periodista",initials:"BW",photo:"",bio:"Periodista de investigación. Especialista en política y economía.",ig:"",tw:"",yt:"",tt:""},
+  {name:"Alejandro Amaral",role:"Periodista · Bicho",initials:"AA",photo:"",bio:"Periodista e investigador. Cubre seguridad, narcotráfico y casos judiciales.",ig:"",tw:"",yt:"",tt:""},
+  {name:"Leonardo Pereyra",role:"Periodista",initials:"LP",photo:"",bio:"Periodista. Análisis político y cobertura de actualidad.",ig:"",tw:"",yt:"",tt:""},
+  {name:"Patricia Martín",role:"Productora General",initials:"PM",photo:"",bio:"Productora general de Todo Se Sabe. Coordinación editorial y logística del programa.",ig:"",tw:"",yt:"",tt:""}
 ];
 function renderTeamUI(team) {
   const grid = document.getElementById("teamGrid");
   const dotsEl = document.getElementById("teamDots");
   if(!grid) return;
-  grid.innerHTML = team.map(m => {
+  window._teamData = team;
+  grid.innerHTML = team.map((m,i) => {
     const ini = m.initials || m.name.split(' ').map(w=>w[0]).join('');
     const avatar = m.photo
       ? `<img src="${m.photo}" alt="${m.name}" onerror="this.style.display='none';this.parentElement.textContent='${ini}'">`
@@ -1251,7 +1280,7 @@ function renderTeamUI(team) {
     if(m.tw) soc += `<a href="https://x.com/${m.tw}" target="_blank" rel="noopener" class="team-soc" title="X">𝕏</a>`;
     if(m.yt) soc += `<a href="https://youtube.com/@${m.yt}" target="_blank" rel="noopener" class="team-soc" title="YouTube">▶</a>`;
     if(m.tt) soc += `<a href="https://tiktok.com/@${m.tt}" target="_blank" rel="noopener" class="team-soc" title="TikTok">♪</a>`;
-    return `<div class="team-card"><div class="team-avatar">${avatar}</div><div class="team-name">${m.name}</div><div class="team-role">${m.role}</div>${soc?`<div class="team-socials">${soc}</div>`:''}</div>`;
+    return `<div class="team-card" onclick="openTeamModal(${i})" style="cursor:pointer"><div class="team-avatar">${avatar}</div><div class="team-name">${m.name}</div><div class="team-role">${m.role}</div></div>`;
   }).join('');
   // Dots for mobile carousel
   if(dotsEl && window.innerWidth <= 580) {
@@ -1820,6 +1849,33 @@ window.toggleDrawer = (force) => {
   d.classList.toggle('open', open);
   o.classList.toggle('open', open);
   document.body.style.overflow = open ? 'hidden' : '';
+};
+
+// ── TEAM MEMBER MODAL ──
+window.openTeamModal = (i) => {
+  const team = window._teamData;
+  if(!team || !team[i]) return;
+  const m = team[i];
+  const ini = m.initials || m.name.split(' ').map(w=>w[0]).join('');
+  const avatar = m.photo
+    ? `<img src="${m.photo}" alt="${m.name}" onerror="this.style.display='none';this.parentElement.textContent='${ini}'">`
+    : ini;
+  document.getElementById('tmAvatar').innerHTML = avatar;
+  document.getElementById('tmName').textContent = m.name;
+  document.getElementById('tmRole').textContent = m.role;
+  document.getElementById('tmBio').textContent = m.bio || '';
+  let soc = '';
+  if(m.ig) soc += `<a href="https://instagram.com/${m.ig}" target="_blank" rel="noopener" title="Instagram">📷</a>`;
+  if(m.tw) soc += `<a href="https://x.com/${m.tw}" target="_blank" rel="noopener" title="X">𝕏</a>`;
+  if(m.yt) soc += `<a href="https://youtube.com/@${m.yt}" target="_blank" rel="noopener" title="YouTube">▶</a>`;
+  if(m.tt) soc += `<a href="https://tiktok.com/@${m.tt}" target="_blank" rel="noopener" title="TikTok">♪</a>`;
+  document.getElementById('tmSocials').innerHTML = soc || '<span style="font-size:11px;color:var(--t3)">Sin redes sociales</span>';
+  document.getElementById('teamModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+};
+window.closeTeamModal = () => {
+  document.getElementById('teamModal').classList.remove('open');
+  document.body.style.overflow = '';
 };
 let toastT;
 function showToast(icon,msg){document.getElementById("tI").textContent=icon;document.getElementById("tM").textContent=msg;const t=document.getElementById("toast");t.classList.add("show");clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove("show"),3200);}

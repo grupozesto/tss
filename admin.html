@@ -1737,6 +1737,7 @@ function renderTeamAdmin() {
         <div class="fld"><label>𝕏 Twitter/X @</label><input type="text" value="${m.tw||''}" placeholder="usuario" onchange="teamData[${i}].tw=this.value"></div>
         <div class="fld"><label>▶ YouTube @</label><input type="text" value="${m.yt||''}" placeholder="canal" onchange="teamData[${i}].yt=this.value"></div>
         <div class="fld"><label>♪ TikTok @</label><input type="text" value="${m.tt||''}" placeholder="usuario" onchange="teamData[${i}].tt=this.value"></div>
+        <div class="fld" style="grid-column:1/-1"><label>📝 Bio / Resumen</label><input type="text" value="${m.bio||''}" placeholder="Breve descripción de la persona..." onchange="teamData[${i}].bio=this.value"></div>
       </div>
     </div>`;
   }).join('');
@@ -1750,7 +1751,7 @@ function moveTeam(i, dir) {
 }
 
 function addTeamMember() {
-  teamData.push({name:"Nuevo integrante",role:"Rol",initials:"NN",photo:"",ig:"",tw:"",yt:"",tt:""});
+  teamData.push({name:"Nuevo integrante",role:"Rol",initials:"NN",photo:"",bio:"",ig:"",tw:"",yt:"",tt:""});
   renderTeamAdmin();
 }
 
