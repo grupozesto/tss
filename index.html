@@ -1159,61 +1159,6 @@ window._donar     = (nombre,monto) => addDoc(collection(db,"donantes"),{nombre,m
     </div>
   </div>
 </section>
-<div class="divider"></div>
-<!-- NEWSLETTER -->
-<section class="newsletter-section">
-  <div class="nl-inner" style="display:flex;align-items:center;gap:40px;flex-wrap:wrap;text-align:left">
-    <div style="flex:1;min-width:260px">
-      <div style="font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--cyan);margin-bottom:10px">Newsletter semanal</div>
-      <h2 style="font-size:22px;margin-bottom:8px">Que no se te escape nada de TSS</h2>
-      <p style="font-size:13px;color:var(--t2);line-height:1.6;margin:0">Recibí cada semana un resumen con los mejores momentos, los clips más vistos y lo que viene.</p>
-    </div>
-    <div style="flex:1;min-width:280px">
-      <div class="nl-form" style="margin:0">
-        <input class="nl-input" type="email" id="nlEmail" placeholder="tu@email.com">
-        <button class="nl-btn" onclick="suscribirNewsletter()">Suscribirme</button>
-      </div>
-      <div class="nl-sub" style="text-align:left;margin-top:8px">Sin spam. Un email por semana. Te podés dar de baja cuando quieras.</div>
-    </div>
-  </div>
-</section>
-
-
-<!-- COMUNIDAD -->
-<section class="community-section" id="comunidad">
-  <div class="community-wrap">
-    <div class="eyebrow">Comunidad</div>
-    <div class="sec-heading">Foro de <span class="neon-text">TSS</span></div>
-    <div class="sec-sub">Discutí con la comunidad entre programa y programa. Proponé temas, compartí opiniones.</div>
-    <div class="forum-grid">
-      <div>
-        <div class="forum-posts" id="forumPosts">
-          <div style="text-align:center;padding:30px;color:var(--t3);font-size:13px">Cargando publicaciones...</div>
-        </div>
-      </div>
-      <div class="forum-sidebar">
-        <div class="forum-compose">
-          <div style="font-family:var(--ff-display);font-size:14px;font-weight:700;color:var(--t1);margin-bottom:10px">Publicar</div>
-          <input type="text" id="forumTitle" placeholder="Título (opcional)" style="width:100%;background:var(--ink3);border:1px solid var(--border2);border-radius:8px;padding:8px 10px;color:var(--t1);font-size:13px;outline:none;margin-bottom:8px;font-family:var(--ff-body);transition:.18s">
-          <textarea id="forumBody" placeholder="¿Qué opinás? Compartí con la comunidad..." maxlength="500"></textarea>
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
-            <span style="font-size:10px;color:var(--t3)" id="forumCharCount">0/500</span>
-            <button class="vote-add-btn" onclick="submitForumPost()" style="padding:8px 20px">Publicar</button>
-          </div>
-        </div>
-        <div class="forum-rules">
-          <div style="font-family:var(--ff-display);font-size:13px;font-weight:700;color:var(--t1);margin-bottom:8px">📋 Reglas</div>
-          <ul style="font-size:11px;color:var(--t2);line-height:1.8;padding-left:16px">
-            <li>Respeto y buena onda siempre</li>
-            <li>No spam ni autopromoción</li>
-            <li>Datos con fuente cuando se pueda</li>
-            <li>Los moderadores pueden eliminar contenido</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
 <!-- EQUIPO -->
 <section id="equipo">
   <div class="section-wrap">
