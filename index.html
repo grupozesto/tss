@@ -898,8 +898,7 @@ if(window.matchMedia('(display-mode: standalone)').matches || window.navigator.s
     <input type="text" placeholder="Buscar videos..." oninput="filterVids(this.value)" aria-label="Buscar videos">
   </div>
   <div class="nav-auth" id="navAuth">
-    <button class="btn-ghost" onclick="openModal('login')" aria-label="Iniciar sesión">Iniciar sesión</button>
-    <button class="btn-cta" onclick="openModal('register')" aria-label="Crear cuenta">Registrarse</button>
+    <button class="btn-cta" onclick="openModal('login')" aria-label="Iniciar sesión">Iniciar sesión</button>
   </div>
   <div id="navUser" style="display:none;position:relative">
     <div class="nav-avatar" id="userAv" onclick="toggleMenu()">?</div>
@@ -918,19 +917,18 @@ if(window.matchMedia('(display-mode: standalone)').matches || window.navigator.s
 <div class="mobile-drawer-overlay" id="drawerOverlay" onclick="toggleDrawer(false)"></div>
 <div class="mobile-drawer" id="mobileDrawer">
   <button class="mobile-drawer-close" onclick="toggleDrawer(false)" aria-label="Cerrar menú">✕</button>
-  <a href="#live" class="nlnk" onclick="toggleDrawer(false)">🔴 En Vivo</a>
-  <a href="#videos" class="nlnk" onclick="toggleDrawer(false)">▶ Videos</a>
-  <a href="#noticias" class="nlnk" onclick="toggleDrawer(false)">📰 Noticias</a>
-  <a href="#exclusivo" class="nlnk" onclick="toggleDrawer(false)">⭐ Exclusivo</a>
-  <a href="#equipo" class="nlnk" onclick="toggleDrawer(false)">👥 Equipo</a>
-  <a href="#votacion" class="nlnk" onclick="toggleDrawer(false)">🗳️ Votación</a>
+  <a href="#live" class="nlnk" onclick="toggleDrawer(false)">En Vivo</a>
+  <a href="#videos" class="nlnk" onclick="toggleDrawer(false)">Videos</a>
+  <a href="#noticias" class="nlnk" onclick="toggleDrawer(false)">Noticias</a>
+  <a href="#exclusivo" class="nlnk" onclick="toggleDrawer(false)">Exclusivo</a>
+  <a href="#equipo" class="nlnk" onclick="toggleDrawer(false)">Equipo</a>
+  <a href="#votacion" class="nlnk" onclick="toggleDrawer(false)">Votación</a>
   <div class="mobile-drawer-divider"></div>
-  <a href="mailto:denuncias@todosesabe.uy" class="nlnk" style="color:var(--cyan)">🚨 Denuncias</a>
-  <a href="noticias.html" class="nlnk">📄 Todas las noticias</a>
+  <a href="mailto:denuncias@todosesabe.uy" class="nlnk" style="color:var(--cyan)">Denuncias</a>
+  <a href="noticias.html" class="nlnk">Todas las noticias</a>
   <div class="mobile-drawer-divider"></div>
   <div id="drawerAuth" style="display:flex;flex-direction:column;gap:8px;padding:8px 16px">
     <button class="btn-cta" style="width:100%;text-align:center" onclick="openModal('login');toggleDrawer(false)">Iniciar sesión</button>
-    <button class="btn-ghost" style="width:100%;text-align:center;border:1px solid var(--border)" onclick="openModal('register');toggleDrawer(false)">Registrarse</button>
   </div>
 </div>
 
@@ -1011,8 +1009,7 @@ if(window.matchMedia('(display-mode: standalone)').matches || window.navigator.s
           <div class="preguntas-list" id="preguntasList"></div>
           <div id="preguntaFormArea">
             <div class="chat-login-prompt">
-              <p>Iniciá sesión para hacer preguntas 🙋</p>
-              <button onclick="openModal('login')">Iniciar sesión</button>
+              
             </div>
           </div>
         </div>
@@ -1408,8 +1405,8 @@ function renderCountdown() {
         <div class="cd-block"><div class="cd-num">${String(s).padStart(2,"0")}</div><div class="cd-unit">seg</div></div>
       </div>
       <div class="cd-topic">
-        <div class="cd-topic-label">Tema del jueves</div>
-        <div class="cd-topic-text">${TSS_CONFIG.SHOW_TOPIC}</div>
+        
+        <div class="cd-topic-text"></div>
       </div>
       <button class="cd-notif-btn" onclick="requestPushPermission()">🔔 Avisarme cuando empiece</button>
     </div>`;
@@ -1459,8 +1456,8 @@ window.onUserLoggedIn = u => {
 window.onUserLoggedOut = () => {
   document.getElementById("navAuth").style.display = "flex";
   document.getElementById("navUser").style.display = "none";
-  document.getElementById("chatFormArea").innerHTML = `<div class="chat-login-prompt"><p>Iniciá sesión para chatear 💬</p><button onclick="openModal('login')">Iniciar sesión</button></div>`;
-  document.getElementById("preguntaFormArea").innerHTML = `<div class="chat-login-prompt"><p>Iniciá sesión para hacer preguntas 🙋</p><button onclick="openModal('login')">Iniciar sesión</button></div>`;
+  document.getElementById("chatFormArea").innerHTML = ``;
+  document.getElementById("preguntaFormArea").innerHTML = ``;
 };
 
 function setLoading(id,on) { const b=document.getElementById(id); if(!b)return; b.disabled=on; b.textContent=on?"Cargando...":(id==="btnLogin"?"Ingresar a TSS":"Crear cuenta en TSS"); }
