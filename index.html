@@ -570,6 +570,13 @@ body.light-mode .glow-bg span{opacity:.03}
   .pc-sub{font-size:10px}
   .src-switch{display:none}
   .live-sidebar{max-height:320px}
+  .chat-login-prompt{gap:6px;padding:8px}
+  .chat-login-prompt p{font-size:11px}
+  .chat-login-prompt button{padding:7px 18px;font-size:11px}
+  #chatOfflineWrap{gap:8px !important;padding:12px 10px !important}
+  #chatOfflineWrap>div:first-child{font-size:22px !important}
+  #chatNextShow{font-size:11px !important;padding:4px 12px !important}
+
   .ls-tabs{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
   .ls-tabs::-webkit-scrollbar{display:none}
   .ls-tab{padding:10px 8px;font-size:9px;letter-spacing:0;gap:2px;white-space:nowrap;flex-shrink:0}
@@ -1805,54 +1812,100 @@ window.toggleTheater = () => {
   const isTheater = hero.classList.contains('theater');
   showToast(isTheater ? '🖥️' : '📺', isTheater ? 'Modo teatro activado' : 'Vista normal');
 };
-// ── YOUTUBE LAZY LOAD ──
-(function(){
+// ── SMART PLAYER: last live + auto-detect current live ──
+let _currentVideoId = null;
+let _isLiveNow = false;
+
+// Load: first check if there's a live NOW, then fallback to last completed live
+(async function initPlayer(){
   const thumb = document.getElementById('ytThumb');
-  if(!thumb) return;
-  // Try to get thumbnail from config or channel
-  const vid = TSS_CONFIG.YOUTUBE_LIVE_ID || '';
-  if(vid) {
-    thumb.style.backgroundImage = `url(https://img.youtube.com/vi/${vid}/maxresdefault.jpg)`;
-  } else {
-    // Fallback: use channel banner or a default dark bg
-    thumb.style.background = 'linear-gradient(135deg, #0d0e14 0%, #1c1e2a 50%, rgba(0,229,255,.05) 100%)';
+  const frame = document.getElementById('ytFrame');
+  const API = TSS_CONFIG.YOUTUBE_API_KEY;
+  const CID = TSS_CONFIG.YOUTUBE_CHANNEL_ID;
+  if(!thumb || !frame || !API || !CID) return;
+
+  // 1. Check for current live stream
+  try {
+    const liveRes = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CID}&eventType=live&type=video&key=${API}`);
+    const liveData = await liveRes.json();
+    if(liveData.items && liveData.items.length > 0) {
+      const liveId = liveData.items[0].id.videoId;
+      _currentVideoId = liveId;
+      _isLiveNow = true;
+      // Auto-activate: load player, hide thumb, enable chat
+      frame.src = `https://www.youtube.com/embed/${liveId}?autoplay=1&rel=0`;
+      thumb.classList.add('hidden');
+      document.getElementById('vcCount').textContent = '🔴 En vivo';
+      const offWrap = document.getElementById('chatOfflineWrap');
+      const liveWrap = document.getElementById('chatLiveWrap');
+      const reactBar = document.getElementById('reactionsBar');
+      if(offWrap) offWrap.style.display = 'none';
+      if(liveWrap) liveWrap.style.display = 'flex';
+      if(reactBar) reactBar.style.display = 'flex';
+      return; // Live found, done
+    }
+  } catch(e){}
+
+  // 2. No live — load last completed live stream as thumbnail
+  try {
+    const vid = TSS_CONFIG.LIVE_VIDEO_ID; // Admin-configured ID
+    if(vid) {
+      _currentVideoId = vid;
+      thumb.style.backgroundImage = `url(https://img.youtube.com/vi/${vid}/maxresdefault.jpg)`;
+      return;
+    }
+    // 3. No admin ID — fetch last live/completed from channel
+    const lastRes = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CID}&eventType=completed&type=video&order=date&maxResults=1&key=${API}`);
+    const lastData = await lastRes.json();
+    if(lastData.items && lastData.items.length > 0) {
+      const lastId = lastData.items[0].id.videoId;
+      _currentVideoId = lastId;
+      thumb.style.backgroundImage = `url(https://img.youtube.com/vi/${lastId}/maxresdefault.jpg)`;
+    } else {
+      thumb.style.background = '#0d0e14';
+    }
+  } catch(e){
+    thumb.style.background = '#0d0e14';
   }
 })();
+
+// Click to play
 window.activatePlayer = () => {
   const thumb = document.getElementById('ytThumb');
   const frame = document.getElementById('ytFrame');
-  const vid = TSS_CONFIG.YOUTUBE_LIVE_ID || '';
-  if(vid && frame) {
-    frame.src = `https://www.youtube.com/embed/${vid}?autoplay=1&rel=0`;
+  if(_currentVideoId && frame) {
+    frame.src = `https://www.youtube.com/embed/${_currentVideoId}?autoplay=1&rel=0`;
     thumb.classList.add('hidden');
-  } else {
-    showToast('📺','Configurá el video ID en el panel de admin');
   }
 };
-// ── AUTO LIVE DETECTION ──
-async function checkAutoLive() {
+
+// Periodic live check (every 2 min) — auto-activate if live starts
+setInterval(async () => {
+  if(_isLiveNow) return; // Already live
   try {
     const API = TSS_CONFIG.YOUTUBE_API_KEY;
     const CID = TSS_CONFIG.YOUTUBE_CHANNEL_ID;
     const res = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CID}&eventType=live&type=video&key=${API}`);
     const data = await res.json();
-    if (data.items && data.items.length > 0) {
+    if(data.items && data.items.length > 0) {
       const liveId = data.items[0].id.videoId;
+      _currentVideoId = liveId;
+      _isLiveNow = true;
       const frame = document.getElementById('ytFrame');
-      if (frame && frame.src.includes('about:blank')) {
-        frame.src = `https://www.youtube.com/embed/${liveId}?autoplay=1&rel=0`;
-        document.getElementById('vcCount').textContent = '🔴 En vivo';
-        document.getElementById('chatOfflineWrap').style.display = 'none';
-        document.getElementById('chatLiveWrap').style.display = 'flex';
-        const reactBar = document.getElementById('reactionsBar');
-        if(reactBar) reactBar.style.display = 'flex';
-      }
+      const thumb = document.getElementById('ytThumb');
+      if(frame) frame.src = `https://www.youtube.com/embed/${liveId}?autoplay=1&rel=0`;
+      if(thumb) thumb.classList.add('hidden');
+      document.getElementById('vcCount').textContent = '🔴 En vivo';
+      const offWrap = document.getElementById('chatOfflineWrap');
+      const liveWrap = document.getElementById('chatLiveWrap');
+      const reactBar = document.getElementById('reactionsBar');
+      if(offWrap) offWrap.style.display = 'none';
+      if(liveWrap) liveWrap.style.display = 'flex';
+      if(reactBar) reactBar.style.display = 'flex';
+      showToast('🔴','¡El programa está en vivo!');
     }
-  } catch(e) {}
-}
-// Check every 2 minutes
-checkAutoLive();
-setInterval(checkAutoLive, 120000);
+  } catch(e){}
+}, 120000);
 
 
 
