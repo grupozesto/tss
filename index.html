@@ -130,7 +130,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;opacity:.022;pointer-ev
 .g3{width:350px;height:350px;background:var(--rose);opacity:.025;top:50%;left:50%;transform:translate(-50%,-50%)}
 
 /* ── TOPNAV ── */
-.topnav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);background:rgba(8,9,13,.88);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 26px;gap:18px;z-index:500}
+.topnav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);background:rgba(8,9,13,.96);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 26px;gap:18px;z-index:500}
 .nav-logo img{height:52px;width:auto;display:block;border-radius:12px;background:none;object-fit:contain}
 .nav-live-chip{display:flex;align-items:center;gap:8px;background:rgba(0,229,255,.07);border:1px solid rgba(0,229,255,.2);border-radius:6px;padding:6px 14px;flex-shrink:0}
 .lpulse{width:7px;height:7px;border-radius:50%;background:var(--rose);animation:lp 1.8s ease-in-out infinite;flex-shrink:0}
@@ -845,7 +845,7 @@ window._donar     = (nombre,monto) => addDoc(collection(db,"donantes"),{nombre,m
     <a href="#live"      class="nlnk active"  onclick="setActive(this)">En Vivo</a>
     <a href="#videos"    class="nlnk"         onclick="setActive(this)">Videos</a>
     <a href="#noticias"  class="nlnk"         onclick="setActive(this)">Noticias</a>
-    <a href="#exclusivo" class="nlnk"         onclick="setActive(this)">Exclusivo</a>
+    <a href="noticias.html" class="nlnk">📰 Portal</a>
     <a href="#equipo"    class="nlnk"         onclick="setActive(this)">Equipo</a>
     <a href="mailto:denuncias@todosesabe.uy" class="nlnk" style="color:var(--cyan);display:flex;align-items:center;gap:5px">
       <span style="font-size:15px">🚨</span>
@@ -1091,29 +1091,6 @@ window._donar     = (nombre,monto) => addDoc(collection(db,"donantes"),{nombre,m
 </section>
 <div class="divider"></div>
 
-
-<!-- MURO DONANTES -->
-<section class="donors-section">
-  <div class="donors-wrap">
-    <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap">
-      <div style="flex:1;min-width:260px">
-        <div class="eyebrow">Comunidad</div>
-        <div class="sec-heading" style="margin-bottom:6px">Quiénes sostienen TSS</div>
-        <div style="font-size:13px;color:var(--t2)">Las personas que hacen posible el periodismo independiente.</div>
-      </div>
-      <div id="donantesGrid" style="flex:2;min-width:260px">
-        <div style="display:flex;align-items:center;gap:16px;padding:24px;background:var(--surface);border:1px solid var(--border);border-radius:12px">
-          <div style="font-size:36px">💛</div>
-          <div>
-            <div style="font-size:14px;font-weight:700;color:var(--t1);margin-bottom:4px">Sumate al muro de apoyo</div>
-            <div style="font-size:12px;color:var(--t2);line-height:1.6">Cuando se activen las donaciones, los nombres de quienes apoyen aparecerán acá. Sé parte del periodismo libre.</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-<div class="divider"></div>
 
 <!-- VOTACION TEMAS -->
 <section id="votacion" aria-label="Votación de temas" class="votacion-section">
@@ -1379,7 +1356,7 @@ function renderCountdown() {
         <div class="cd-topic-label">Tema del jueves</div>
         <div class="cd-topic-text">${TSS_CONFIG.SHOW_TOPIC}</div>
       </div>
-      <button class="cd-notif-btn" onclick="activarNotificacion()">🔔 Avisarme cuando empiece" onclick="requestPushPermission()</button>
+      <button class="cd-notif-btn" onclick="requestPushPermission()">🔔 Avisarme cuando empiece</button>
     </div>`;
 }
 renderCountdown();
