@@ -222,7 +222,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;opacity:.022;pointer-ev
 .yt-loader button:hover{background:#33eeff}
 
 /* sidebar */
-.live-sidebar{border-left:1px solid var(--border);display:flex;flex-direction:column;background:var(--ink2)}
+.live-sidebar{border-left:1px solid var(--border);display:flex;flex-direction:column;background:var(--ink2);overflow:hidden}
 .ls-tabs{display:flex;border-bottom:1px solid var(--border)}
 .ls-tab{flex:1;padding:11px 6px;border:none;background:transparent;font-family:var(--ff-display);font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--t3);border-bottom:2px solid transparent;transition:.18s;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:4px;line-height:1}
 .ls-tab.active{color:var(--cyan);border-bottom-color:var(--cyan)}
@@ -230,7 +230,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;opacity:.022;pointer-ev
 .ls-head{display:flex;align-items:center;justify-content:space-between;padding:12px 14px 8px}
 .ls-head-t{font-family:var(--ff-display);font-size:14px;font-weight:700;color:var(--t1);letter-spacing:.5px}
 .ls-count{font-size:11px;font-weight:700;color:var(--rose);display:flex;align-items:center;gap:4px}
-.tab-panel{display:none;flex:1;flex-direction:column;overflow:hidden;min-height:300px}
+.tab-panel{display:none;flex:1;flex-direction:column;overflow:hidden;min-height:0}
 .tab-panel.active{display:flex}
 
 /* chat */
@@ -837,23 +837,22 @@ window._donar     = (nombre,monto) => addDoc(collection(db,"donantes"),{nombre,m
 </head>
 <body>
 
-<!-- PWA SPLASH SCREEN -->
-<div id="splashScreen" style="position:fixed;inset:0;z-index:9999;background:#0d0e14;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;transition:opacity .4s">
-  <img src="icon-192.png" alt="TSS" style="height:80px;animation:splashPulse 1.2s ease-in-out infinite">
-  <div style="font-family:'Inter',sans-serif;font-size:11px;color:rgba(255,255,255,.3);letter-spacing:3px;text-transform:uppercase">Todo Se Sabe</div>
+<!-- PWA SPLASH SCREEN (only in standalone/PWA mode) -->
+<div id="splashScreen" style="position:fixed;inset:0;z-index:9999;background:#000;display:none;align-items:center;justify-content:center">
+  <img src="icon-192.png" alt="TSS" style="height:120px;width:auto">
 </div>
-<style>
-@keyframes splashPulse{0%,100%{opacity:.7;transform:scale(1)}50%{opacity:1;transform:scale(1.05)}}
-</style>
 <script>
-window.addEventListener('load', () => {
-  const splash = document.getElementById('splashScreen');
-  if(!splash) return;
-  setTimeout(() => {
-    splash.style.opacity = '0';
-    setTimeout(() => splash.remove(), 400);
-  }, 1200);
-});
+if(window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
+  const s = document.getElementById('splashScreen');
+  s.style.display = 'flex';
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      s.style.transition = 'opacity .5s';
+      s.style.opacity = '0';
+      setTimeout(() => s.remove(), 500);
+    }, 1500);
+  });
+}
 </script>
 
 <div class="read-progress"><div class="read-progress-fill" id="readProgress"></div></div>
@@ -980,13 +979,13 @@ window.addEventListener('load', () => {
             allow="autoplay"></iframe>
         </div>
         <!-- Estado fuera de vivo -->
-        <div id="chatOfflineWrap" style="flex:1;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;padding:18px 14px;text-align:center">
-          <div style="font-size:28px;opacity:.7">📅</div>
-          <div style="font-family:var(--ff-display);font-size:14px;font-weight:700;color:var(--t1)">Chat en vivo los jueves</div>
-          <div style="font-size:12px;color:var(--t2);line-height:1.7;max-width:240px">
+        <div id="chatOfflineWrap" style="flex:1;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;padding:14px 12px;text-align:center;min-height:0;overflow:hidden">
+          <div style="font-size:24px;opacity:.7">📅</div>
+          <div style="font-family:var(--ff-display);font-size:13px;font-weight:700;color:var(--t1)">Chat en vivo los jueves</div>
+          <div style="font-size:11px;color:var(--t2);line-height:1.5;max-width:220px">
             Se activa automáticamente<br>cuando empieza el programa.
           </div>
-          <div style="font-size:12px;color:var(--cyan);font-weight:700;margin-top:2px;padding:6px 16px;border:1px solid rgba(0,229,255,.2);border-radius:20px;background:rgba(0,229,255,.05)" id="chatNextShow"></div>
+          <div style="font-size:11px;color:var(--cyan);font-weight:700;margin-top:2px;padding:4px 12px;border:1px solid rgba(0,229,255,.2);border-radius:20px;background:rgba(0,229,255,.05)" id="chatNextShow"></div>
         </div>
         <div id="chatFormArea"></div>
       </div>
