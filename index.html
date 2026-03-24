@@ -114,7 +114,7 @@ html{scroll-behavior:smooth;scroll-padding-top:80px;overflow-x:hidden}
   --rose:#ff4d8d;--gold:#ffc947;
   --t1:#f0f2ff;--t2:#9094b0;--t3:#50536a;
   --ff-display:'Inter',sans-serif;--ff-body:'Inter',sans-serif;
-  --nav-h:72px;
+  --nav-h:76px;
 }
 body{background:var(--ink);color:var(--t1);font-family:var(--ff-body);font-size:14px;overflow-x:hidden;-webkit-text-size-adjust:100%}
 a{color:inherit;text-decoration:none}
@@ -133,7 +133,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;opacity:.022;pointer-ev
 
 /* ── TOPNAV ── */
 .topnav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);background:rgba(8,9,13,.96);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 26px;gap:18px;z-index:500}
-.nav-logo img{height:56px;width:auto;display:block;border-radius:0;background:none;object-fit:contain}
+.nav-logo img{height:50px;width:auto;display:block;border-radius:0;background:none;object-fit:contain}
 .nav-live-chip{display:flex;align-items:center;gap:8px;background:rgba(0,229,255,.07);border:1px solid rgba(0,229,255,.2);border-radius:6px;padding:6px 14px;flex-shrink:0}
 .lpulse{width:7px;height:7px;border-radius:50%;background:var(--rose);animation:lp 1.8s ease-in-out infinite;flex-shrink:0}
 @keyframes lp{0%{box-shadow:0 0 0 0 rgba(255,77,141,.7)}70%{box-shadow:0 0 0 7px rgba(255,77,141,0)}100%{box-shadow:0 0 0 0 rgba(255,77,141,0)}}
@@ -836,6 +836,25 @@ window._donar     = (nombre,monto) => addDoc(collection(db,"donantes"),{nombre,m
 </script>
 </head>
 <body>
+
+<!-- PWA SPLASH SCREEN -->
+<div id="splashScreen" style="position:fixed;inset:0;z-index:9999;background:#0d0e14;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;transition:opacity .4s">
+  <img src="icon-192.png" alt="TSS" style="height:80px;animation:splashPulse 1.2s ease-in-out infinite">
+  <div style="font-family:'Inter',sans-serif;font-size:11px;color:rgba(255,255,255,.3);letter-spacing:3px;text-transform:uppercase">Todo Se Sabe</div>
+</div>
+<style>
+@keyframes splashPulse{0%,100%{opacity:.7;transform:scale(1)}50%{opacity:1;transform:scale(1.05)}}
+</style>
+<script>
+window.addEventListener('load', () => {
+  const splash = document.getElementById('splashScreen');
+  if(!splash) return;
+  setTimeout(() => {
+    splash.style.opacity = '0';
+    setTimeout(() => splash.remove(), 400);
+  }, 1200);
+});
+</script>
 
 <div class="read-progress"><div class="read-progress-fill" id="readProgress"></div></div>
 <button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Volver arriba" aria-label="Volver al inicio de la página" role="button">↑</button>
