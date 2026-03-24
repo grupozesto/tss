@@ -673,8 +673,58 @@ body.light-mode .glow-bg span{opacity:.03}
 .onb-next:hover{background:#33eeff}
 .onb-skip{background:none;border:none;color:var(--t3);font-size:12px;cursor:pointer;transition:.18s}
 .onb-skip:hover{color:var(--t2)}
+
+/* ── HAMBURGER MOBILE MENU ── */
+.nav-hamburger{display:none;background:none;border:none;cursor:pointer;padding:6px;z-index:510;flex-shrink:0}
+.nav-hamburger svg{width:24px;height:24px;fill:var(--t1)}
+.mobile-drawer{position:fixed;top:0;right:-280px;width:270px;height:100vh;background:var(--ink2);border-left:1px solid var(--border);z-index:600;transition:right .3s ease;padding:70px 20px 20px;display:flex;flex-direction:column;gap:4px;overflow-y:auto}
+.mobile-drawer.open{right:0}
+.mobile-drawer-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:590;opacity:0;pointer-events:none;transition:opacity .3s}
+.mobile-drawer-overlay.open{opacity:1;pointer-events:auto}
+.mobile-drawer .nlnk{display:block;padding:12px 16px;border-radius:8px;font-size:15px;color:var(--t1);text-decoration:none}
+.mobile-drawer .nlnk:hover,.mobile-drawer .nlnk:active{background:var(--surface2);color:var(--cyan)}
+.mobile-drawer-close{position:absolute;top:16px;right:16px;background:none;border:none;color:var(--t2);font-size:22px;cursor:pointer}
+.mobile-drawer-divider{height:1px;background:var(--border);margin:8px 0}
+@media(max-width:900px){.nav-hamburger{display:flex;align-items:center}}
 </style>
 
+
+<!-- Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Todo Se Sabe",
+  "alternateName": "TSS",
+  "url": "https://grupozesto.github.io/tss/",
+  "description": "Programa de periodismo independiente con Nacho Álvarez. En vivo los jueves 20:30hs.",
+  "publisher": {
+    "@type": "Organization",
+    "name": "Todo Se Sabe",
+    "logo": {"@type": "ImageObject", "url": "https://grupozesto.github.io/tss/icon-512.png"}
+  },
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": "https://grupozesto.github.io/tss/#videos",
+    "query-input": "required name=search_term_string"
+  }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "VideoObject",
+  "name": "Todo Se Sabe — Programa en vivo",
+  "description": "Periodismo independiente con Nacho Álvarez y equipo. Todos los jueves 20:30hs en vivo.",
+  "thumbnailUrl": "https://grupozesto.github.io/tss/icon-512.png",
+  "uploadDate": "2026-01-01",
+  "publication": {
+    "@type": "BroadcastEvent",
+    "isLiveBroadcast": true,
+    "startDate": "2026-03-27T20:30:00-03:00"
+  }
+}
+</script>
 <!-- Firebase -->
 <script type="module">
 import { initializeApp }   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -801,7 +851,30 @@ window._donar     = (nombre,monto) => addDoc(collection(db,"donantes"),{nombre,m
       <div class="umitem danger" onclick="doLogout()">↩ Cerrar sesión</div>
     </div>
   </div>
+  <button class="nav-hamburger" onclick="toggleDrawer()" aria-label="Menú">
+    <svg viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+  </button>
 </nav>
+
+<!-- Mobile Drawer -->
+<div class="mobile-drawer-overlay" id="drawerOverlay" onclick="toggleDrawer(false)"></div>
+<div class="mobile-drawer" id="mobileDrawer">
+  <button class="mobile-drawer-close" onclick="toggleDrawer(false)">✕</button>
+  <a href="#live" class="nlnk" onclick="toggleDrawer(false)">🔴 En Vivo</a>
+  <a href="#videos" class="nlnk" onclick="toggleDrawer(false)">▶ Videos</a>
+  <a href="#noticias" class="nlnk" onclick="toggleDrawer(false)">📰 Noticias</a>
+  <a href="#exclusivo" class="nlnk" onclick="toggleDrawer(false)">⭐ Exclusivo</a>
+  <a href="#equipo" class="nlnk" onclick="toggleDrawer(false)">👥 Equipo</a>
+  <a href="#votacion" class="nlnk" onclick="toggleDrawer(false)">🗳️ Votación</a>
+  <div class="mobile-drawer-divider"></div>
+  <a href="mailto:denuncias@todosesabe.uy" class="nlnk" style="color:var(--cyan)">🚨 Denuncias</a>
+  <a href="noticias.html" class="nlnk">📄 Todas las noticias</a>
+  <div class="mobile-drawer-divider"></div>
+  <div id="drawerAuth" style="display:flex;flex-direction:column;gap:8px;padding:8px 16px">
+    <button class="btn-cta" style="width:100%;text-align:center" onclick="openModal('login');toggleDrawer(false)">Iniciar sesión</button>
+    <button class="btn-ghost" style="width:100%;text-align:center;border:1px solid var(--border)" onclick="openModal('register');toggleDrawer(false)">Registrarse</button>
+  </div>
+</div>
 
 <script>window.scrollTo(0,0);if(window.location.hash)history.replaceState(null,null," ");</script>
 <div class="page" role="main">
@@ -939,7 +1012,7 @@ window._donar     = (nombre,monto) => addDoc(collection(db,"donantes"),{nombre,m
     <div class="news-dateline">Periodismo independiente · Todo Se Sabe</div>
     <div class="news-layout">
       <a href="noticias.html" class="news-main" style="text-decoration:none;color:inherit">
-        <div class="news-main-img"><img loading="lazy" src="https://cdn.dl.uy/solimg/894x503/39/39554.jpg" alt=""></div>
+        <div class="news-main-img"><img loading="lazy" src="https://cdn.dl.uy/solimg/894x503/39/39554.jpg" alt="Análisis de Canal 4 - Todo Se Sabe"></div>
         <div class="news-main-body">
           <div class="news-cat">Política</div>
           <h3>El análisis que Canal 4 no quiso emitir</h3>
@@ -986,9 +1059,9 @@ window._donar     = (nombre,monto) => addDoc(collection(db,"donantes"),{nombre,m
       <span style="padding:10px 24px;border-radius:20px;background:rgba(159,122,234,.15);border:1px solid rgba(159,122,234,.3);color:var(--violet);font-size:13px;font-weight:700;white-space:nowrap">🚧 Próximamente</span>
     </div>
     <div class="excl-grid">
-      <div class="excl-card fade-up" onclick="requireLogin()"><div class="excl-card-thumb"><img loading="lazy" src="https://cdn.dl.uy/solimg/894x503/39/39554.jpg" alt=""><div class="excl-lock-ov"><div class="excl-lock-icon"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg></div></div></div><div class="excl-card-body"><h4>Programa completo — Episodio 1</h4><p>4h · Solo suscriptores</p></div></div>
-      <div class="excl-card fade-up" onclick="requireLogin()"><div class="excl-card-thumb"><img loading="lazy" src="https://cdn.dl.uy/solimg/894x503/35/35388.jpg" alt=""><div class="excl-lock-ov"><div class="excl-lock-icon"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg></div></div></div><div class="excl-card-body"><h4>Detrás de escena: así se hace TSS</h4><p>45 min · Solo suscriptores</p></div></div>
-      <div class="excl-card fade-up" onclick="requireLogin()"><div class="excl-card-thumb"><img loading="lazy" src="https://cdn.dl.uy/solimg/894x503/39/39551.jpg" alt=""><div class="excl-lock-ov"><div class="excl-lock-icon"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg></div></div></div><div class="excl-card-body"><h4>Entrevista extendida — La que no salió al aire</h4><p>1h 20min · Solo suscriptores</p></div></div>
+      <div class="excl-card fade-up" onclick="requireLogin()"><div class="excl-card-thumb"><img loading="lazy" src="https://cdn.dl.uy/solimg/894x503/39/39554.jpg" alt="Análisis de Canal 4 - Todo Se Sabe"><div class="excl-lock-ov"><div class="excl-lock-icon"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg></div></div></div><div class="excl-card-body"><h4>Programa completo — Episodio 1</h4><p>4h · Solo suscriptores</p></div></div>
+      <div class="excl-card fade-up" onclick="requireLogin()"><div class="excl-card-thumb"><img loading="lazy" src="https://cdn.dl.uy/solimg/894x503/35/35388.jpg" alt="Detrás de escena de TSS"><div class="excl-lock-ov"><div class="excl-lock-icon"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg></div></div></div><div class="excl-card-body"><h4>Detrás de escena: así se hace TSS</h4><p>45 min · Solo suscriptores</p></div></div>
+      <div class="excl-card fade-up" onclick="requireLogin()"><div class="excl-card-thumb"><img loading="lazy" src="https://cdn.dl.uy/solimg/894x503/39/39551.jpg" alt="Entrevista extendida TSS"><div class="excl-lock-ov"><div class="excl-lock-icon"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg></div></div></div><div class="excl-card-body"><h4>Entrevista extendida — La que no salió al aire</h4><p>1h 20min · Solo suscriptores</p></div></div>
     </div>
   </div>
 </section>
@@ -1116,9 +1189,10 @@ window._donar     = (nombre,monto) => addDoc(collection(db,"donantes"),{nombre,m
     <div style="font-family:var(--ff-display);font-size:18px;font-weight:800;color:var(--t1);margin-bottom:6px">Compartir video</div>
     <div style="font-size:12px;color:var(--t2);margin-bottom:4px" id="shareTitle"></div>
     <div class="share-options">
-      <div class="share-opt" onclick="shareWA()"><div class="share-opt-icon" style="background:rgba(37,211,102,.15)">📱</div> Compartir por WhatsApp</div>
-      <div class="share-opt" onclick="shareTwitter()"><div class="share-opt-icon" style="background:rgba(29,161,242,.15)">🐦</div> Compartir en Twitter/X</div>
-      <div class="share-opt" onclick="shareTelegram()"><div class="share-opt-icon" style="background:rgba(0,136,204,.15)">✈️</div> Compartir en Telegram</div>
+      <div class="share-opt" onclick="shareWA()"><div class="share-opt-icon" style="background:rgba(37,211,102,.15)">📱</div> WhatsApp</div>
+      <div class="share-opt" onclick="shareFB()"><div class="share-opt-icon" style="background:rgba(24,119,242,.15)">📘</div> Facebook</div>
+      <div class="share-opt" onclick="shareTwitter()"><div class="share-opt-icon" style="background:rgba(29,161,242,.15)">🐦</div> Twitter/X</div>
+      <div class="share-opt" onclick="shareTelegram()"><div class="share-opt-icon" style="background:rgba(0,136,204,.15)">✈️</div> Telegram</div>
       <div class="share-opt" onclick="copyLink()"><div class="share-opt-icon" style="background:rgba(0,229,255,.1)">🔗</div> Copiar link</div>
     </div>
   </div>
@@ -1578,6 +1652,7 @@ function openShare(e,id,title) {
 }
 function closeShare(){document.getElementById("shareModal").classList.remove("open");document.body.style.overflow="";}
 function shareWA()       { window.open(`https://wa.me/?text=${encodeURIComponent(shareTitle2+" - "+shareUrl)}`,"_blank"); closeShare(); }
+function shareFB()       { window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`,"_blank"); closeShare(); }
 function shareTwitter()  { window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareTitle2)}&url=${encodeURIComponent(shareUrl)}&via=todosesabe_tss`,"_blank"); closeShare(); }
 function shareTelegram() { window.open(`https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareTitle2)}`,"_blank"); closeShare(); }
 function copyLink()      { navigator.clipboard.writeText(shareUrl).then(()=>{showToast("🔗","¡Link copiado!");closeShare();}); }
@@ -1653,20 +1728,50 @@ window.addEventListener("scroll", () => {
 // ── DARK/LIGHT MODE ──
 function toggleTheme() {
   const isLight = document.body.classList.toggle("light-mode");
-  const btn = document.getElementById("themeToggle");
-  if (btn) btn.textContent = isLight ? "🌞" : "🌙";
   localStorage.setItem("tss-theme", isLight ? "light" : "dark");
 }
-// Restore saved theme
 if (localStorage.getItem("tss-theme") === "light") {
   document.body.classList.add("light-mode");
-  const btn = document.getElementById("themeToggle");
-  if (btn) btn.textContent = "🌞";
 }
 
+
+// ── MOBILE DRAWER ──
+window.toggleDrawer = (force) => {
+  const d = document.getElementById('mobileDrawer');
+  const o = document.getElementById('drawerOverlay');
+  const open = force !== undefined ? force : !d.classList.contains('open');
+  d.classList.toggle('open', open);
+  o.classList.toggle('open', open);
+  document.body.style.overflow = open ? 'hidden' : '';
+};
 let toastT;
 function showToast(icon,msg){document.getElementById("tI").textContent=icon;document.getElementById("tM").textContent=msg;const t=document.getElementById("toast");t.classList.add("show");clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove("show"),3200);}
 
+
+// ── AUTO LIVE DETECTION ──
+async function checkAutoLive() {
+  try {
+    const API = TSS_CONFIG.YOUTUBE_API_KEY;
+    const CID = TSS_CONFIG.YOUTUBE_CHANNEL_ID;
+    const res = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CID}&eventType=live&type=video&key=${API}`);
+    const data = await res.json();
+    if (data.items && data.items.length > 0) {
+      const liveId = data.items[0].id.videoId;
+      const frame = document.getElementById('ytFrame');
+      if (frame && frame.src.includes('about:blank')) {
+        frame.src = `https://www.youtube.com/embed/${liveId}?autoplay=1&rel=0`;
+        document.getElementById('vcCount').textContent = '🔴 En vivo';
+        document.getElementById('chatOfflineWrap').style.display = 'none';
+        document.getElementById('chatLiveWrap').style.display = 'flex';
+        const reactBar = document.getElementById('reactionsBar');
+        if(reactBar) reactBar.style.display = 'flex';
+      }
+    }
+  } catch(e) {}
+}
+// Check every 2 minutes
+checkAutoLive();
+setInterval(checkAutoLive, 120000);
 // ── PWA SERVICE WORKER ──
 if("serviceWorker" in navigator){
   navigator.serviceWorker.register("sw.js").catch(()=>{});
