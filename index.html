@@ -997,7 +997,7 @@ if(window.matchMedia('(display-mode: standalone)').matches || window.navigator.s
             allow="autoplay"></iframe>
         </div>
         <!-- Estado fuera de vivo -->
-        <div id="chatOfflineWrap" style="flex:1;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;padding:14px 12px;text-align:center;min-height:0;overflow:hidden">
+        <div id="chatOfflineWrap" style="flex:1;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;padding:14px 12px;text-align:center;min-height:0;overflow:hidden;width:100%">
           <div style="font-size:24px;opacity:.7">📅</div>
           <div style="font-family:var(--ff-display);font-size:13px;font-weight:700;color:var(--t1)">Chat en vivo los jueves</div>
           <div style="font-size:11px;color:var(--t2);line-height:1.5;max-width:220px">
@@ -1935,18 +1935,20 @@ const _setThumb = (id) => {
 // Called after videos section loads — sets the main player thumbnail
 window._setPlayerFromVideos = () => {
   if(_isLiveNow) return;
-  // Find the first "programa" (en vivo / transmisión) from loaded videos
-  const prog = allVids.find(v => v.cat === 'prog');
-  const video = prog || allVids[0];
+  // Find a FULL PROGRAM: prioritize videos with live/programa keywords
+  const keywords = ['todo se sabe','en vivo','programa completo','tss #','tss |','episodio'];
+  const prog = allVids.find(v => {
+    const t = v.title.toLowerCase();
+    return keywords.some(k => t.includes(k));
+  });
+  const video = prog || allVids.find(v => v.cat === 'prog') || allVids[0];
   if(video) {
-    // Update the player to show this specific program
     const frame = document.getElementById('ytFrame');
     const thumb = document.getElementById('ytThumb');
     if(frame && video.id) {
       _currentVideoId = video.id;
       frame.src = `https://www.youtube.com/embed/${video.id}?rel=0&modestbranding=1`;
       if(thumb) thumb.classList.add('hidden');
-      // Update title bar
       const prog_el = document.querySelector('.pc-prog');
       const sub_el = document.querySelector('.pc-sub');
       if(prog_el) prog_el.textContent = video.title;
@@ -1978,12 +1980,7 @@ window._setPlayerFromVideos = () => {
   // 2. Admin-configured video ID
   if(TSS_CONFIG.LIVE_VIDEO_ID) { _setThumb(TSS_CONFIG.LIVE_VIDEO_ID); return; }
 
-  // 3. Load latest video directly — no API needed
-  // Use uploads playlist embed which always shows the latest video
-  if(frame && thumb) {
-    frame.src = `https://www.youtube.com/embed/videoseries?list=UULVSlUxzqTuLnnvhicqMurTdg&rel=0&modestbranding=1`;
-    thumb.classList.add('hidden');
-  }
+  // 3. Will be set by _setPlayerFromVideos() when videos load via RSS
 })();
 
 // Click to play
