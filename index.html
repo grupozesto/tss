@@ -624,6 +624,9 @@ body.light-mode .glow-bg span{opacity:.03}
   .chips{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;flex-wrap:nowrap;padding-bottom:4px}
   .chips::-webkit-scrollbar{display:none}
   .chip{flex-shrink:0}
+  .community-wrap{padding:28px 14px}
+  .forum-grid{grid-template-columns:1fr}
+  .forum-compose textarea{min-height:60px}
 }
 
 /* ── VOTACION TEMAS ── */
@@ -686,6 +689,39 @@ body.light-mode .glow-bg span{opacity:.03}
 .mobile-drawer-close{position:absolute;top:16px;right:16px;background:none;border:none;color:var(--t2);font-size:22px;cursor:pointer}
 .mobile-drawer-divider{height:1px;background:var(--border);margin:8px 0}
 @media(max-width:900px){.nav-hamburger{display:flex;align-items:center}}
+
+/* ── COMMUNITY FORUM ── */
+.community-section{background:var(--ink3);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.community-wrap{padding:52px 28px;max-width:1400px;margin:0 auto}
+.community-tabs{display:flex;gap:4px;margin-bottom:20px;background:var(--surface);border-radius:10px;padding:4px;width:fit-content}
+.community-tab{padding:8px 18px;border-radius:8px;border:none;background:transparent;color:var(--t2);font-size:12px;font-weight:600;cursor:pointer;transition:.18s}
+.community-tab.active{background:var(--cyan);color:var(--ink)}
+.forum-grid{display:grid;grid-template-columns:1fr 300px;gap:20px;align-items:start}
+.forum-posts{display:flex;flex-direction:column;gap:8px}
+.forum-post{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;cursor:pointer;transition:.18s}
+.forum-post:hover{border-color:rgba(0,229,255,.25);transform:translateX(2px)}
+.forum-post-head{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.forum-avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:var(--ink);flex-shrink:0}
+.forum-post-user{font-size:12px;font-weight:600;color:var(--t1)}
+.forum-post-time{font-size:10px;color:var(--t3);margin-left:auto}
+.forum-post-title{font-size:14px;font-weight:700;color:var(--t1);margin-bottom:4px;line-height:1.3}
+.forum-post-body{font-size:13px;color:var(--t2);line-height:1.6;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.forum-post-foot{display:flex;gap:14px;margin-top:10px;font-size:11px;color:var(--t3)}
+.forum-post-foot span{display:flex;align-items:center;gap:4px;cursor:pointer;transition:.18s}
+.forum-post-foot span:hover{color:var(--cyan)}
+.forum-sidebar{display:flex;flex-direction:column;gap:12px}
+.forum-compose{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px}
+.forum-compose textarea{width:100%;min-height:80px;background:var(--ink3);border:1px solid var(--border2);border-radius:8px;padding:10px;color:var(--t1);font-size:13px;font-family:var(--ff-body);outline:none;resize:vertical;transition:.18s}
+.forum-compose textarea:focus{border-color:var(--cyan)}
+.forum-compose textarea::placeholder{color:var(--t3)}
+.forum-rules{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px}
+/* Chat badges */
+.chat-badge{display:inline-block;font-size:8px;font-weight:700;padding:1px 5px;border-radius:3px;margin-left:4px;vertical-align:middle;letter-spacing:.5px}
+.badge-new{background:rgba(0,229,255,.15);color:var(--cyan)}
+.badge-regular{background:rgba(159,122,234,.15);color:var(--violet)}
+.badge-fiel{background:rgba(255,201,71,.15);color:var(--gold)}
+.badge-vip{background:rgba(255,77,141,.15);color:var(--rose)}
+@media(max-width:700px){.forum-grid{grid-template-columns:1fr}}
 </style>
 
 
@@ -866,6 +902,7 @@ window._donar     = (nombre,monto) => addDoc(collection(db,"donantes"),{nombre,m
   <a href="#exclusivo" class="nlnk" onclick="toggleDrawer(false)">⭐ Exclusivo</a>
   <a href="#equipo" class="nlnk" onclick="toggleDrawer(false)">👥 Equipo</a>
   <a href="#votacion" class="nlnk" onclick="toggleDrawer(false)">🗳️ Votación</a>
+  <a href="#comunidad" class="nlnk" onclick="toggleDrawer(false)">💬 Comunidad</a>
   <div class="mobile-drawer-divider"></div>
   <a href="mailto:denuncias@todosesabe.uy" class="nlnk" style="color:var(--cyan)">🚨 Denuncias</a>
   <a href="noticias.html" class="nlnk">📄 Todas las noticias</a>
@@ -1118,6 +1155,42 @@ window._donar     = (nombre,monto) => addDoc(collection(db,"donantes"),{nombre,m
   </div>
 </section>
 
+
+<!-- COMUNIDAD -->
+<section class="community-section" id="comunidad">
+  <div class="community-wrap">
+    <div class="eyebrow">Comunidad</div>
+    <div class="sec-heading">Foro de <span class="neon-text">TSS</span></div>
+    <div class="sec-sub">Discutí con la comunidad entre programa y programa. Proponé temas, compartí opiniones.</div>
+    <div class="forum-grid">
+      <div>
+        <div class="forum-posts" id="forumPosts">
+          <div style="text-align:center;padding:30px;color:var(--t3);font-size:13px">Cargando publicaciones...</div>
+        </div>
+      </div>
+      <div class="forum-sidebar">
+        <div class="forum-compose">
+          <div style="font-family:var(--ff-display);font-size:14px;font-weight:700;color:var(--t1);margin-bottom:10px">Publicar</div>
+          <input type="text" id="forumTitle" placeholder="Título (opcional)" style="width:100%;background:var(--ink3);border:1px solid var(--border2);border-radius:8px;padding:8px 10px;color:var(--t1);font-size:13px;outline:none;margin-bottom:8px;font-family:var(--ff-body);transition:.18s">
+          <textarea id="forumBody" placeholder="¿Qué opinás? Compartí con la comunidad..." maxlength="500"></textarea>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
+            <span style="font-size:10px;color:var(--t3)" id="forumCharCount">0/500</span>
+            <button class="vote-add-btn" onclick="submitForumPost()" style="padding:8px 20px">Publicar</button>
+          </div>
+        </div>
+        <div class="forum-rules">
+          <div style="font-family:var(--ff-display);font-size:13px;font-weight:700;color:var(--t1);margin-bottom:8px">📋 Reglas</div>
+          <ul style="font-size:11px;color:var(--t2);line-height:1.8;padding-left:16px">
+            <li>Respeto y buena onda siempre</li>
+            <li>No spam ni autopromoción</li>
+            <li>Datos con fuente cuando se pueda</li>
+            <li>Los moderadores pueden eliminar contenido</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 <!-- EQUIPO -->
 <section id="equipo">
   <div class="section-wrap">
@@ -1354,7 +1427,7 @@ function renderCountdown() {
         <div class="cd-topic-label">Tema del jueves</div>
         <div class="cd-topic-text">${TSS_CONFIG.SHOW_TOPIC}</div>
       </div>
-      <button class="cd-notif-btn" onclick="activarNotificacion()">🔔 Avisarme cuando empiece</button>
+      <button class="cd-notif-btn" onclick="activarNotificacion()">🔔 Avisarme cuando empiece" onclick="requestPushPermission()</button>
     </div>`;
 }
 renderCountdown();
@@ -1437,7 +1510,7 @@ window.renderMsg = ({n,c,av,text,_silent}) => {
   if(!box) return;
   const wasAtBottom = box.scrollHeight - box.scrollTop - box.clientHeight < 80;
   const d=document.createElement("div"); d.className="cmsg";
-  d.innerHTML=`<div class="cavatar" style="background:${c}">${av}</div><div class="cbubble"><div class="cuser" style="color:${c}">${n}</div><div class="ctext">${text}</div></div>`;
+  d.innerHTML=`<div class="cavatar" style="background:${c}">${av}</div><div class="cbubble"><div class="cuser" style="color:${c}">${n}${window.getChatBadge?window.getChatBadge(n):""}</div><div class="ctext">${text}</div></div>`;
   box.appendChild(d);
   // Only auto-scroll chatBox (not page) when user is at bottom and not initial batch
   if(!_silent && wasAtBottom) box.scrollTop = box.scrollHeight;
@@ -1447,6 +1520,10 @@ async function sendChat() {
   const text=inp.value.trim(); if(!text)return;
   const user=window._currentUser; if(!user){showToast("🔐","Iniciá sesión");return;}
   inp.value="";
+  // Track message count for badges
+  const uid = user.uid||user.email;
+  const cnt = parseInt(localStorage.getItem("tss_msg_count_"+uid)||"0")+1;
+  localStorage.setItem("tss_msg_count_"+uid, cnt);
   try{await window._chat(text,user);if(window._trackEvent)window._trackEvent('chat',{text:text.substring(0,50)});}catch(e){showToast("❌",e.message);}
 }
 
@@ -1823,6 +1900,109 @@ async function checkAutoLive() {
 // Check every 2 minutes
 checkAutoLive();
 setInterval(checkAutoLive, 120000);
+
+// ── COMMUNITY FORUM ──
+document.getElementById('forumBody')?.addEventListener('input', function(){
+  document.getElementById('forumCharCount').textContent = this.value.length + '/500';
+});
+
+window.submitForumPost = async () => {
+  const title = document.getElementById('forumTitle')?.value.trim();
+  const body = document.getElementById('forumBody')?.value.trim();
+  if(!body || body.length < 5) { showToast('⚠️','Escribí al menos 5 caracteres'); return; }
+  if(!window._currentUser) { showToast('🔐','Iniciá sesión para publicar'); openModal('login'); return; }
+  try {
+    await addDoc(collection(db,'forum_posts'),{
+      title: title || '',
+      body: body,
+      autor: window._currentUser.displayName || window._currentUser.email.split('@')[0],
+      autorId: window._currentUser.uid,
+      likes: 0,
+      replies: 0,
+      ts: serverTimestamp()
+    });
+    document.getElementById('forumTitle').value = '';
+    document.getElementById('forumBody').value = '';
+    document.getElementById('forumCharCount').textContent = '0/500';
+    showToast('✅','¡Publicado!');
+  } catch(e) { showToast('❌', e.message); }
+};
+
+window.likeForumPost = async (id) => {
+  if(!window._currentUser) { showToast('🔐','Iniciá sesión'); return; }
+  const liked = JSON.parse(localStorage.getItem('tss_forum_likes')||'[]');
+  if(liked.includes(id)) { showToast('⚠️','Ya le diste like'); return; }
+  try {
+    await updateDoc(doc(db,'forum_posts',id), {likes: increment(1)});
+    liked.push(id);
+    localStorage.setItem('tss_forum_likes', JSON.stringify(liked));
+    showToast('❤️','Like!');
+  } catch(e) {}
+};
+
+// Load forum posts
+const forumQ = query(collection(db,'forum_posts'), orderBy('ts','desc'), limit(20));
+onSnapshot(forumQ, snap => {
+  const posts = snap.docs.map(d => ({id:d.id,...d.data()}));
+  const grid = document.getElementById('forumPosts');
+  if(!grid) return;
+  if(!posts.length) {
+    grid.innerHTML = '<div style="text-align:center;padding:40px;color:var(--t3)"><div style="font-size:32px;margin-bottom:8px">💬</div>Sé el primero en publicar en la comunidad TSS</div>';
+    return;
+  }
+  const timeAgo = ts => {
+    if(!ts || !ts.seconds) return '';
+    const diff = Math.floor((Date.now()/1000) - ts.seconds);
+    if(diff < 60) return 'ahora';
+    if(diff < 3600) return Math.floor(diff/60) + ' min';
+    if(diff < 86400) return Math.floor(diff/3600) + 'h';
+    return Math.floor(diff/86400) + 'd';
+  };
+  const colors = ['#00e5ff','#9f7aea','#ff4d8d','#ffc947','#059669','#f97316'];
+  grid.innerHTML = posts.map(p => {
+    const color = colors[Math.abs(hashStr(p.autorId||p.autor||''))%colors.length];
+    const initial = (p.autor||'U')[0].toUpperCase();
+    return `<div class="forum-post">
+      <div class="forum-post-head">
+        <div class="forum-avatar" style="background:${color}">${initial}</div>
+        <span class="forum-post-user">${p.autor||'Anónimo'}</span>
+        <span class="forum-post-time">${timeAgo(p.ts)}</span>
+      </div>
+      ${p.title ? `<div class="forum-post-title">${p.title}</div>` : ''}
+      <div class="forum-post-body">${p.body}</div>
+      <div class="forum-post-foot">
+        <span onclick="likeForumPost('${p.id}')">❤️ ${p.likes||0}</span>
+        <span>💬 ${p.replies||0} respuestas</span>
+      </div>
+    </div>`;
+  }).join('');
+});
+
+function hashStr(s){ let h=0; for(let i=0;i<s.length;i++){h=((h<<5)-h)+s.charCodeAt(i);h|=0;} return h; }
+
+// ── CHAT BADGES (based on participation) ──
+window.getChatBadge = (userId) => {
+  const msgs = parseInt(localStorage.getItem('tss_msg_count_'+userId)||'0');
+  if(msgs >= 50) return '<span class="chat-badge badge-vip">VIP</span>';
+  if(msgs >= 20) return '<span class="chat-badge badge-fiel">FIEL</span>';
+  if(msgs >= 5) return '<span class="chat-badge badge-regular">REGULAR</span>';
+  return '<span class="chat-badge badge-new">NUEVO</span>';
+};
+
+// ── PUSH NOTIFICATIONS (FCM-ready) ──
+window.requestPushPermission = async () => {
+  if(!('Notification' in window)) { showToast('⚠️','Tu navegador no soporta notificaciones'); return; }
+  const perm = await Notification.requestPermission();
+  if(perm === 'granted') {
+    showToast('🔔','¡Notificaciones activadas! Te avisaremos antes del programa.');
+    localStorage.setItem('tss_notif','granted');
+    // When FCM is configured, register the token here
+  } else {
+    showToast('⚠️','Necesitamos permiso para notificarte');
+  }
+};
+
+// Auto-request notification on "Avisarme" button
 // ── PWA SERVICE WORKER ──
 if("serviceWorker" in navigator){
   navigator.serviceWorker.register("sw.js").catch(()=>{});
