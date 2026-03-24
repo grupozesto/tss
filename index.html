@@ -690,6 +690,19 @@ body.light-mode .glow-bg span{opacity:.03}
 .mobile-drawer-divider{height:1px;background:var(--border);margin:8px 0}
 @media(max-width:900px){.nav-hamburger{display:flex;align-items:center}}
 
+
+/* ── YOUTUBE LAZY LOAD ── */
+.yt-thumb-overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:#000 center/cover no-repeat;cursor:pointer;z-index:2;display:flex;align-items:center;justify-content:center;transition:opacity .3s}
+.yt-thumb-overlay.hidden{opacity:0;pointer-events:none}
+.yt-play-btn{width:72px;height:72px;border-radius:50%;background:rgba(0,229,255,.9);display:flex;align-items:center;justify-content:center;transition:.2s;box-shadow:0 4px 24px rgba(0,229,255,.3)}
+.yt-play-btn:hover{transform:scale(1.1);background:var(--cyan)}
+.yt-play-btn svg{width:28px;height:28px;fill:var(--ink);margin-left:3px}
+
+/* ── THEATER MODE ── */
+.hero-live.theater{grid-template-columns:1fr}
+.hero-live.theater .live-sidebar{display:none}
+.theater-btn{background:var(--surface2);border:1px solid var(--border2);border-radius:6px;padding:5px 10px;color:var(--t2);font-size:11px;cursor:pointer;transition:.18s;display:flex;align-items:center;gap:4px}
+.theater-btn:hover{color:var(--t1);border-color:var(--cyan)}
 </style>
 
 
@@ -817,7 +830,7 @@ window._donar     = (nombre,monto) => addDoc(collection(db,"donantes"),{nombre,m
 <body>
 
 <div class="read-progress"><div class="read-progress-fill" id="readProgress"></div></div>
-<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Volver arriba">↑</button>
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Volver arriba" aria-label="Volver al inicio de la página" role="button">↑</button>
 <div class="glow-bg"><span class="g1"></span><span class="g2"></span><span class="g3"></span></div>
 
 <!-- TOPNAV -->
@@ -844,8 +857,8 @@ window._donar     = (nombre,monto) => addDoc(collection(db,"donantes"),{nombre,m
     <input type="text" placeholder="Buscar videos..." oninput="filterVids(this.value)" aria-label="Buscar videos">
   </div>
   <div class="nav-auth" id="navAuth">
-    <button class="btn-ghost" onclick="openModal('login')">Iniciar sesión</button>
-    <button class="btn-cta"   onclick="openModal('register')">Registrarse</button>
+    <button class="btn-ghost" onclick="openModal('login')" aria-label="Iniciar sesión">Iniciar sesión</button>
+    <button class="btn-cta" onclick="openModal('register')" aria-label="Crear cuenta">Registrarse</button>
   </div>
   <div id="navUser" style="display:none;position:relative">
     <div class="nav-avatar" id="userAv" onclick="toggleMenu()">?</div>
@@ -855,7 +868,7 @@ window._donar     = (nombre,monto) => addDoc(collection(db,"donantes"),{nombre,m
       <div class="umitem danger" onclick="doLogout()">↩ Cerrar sesión</div>
     </div>
   </div>
-  <button class="nav-hamburger" onclick="toggleDrawer()" aria-label="Menú">
+  <button class="nav-hamburger" onclick="toggleDrawer()" aria-label="Abrir menú de navegación" role="button">
     <svg viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
   </button>
 </nav>
@@ -863,7 +876,7 @@ window._donar     = (nombre,monto) => addDoc(collection(db,"donantes"),{nombre,m
 <!-- Mobile Drawer -->
 <div class="mobile-drawer-overlay" id="drawerOverlay" onclick="toggleDrawer(false)"></div>
 <div class="mobile-drawer" id="mobileDrawer">
-  <button class="mobile-drawer-close" onclick="toggleDrawer(false)">✕</button>
+  <button class="mobile-drawer-close" onclick="toggleDrawer(false)" aria-label="Cerrar menú">✕</button>
   <a href="#live" class="nlnk" onclick="toggleDrawer(false)">🔴 En Vivo</a>
   <a href="#videos" class="nlnk" onclick="toggleDrawer(false)">▶ Videos</a>
   <a href="#noticias" class="nlnk" onclick="toggleDrawer(false)">📰 Noticias</a>
@@ -887,10 +900,13 @@ window._donar     = (nombre,monto) => addDoc(collection(db,"donantes"),{nombre,m
 <div id="countdownBanner"></div>
 
 <!-- EN VIVO -->
-<section id="live">
+<section id="live" aria-label="Sección en vivo">
   <div class="hero-live">
     <div class="player-col">
       <div class="yt-wrap">
+        <div class="yt-thumb-overlay" id="ytThumb" onclick="activatePlayer()">
+          <div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+        </div>
         <iframe id="ytFrame" src="about:blank"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowfullscreen title="TSS Todo Se Sabe"></iframe>
@@ -903,6 +919,7 @@ window._donar     = (nombre,monto) => addDoc(collection(db,"donantes"),{nombre,m
         <div class="src-switch">
           <button class="src-btn active" onclick="switchSrc('yt',this)">▶ YouTube</button>
           <button class="src-btn" onclick="switchSrc('ms',this)">📡 Mediastream</button>
+          <button class="theater-btn" onclick="toggleTheater()" title="Modo teatro">🖥️ Teatro</button>
         </div>
       </div>
       <div class="yt-loader" style="display:none">
@@ -917,10 +934,10 @@ window._donar     = (nombre,monto) => addDoc(collection(db,"donantes"),{nombre,m
         <span class="ls-count" id="vcCount"></span>
       </div>
       <div class="ls-tabs">
-        <button class="ls-tab active" onclick="switchTab('chat',this)"><span style="font-size:14px">💬</span> Chat</button>
-        <button class="ls-tab" onclick="switchTab('preguntas',this)"><span style="font-size:14px">🙋</span> Al Aire</button>
-        <button class="ls-tab" onclick="switchTab('viewers',this)"><span style="font-size:14px">👥</span> Viewers</button>
-        <button class="ls-tab" onclick="switchTab('poll',this)"><span style="font-size:14px">📊</span> Encuesta</button>
+        <button class="ls-tab active" onclick="switchTab('chat',this)" role="tab" aria-label="Chat en vivo"><span style="font-size:14px">💬</span> Chat</button>
+        <button class="ls-tab" onclick="switchTab('preguntas',this)" role="tab" aria-label="Preguntas al aire"><span style="font-size:14px">🙋</span> Al Aire</button>
+        <button class="ls-tab" onclick="switchTab('viewers',this)" role="tab" aria-label="Viewers conectados"><span style="font-size:14px">👥</span> Viewers</button>
+        <button class="ls-tab" onclick="switchTab('poll',this)" role="tab" aria-label="Encuesta en vivo"><span style="font-size:14px">📊</span> Encuesta</button>
       </div>
             <!-- Chat -->
       <div class="tab-panel active" id="panel-chat">
@@ -980,7 +997,7 @@ window._donar     = (nombre,monto) => addDoc(collection(db,"donantes"),{nombre,m
 <div class="divider"></div>
 
 <!-- VIDEOS -->
-<section id="videos">
+<section id="videos" aria-label="Videos del canal">
   <div class="section-wrap">
     <div class="eyebrow">Canal oficial</div>
     <div class="sec-heading">Videos de <span class="neon-text">Todo Se Sabe</span></div>
@@ -1004,7 +1021,7 @@ window._donar     = (nombre,monto) => addDoc(collection(db,"donantes"),{nombre,m
 <div class="divider"></div>
 
 <!-- NOTICIAS -->
-<section id="noticias" class="news-outer">
+<section id="noticias" aria-label="Noticias y editorial" class="news-outer">
   <div class="news-wrap">
     <div class="news-masthead">
       <h2>Noticias &amp; Editorial</h2>
@@ -1099,7 +1116,7 @@ window._donar     = (nombre,monto) => addDoc(collection(db,"donantes"),{nombre,m
 <div class="divider"></div>
 
 <!-- VOTACION TEMAS -->
-<section id="votacion" class="votacion-section">
+<section id="votacion" aria-label="Votación de temas" class="votacion-section">
   <div class="votacion-wrap">
     <div style="display:grid;grid-template-columns:1fr 380px;gap:28px;align-items:start">
       <div>
@@ -1127,7 +1144,7 @@ window._donar     = (nombre,monto) => addDoc(collection(db,"donantes"),{nombre,m
   </div>
 </section>
 <!-- EQUIPO -->
-<section id="equipo">
+<section id="equipo" aria-label="El equipo de TSS">
   <div class="section-wrap">
     <div class="eyebrow">El equipo</div>
     <div class="sec-heading">Quiénes hacen <span class="neon-text">TSS</span></div>
@@ -1140,7 +1157,7 @@ window._donar     = (nombre,monto) => addDoc(collection(db,"donantes"),{nombre,m
 </section>
 
 <!-- FOOTER -->
-<footer class="site-footer">
+<footer class="site-footer" role="contentinfo">
   <div class="foot-inner">
     <div class="foot-top">
       <div class="foot-brand">
@@ -1166,7 +1183,7 @@ window._donar     = (nombre,monto) => addDoc(collection(db,"donantes"),{nombre,m
 </div>
 
 <!-- MODAL LOGIN/REGISTER -->
-<div class="modal-overlay" id="modal" onclick="if(event.target===this)closeModal()">
+<div class="modal-overlay" id="modal" role="dialog" aria-modal="true" aria-label="Iniciar sesión o registrarse" onclick="if(event.target===this)closeModal()">
   <div class="modal-box">
     <button class="modal-close" onclick="closeModal()" aria-label="Cerrar">✕</button>
     <div class="modal-logo-row"><img loading="lazy" id="modalLogo" alt="TSS" style="height:32px;width:auto"></div>
@@ -1194,17 +1211,17 @@ window._donar     = (nombre,monto) => addDoc(collection(db,"donantes"),{nombre,m
 </div>
 
 <!-- MODAL COMPARTIR -->
-<div class="modal-overlay" id="shareModal" onclick="if(event.target===this)closeShare()">
+<div class="modal-overlay" id="shareModal" role="dialog" aria-modal="true" aria-label="Compartir video" onclick="if(event.target===this)closeShare()">
   <div class="modal-box share-modal-box">
     <button class="modal-close" onclick="closeShare()">✕</button>
     <div style="font-family:var(--ff-display);font-size:18px;font-weight:800;color:var(--t1);margin-bottom:6px">Compartir video</div>
     <div style="font-size:12px;color:var(--t2);margin-bottom:4px" id="shareTitle"></div>
     <div class="share-options">
-      <div class="share-opt" onclick="shareWA()"><div class="share-opt-icon" style="background:rgba(37,211,102,.15)">📱</div> WhatsApp</div>
-      <div class="share-opt" onclick="shareFB()"><div class="share-opt-icon" style="background:rgba(24,119,242,.15)">📘</div> Facebook</div>
-      <div class="share-opt" onclick="shareTwitter()"><div class="share-opt-icon" style="background:rgba(29,161,242,.15)">🐦</div> Twitter/X</div>
-      <div class="share-opt" onclick="shareTelegram()"><div class="share-opt-icon" style="background:rgba(0,136,204,.15)">✈️</div> Telegram</div>
-      <div class="share-opt" onclick="copyLink()"><div class="share-opt-icon" style="background:rgba(0,229,255,.1)">🔗</div> Copiar link</div>
+      <div class="share-opt" onclick="shareWA()" aria-label="Compartir por WhatsApp"><div class="share-opt-icon" style="background:rgba(37,211,102,.15)">📱</div> WhatsApp</div>
+      <div class="share-opt" onclick="shareFB()" aria-label="Compartir en Facebook"><div class="share-opt-icon" style="background:rgba(24,119,242,.15)">📘</div> Facebook</div>
+      <div class="share-opt" onclick="shareTwitter()" aria-label="Compartir en Twitter"><div class="share-opt-icon" style="background:rgba(29,161,242,.15)">🐦</div> Twitter/X</div>
+      <div class="share-opt" onclick="shareTelegram()" aria-label="Compartir en Telegram"><div class="share-opt-icon" style="background:rgba(0,136,204,.15)">✈️</div> Telegram</div>
+      <div class="share-opt" onclick="copyLink()" aria-label="Copiar enlace"><div class="share-opt-icon" style="background:rgba(0,229,255,.1)">🔗</div> Copiar link</div>
     </div>
   </div>
 </div>
@@ -1802,6 +1819,40 @@ let toastT;
 function showToast(icon,msg){document.getElementById("tI").textContent=icon;document.getElementById("tM").textContent=msg;const t=document.getElementById("toast");t.classList.add("show");clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove("show"),3200);}
 
 
+
+
+// ── THEATER MODE ──
+window.toggleTheater = () => {
+  const hero = document.querySelector('.hero-live');
+  if(!hero) return;
+  hero.classList.toggle('theater');
+  const isTheater = hero.classList.contains('theater');
+  showToast(isTheater ? '🖥️' : '📺', isTheater ? 'Modo teatro activado' : 'Vista normal');
+};
+// ── YOUTUBE LAZY LOAD ──
+(function(){
+  const thumb = document.getElementById('ytThumb');
+  if(!thumb) return;
+  // Try to get thumbnail from config or channel
+  const vid = TSS_CONFIG.YOUTUBE_LIVE_ID || '';
+  if(vid) {
+    thumb.style.backgroundImage = `url(https://img.youtube.com/vi/${vid}/maxresdefault.jpg)`;
+  } else {
+    // Fallback: use channel banner or a default dark bg
+    thumb.style.background = 'linear-gradient(135deg, #0d0e14 0%, #1c1e2a 50%, rgba(0,229,255,.05) 100%)';
+  }
+})();
+window.activatePlayer = () => {
+  const thumb = document.getElementById('ytThumb');
+  const frame = document.getElementById('ytFrame');
+  const vid = TSS_CONFIG.YOUTUBE_LIVE_ID || '';
+  if(vid && frame) {
+    frame.src = `https://www.youtube.com/embed/${vid}?autoplay=1&rel=0`;
+    thumb.classList.add('hidden');
+  } else {
+    showToast('📺','Configurá el video ID en el panel de admin');
+  }
+};
 // ── AUTO LIVE DETECTION ──
 async function checkAutoLive() {
   try {
