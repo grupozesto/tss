@@ -131,7 +131,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;opacity:.022;pointer-ev
 
 /* ── TOPNAV ── */
 .topnav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);background:rgba(8,9,13,.96);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 26px;gap:18px;z-index:500}
-.nav-logo img{height:52px;width:auto;display:block;border-radius:12px;background:none;object-fit:contain}
+.nav-logo img{height:56px;width:auto;display:block;border-radius:0;background:none;object-fit:contain}
 .nav-live-chip{display:flex;align-items:center;gap:8px;background:rgba(0,229,255,.07);border:1px solid rgba(0,229,255,.2);border-radius:6px;padding:6px 14px;flex-shrink:0}
 .lpulse{width:7px;height:7px;border-radius:50%;background:var(--rose);animation:lp 1.8s ease-in-out infinite;flex-shrink:0}
 @keyframes lp{0%{box-shadow:0 0 0 0 rgba(255,77,141,.7)}70%{box-shadow:0 0 0 7px rgba(255,77,141,0)}100%{box-shadow:0 0 0 0 rgba(255,77,141,0)}}
@@ -549,7 +549,7 @@ body.light-mode .glow-bg span{opacity:.03}
   .page{padding-top:56px}
   html{scroll-padding-top:66px}
   .nav-live-chip{display:none}
-  .nav-logo img{height:44px}
+  .nav-logo img{height:46px}
   .foot-top{grid-template-columns:1fr}
   .team-grid{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;gap:12px;padding-bottom:6px;scrollbar-width:none}
   .team-grid::-webkit-scrollbar{display:none}
@@ -921,11 +921,9 @@ window._donar     = (nombre,monto) => addDoc(collection(db,"donantes"),{nombre,m
           <div class="pc-prog">Todo Se Sabe — @todosesabe_tss</div>
           <div class="pc-sub"><span class="pc-dot"></span> JUEVES 20:30 · STREAMING EN VIVO</div>
         </div>
-        <div class="src-switch">
-          <button class="src-btn active" onclick="switchSrc('yt',this)">▶ YouTube</button>
-          <button class="src-btn" onclick="switchSrc('ms',this)">📡 Mediastream</button>
-          <button class="theater-btn" onclick="toggleTheater()" title="Modo teatro">🖥️ Teatro</button>
-        </div>
+        <button class="theater-btn" onclick="toggleTheater()" title="Modo teatro" aria-label="Expandir video">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M21 3H3c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H3V5h18v14z"/></svg>
+        </button>
       </div>
       <div class="yt-loader" style="display:none">
         <label>🎬 Video ID del live</label>
@@ -1143,7 +1141,7 @@ window._donar     = (nombre,monto) => addDoc(collection(db,"donantes"),{nombre,m
   <div class="foot-inner">
     <div class="foot-top">
       <div class="foot-brand">
-        <img loading="lazy" id="footLogo" alt="TSS" style="background:none;border-radius:12px;height:56px">
+        <img loading="lazy" id="footLogo" alt="TSS" style="background:none;border-radius:0;height:60px">
         <p>Nacho Álvarez y equipo, todos los jueves 20:30hs en vivo.</p>
         <div class="foot-socs">
           <a href="https://youtube.com/@todosesabe_tss" class="fsoc" target="_blank"><svg viewBox="0 0 24 24"><path d="M23.495 6.205a3.007 3.007 0 0 0-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 0 0 .527 6.205a31.247 31.247 0 0 0-.522 5.805 31.247 31.247 0 0 0 .522 5.783 3.007 3.007 0 0 0 2.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 0 0 2.088-2.088 31.247 31.247 0 0 0 .5-5.783 31.247 31.247 0 0 0-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg></a>
@@ -1815,73 +1813,80 @@ window.toggleTheater = () => {
 let _currentVideoId = null;
 let _isLiveNow = false;
 
-// Load: check live → admin ID → last completed → last video (any)
+const _goLive = (id) => {
+  _currentVideoId = id;
+  _isLiveNow = true;
+  const frame = document.getElementById('ytFrame');
+  const thumb = document.getElementById('ytThumb');
+  if(frame) frame.src = `https://www.youtube.com/embed/${id}?autoplay=1&rel=0`;
+  if(thumb) thumb.classList.add('hidden');
+  document.getElementById('vcCount').textContent = '🔴 En vivo';
+  const offWrap = document.getElementById('chatOfflineWrap');
+  const liveWrap = document.getElementById('chatLiveWrap');
+  const reactBar = document.getElementById('reactionsBar');
+  if(offWrap) offWrap.style.display = 'none';
+  if(liveWrap) liveWrap.style.display = 'flex';
+  if(reactBar) reactBar.style.display = 'flex';
+};
+
+const _setThumb = (id) => {
+  _currentVideoId = id;
+  const thumb = document.getElementById('ytThumb');
+  if(!thumb) return;
+  // Use hqdefault (always exists) then upgrade to maxres if available
+  thumb.style.backgroundImage = `url(https://img.youtube.com/vi/${id}/hqdefault.jpg)`;
+  const hi = new Image();
+  hi.onload = () => { thumb.style.backgroundImage = `url(https://img.youtube.com/vi/${id}/maxresdefault.jpg)`; };
+  hi.src = `https://img.youtube.com/vi/${id}/maxresdefault.jpg`;
+};
+
 (async function initPlayer(){
   const thumb = document.getElementById('ytThumb');
   const frame = document.getElementById('ytFrame');
   const API = TSS_CONFIG.YOUTUBE_API_KEY;
   const CID = TSS_CONFIG.YOUTUBE_CHANNEL_ID;
-  if(!thumb || !frame || !API || !CID) return;
-
-  // Helper: set thumbnail
-  const setThumb = (id) => {
-    _currentVideoId = id;
-    // Try maxresdefault first, fallback to hqdefault
-    const img = new Image();
-    img.onload = () => { thumb.style.backgroundImage = `url(https://img.youtube.com/vi/${id}/maxresdefault.jpg)`; };
-    img.onerror = () => { thumb.style.backgroundImage = `url(https://img.youtube.com/vi/${id}/hqdefault.jpg)`; };
-    img.src = `https://img.youtube.com/vi/${id}/maxresdefault.jpg`;
-  };
+  if(!thumb || !frame) return;
 
   // 1. Check for current live stream
-  try {
-    const liveRes = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CID}&eventType=live&type=video&key=${API}`);
-    const liveData = await liveRes.json();
-    if(liveData.items && liveData.items.length > 0) {
-      const liveId = liveData.items[0].id.videoId;
-      _currentVideoId = liveId;
-      _isLiveNow = true;
-      frame.src = `https://www.youtube.com/embed/${liveId}?autoplay=1&rel=0`;
-      thumb.classList.add('hidden');
-      document.getElementById('vcCount').textContent = '🔴 En vivo';
-      const offWrap = document.getElementById('chatOfflineWrap');
-      const liveWrap = document.getElementById('chatLiveWrap');
-      const reactBar = document.getElementById('reactionsBar');
-      if(offWrap) offWrap.style.display = 'none';
-      if(liveWrap) liveWrap.style.display = 'flex';
-      if(reactBar) reactBar.style.display = 'flex';
-      return;
-    }
-  } catch(e){}
-
-  // 2. Admin-configured video ID
-  if(TSS_CONFIG.LIVE_VIDEO_ID) {
-    setThumb(TSS_CONFIG.LIVE_VIDEO_ID);
-    return;
+  if(API && CID) {
+    try {
+      const r = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CID}&eventType=live&type=video&key=${API}`);
+      const d = await r.json();
+      if(d.items && d.items.length > 0) { _goLive(d.items[0].id.videoId); return; }
+    } catch(e){}
   }
 
-  // 3. Last completed live stream
-  try {
-    const compRes = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CID}&eventType=completed&type=video&order=date&maxResults=1&key=${API}`);
-    const compData = await compRes.json();
-    if(compData.items && compData.items.length > 0) {
-      setThumb(compData.items[0].id.videoId);
-      return;
-    }
-  } catch(e){}
+  // 2. Admin-configured video ID
+  if(TSS_CONFIG.LIVE_VIDEO_ID) { _setThumb(TSS_CONFIG.LIVE_VIDEO_ID); return; }
 
-  // 4. Fallback: most recent video from channel (any type)
-  try {
-    const anyRes = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CID}&type=video&order=date&maxResults=1&key=${API}`);
-    const anyData = await anyRes.json();
-    if(anyData.items && anyData.items.length > 0) {
-      setThumb(anyData.items[0].id.videoId);
-      return;
-    }
-  } catch(e){}
+  // 3. Fetch latest video from channel via API
+  if(API && CID) {
+    // Try completed lives first
+    try {
+      const r = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CID}&eventType=completed&type=video&order=date&maxResults=1&key=${API}`);
+      const d = await r.json();
+      if(d.items && d.items.length > 0) { _setThumb(d.items[0].id.videoId); return; }
+    } catch(e){}
+    // Then any video
+    try {
+      const r = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CID}&type=video&order=date&maxResults=1&key=${API}`);
+      const d = await r.json();
+      if(d.items && d.items.length > 0) { _setThumb(d.items[0].id.videoId); return; }
+    } catch(e){}
+  }
 
-  // 5. Nothing found — dark bg
-  thumb.style.background = '#0d0e14';
+  // 4. Wait for videos section to load and grab the first one
+  const waitForVideos = () => {
+    const cards = document.querySelectorAll('.vcard');
+    if(cards.length > 0) {
+      const href = cards[0].getAttribute('href') || '';
+      const m = href.match(/[?&]v=([^&]+)/);
+      if(m) { _setThumb(m[1]); return; }
+    }
+    // Retry in 2 seconds
+    setTimeout(waitForVideos, 2000);
+  };
+  setTimeout(waitForVideos, 3000);
 })();
 
 // Click to play
@@ -1894,29 +1899,17 @@ window.activatePlayer = () => {
   }
 };
 
-// Periodic live check (every 2 min) — auto-activate if live starts
+// Periodic live check (every 2 min)
 setInterval(async () => {
-  if(_isLiveNow) return; // Already live
+  if(_isLiveNow) return;
+  const API = TSS_CONFIG.YOUTUBE_API_KEY;
+  const CID = TSS_CONFIG.YOUTUBE_CHANNEL_ID;
+  if(!API || !CID) return;
   try {
-    const API = TSS_CONFIG.YOUTUBE_API_KEY;
-    const CID = TSS_CONFIG.YOUTUBE_CHANNEL_ID;
-    const res = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CID}&eventType=live&type=video&key=${API}`);
-    const data = await res.json();
-    if(data.items && data.items.length > 0) {
-      const liveId = data.items[0].id.videoId;
-      _currentVideoId = liveId;
-      _isLiveNow = true;
-      const frame = document.getElementById('ytFrame');
-      const thumb = document.getElementById('ytThumb');
-      if(frame) frame.src = `https://www.youtube.com/embed/${liveId}?autoplay=1&rel=0`;
-      if(thumb) thumb.classList.add('hidden');
-      document.getElementById('vcCount').textContent = '🔴 En vivo';
-      const offWrap = document.getElementById('chatOfflineWrap');
-      const liveWrap = document.getElementById('chatLiveWrap');
-      const reactBar = document.getElementById('reactionsBar');
-      if(offWrap) offWrap.style.display = 'none';
-      if(liveWrap) liveWrap.style.display = 'flex';
-      if(reactBar) reactBar.style.display = 'flex';
+    const r = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CID}&eventType=live&type=video&key=${API}`);
+    const d = await r.json();
+    if(d.items && d.items.length > 0) {
+      _goLive(d.items[0].id.videoId);
       showToast('🔴','¡El programa está en vivo!');
     }
   } catch(e){}
