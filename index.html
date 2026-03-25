@@ -14,7 +14,9 @@
 <link rel="canonical" href="https://grupozesto.github.io/tss/">
 <meta name="description" content="Todo Se Sabe — Programa de periodismo independiente con Nacho Álvarez. En vivo los jueves 20:30hs. Noticias, investigación y análisis sin censura.">
 
-<meta name="theme-color" content="#2C6765">
+<meta name="theme-color" content="#000000">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
 
 <!-- Open Graph (WhatsApp, Facebook, Telegram) -->
 <meta property="og:type"        content="website">
@@ -36,8 +38,8 @@
   %22short_name%22:%22TSS%22,
   %22start_url%22:%22.%22,
   %22display%22:%22standalone%22,
-  %22background_color%22:%22%2308090d%22,
-  %22theme_color%22:%2200e5ff%22,
+  %22background_color%22:%22%23000000%22,
+  %22theme_color%22:%22000000%22,
   %22icons%22:[{%22src%22:%22https://grupozesto.github.io/tss/icon-192.png%22,%22sizes%22:%22192x192%22,%22type%22:%22image/png%22},{%22src%22:%22https://grupozesto.github.io/tss/icon-512.png%22,%22sizes%22:%22512x512%22,%22type%22:%22image/png%22}]
 }">
 <!-- TODO: Subir icon-192.png e icon-512.png al repo -->
@@ -866,21 +868,30 @@ window._donar     = (nombre,monto) => addDoc(collection(db,"donantes"),{nombre,m
 <body>
 
 <!-- PWA SPLASH SCREEN (only in standalone/PWA mode) -->
-<div id="splashScreen" style="position:fixed;inset:0;z-index:9999;background:#000;display:none;align-items:center;justify-content:center">
-  <img src="icon-192.png" alt="TSS" style="height:120px;width:auto">
+<style>
+@keyframes splashFadeIn{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:scale(1)}}
+@keyframes splashGlow{0%,100%{filter:brightness(1) drop-shadow(0 0 0px transparent)}50%{filter:brightness(1.2) drop-shadow(0 0 30px rgba(44,103,101,.5))}}
+@keyframes splashOut{from{opacity:1}to{opacity:0}}
+</style>
+<div id="splashScreen" style="position:fixed;inset:0;z-index:9999;background:#000;display:none;align-items:center;justify-content:center;flex-direction:column;gap:20px">
+  <img src="icon-512.png" alt="TSS" style="height:160px;width:auto;animation:splashFadeIn .6s ease forwards, splashGlow 2s ease-in-out .6s infinite">
 </div>
 <script>
-if(window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
+(function(){
+  const isPWA = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+  if(!isPWA) return;
   const s = document.getElementById('splashScreen');
   s.style.display = 'flex';
+  // Fade out after content loads
   window.addEventListener('load', () => {
     setTimeout(() => {
-      s.style.transition = 'opacity .5s';
-      s.style.opacity = '0';
+      s.style.animation = 'splashOut .5s ease forwards';
       setTimeout(() => s.remove(), 500);
-    }, 1500);
+    }, 2000);
   });
-}
+  // Safety: remove after 4s even if load doesn't fire
+  setTimeout(() => { if(s && s.parentNode) { s.style.animation = 'splashOut .5s ease forwards'; setTimeout(() => s.remove(), 500); } }, 4000);
+})();
 </script>
 
 <div class="read-progress"><div class="read-progress-fill" id="readProgress"></div></div>
