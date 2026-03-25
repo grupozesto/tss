@@ -731,6 +731,14 @@ body.light-mode .glow-bg span{opacity:.03}
 /* ── SAFARI ZOOM PREVENTION ── */
 body,html{touch-action:manipulation;-ms-touch-action:manipulation}
 input,select,textarea{font-size:16px !important}
+
+/* ── LIVE POLL (YouTube style) ── */
+.poll-option{display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--surface);border:1px solid var(--border);border-radius:8px;cursor:pointer;transition:.18s}
+.poll-option:hover{border-color:rgba(0,229,255,.3)}
+.poll-option.voted{border-color:var(--cyan);background:rgba(0,229,255,.06)}
+.poll-option-text{flex:1;font-size:12px;color:var(--t1);font-weight:600}
+.poll-option-bar{position:absolute;left:0;top:0;bottom:0;background:rgba(0,229,255,.1);border-radius:8px;transition:width .3s}
+.poll-option-pct{font-size:11px;color:var(--cyan);font-weight:700;min-width:36px;text-align:right}
 </style>
 
 
@@ -974,21 +982,22 @@ if(window.matchMedia('(display-mode: standalone)').matches || window.navigator.s
         <span class="ls-head-t">Comunidad TSS</span>
         <span class="ls-count" id="vcCount"></span>
       </div>
-      <div class="ls-tabs">
-        <button class="ls-tab active" onclick="switchTab('chat',this)" role="tab" aria-label="Chat en vivo"><span style="font-size:14px">💬</span> Chat</button>
-        <button class="ls-tab" onclick="switchTab('preguntas',this)" role="tab" aria-label="Preguntas al aire"><span style="font-size:14px">🙋</span> Al Aire</button>
-        <button class="ls-tab" onclick="switchTab('viewers',this)" role="tab" aria-label="Viewers conectados"><span style="font-size:14px">👥</span> Viewers</button>
-        <button class="ls-tab" onclick="switchTab('poll',this)" role="tab" aria-label="Encuesta en vivo"><span style="font-size:14px">📊</span> Encuesta</button>
+      <!-- YouTube-style poll banner (shown when admin creates a poll) -->
+      <div id="livePollBanner" style="display:none;padding:12px 14px;background:linear-gradient(135deg,rgba(0,229,255,.08),rgba(159,122,234,.08));border-bottom:1px solid var(--border)">
+        <div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--cyan);margin-bottom:6px">📊 Encuesta en vivo</div>
+        <div style="font-family:var(--ff-display);font-size:13px;font-weight:700;color:var(--t1);margin-bottom:10px" id="pollQuestion"></div>
+        <div id="pollOptions" style="display:flex;flex-direction:column;gap:6px"></div>
       </div>
-            <!-- Chat -->
-      <div class="tab-panel active" id="panel-chat">
-        <div class="reactions-bar" id="reactionsBar" style="display:none">
-          <button class="react-btn" onclick="sendReaccion('🔥')">🔥 <span id="r1">0</span></button>
-          <button class="react-btn" onclick="sendReaccion('💥')">💥 <span id="r2">0</span></button>
-          <button class="react-btn" onclick="sendReaccion('👏')">👏 <span id="r3">0</span></button>
-          <button class="react-btn" onclick="sendReaccion('😮')">😮 <span id="r4">0</span></button>
-          <button class="react-btn" onclick="sendReaccion('❤️')">❤️ <span id="r5">0</span></button>
-        </div>
+      <!-- Reactions -->
+      <div class="reactions-bar" id="reactionsBar" style="display:none">
+        <button class="react-btn" onclick="sendReaccion('🔥')">🔥 <span id="r1">0</span></button>
+        <button class="react-btn" onclick="sendReaccion('💥')">💥 <span id="r2">0</span></button>
+        <button class="react-btn" onclick="sendReaccion('👏')">👏 <span id="r3">0</span></button>
+        <button class="react-btn" onclick="sendReaccion('😮')">😮 <span id="r4">0</span></button>
+        <button class="react-btn" onclick="sendReaccion('❤️')">❤️ <span id="r5">0</span></button>
+      </div>
+      <!-- Chat -->
+      <div style="flex:1;display:flex;flex-direction:column;overflow:hidden">
         <!-- Chat de YouTube — solo activo cuando hay live -->
         <div id="chatLiveWrap" style="flex:1;display:none;flex-direction:column">
           <div class="chat-msgs" id="chatBox"></div>
@@ -1006,29 +1015,6 @@ if(window.matchMedia('(display-mode: standalone)').matches || window.navigator.s
           <div style="font-size:11px;color:var(--cyan);font-weight:700;margin-top:2px;padding:4px 12px;border:1px solid rgba(0,229,255,.2);border-radius:20px;background:rgba(0,229,255,.05)" id="chatNextShow"></div>
         </div>
         <div id="chatFormArea"></div>
-      </div>
-<!-- Preguntas Al Aire -->
-      <div class="tab-panel" id="panel-preguntas">
-        <div class="preguntas-panel">
-          <div class="preguntas-list" id="preguntasList"></div>
-          <div id="preguntaFormArea">
-            <div class="chat-login-prompt">
-              
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- Viewers -->
-      <div class="tab-panel" id="panel-viewers">
-        <div class="viewers-panel" id="viewersBox"></div>
-      </div>
-      <!-- Poll -->
-      <div class="tab-panel" id="panel-poll">
-        <div class="poll-wrap">
-          <div class="poll-q">¿Qué tema querés que profundice Nacho hoy?</div>
-          <div id="pollOpts"></div>
-          <div class="poll-foot">Actualización en tiempo real</div>
-        </div>
       </div>
     </div>
   </div>
@@ -1810,7 +1796,7 @@ function buildPoll(){
     <div style="font-size:12px;color:var(--t2);line-height:1.6;max-width:220px">Las encuestas se activan durante el programa en vivo.</div>
   </div>`;
 }
-function switchTab(name,btn){document.querySelectorAll(".ls-tab").forEach(t=>t.classList.remove("active"));document.querySelectorAll(".tab-panel").forEach(p=>p.classList.remove("active"));btn.classList.add("active");document.getElementById("panel-"+name).classList.add("active");}
+// switchTab removed — single chat panel now
 
 // ── UI ──
 function setActive(el){document.querySelectorAll(".nlnk").forEach(l=>l.classList.remove("active"));el.classList.add("active");}
@@ -2015,6 +2001,45 @@ setInterval(async () => {
 
 
 
+
+// ── LIVE POLL (YouTube-style, admin-controlled) ──
+// Admin creates a poll in Firestore: live_polls/{id} = {question, options:[], votes:{}, active:true}
+const pollQ = query(collection(db,'live_polls'), orderBy('ts','desc'), limit(1));
+onSnapshot(pollQ, snap => {
+  const banner = document.getElementById('livePollBanner');
+  if(!banner) return;
+  if(!snap.docs.length) { banner.style.display = 'none'; return; }
+  const poll = {id: snap.docs[0].id, ...snap.docs[0].data()};
+  if(!poll.active) { banner.style.display = 'none'; return; }
+  banner.style.display = 'block';
+  document.getElementById('pollQuestion').textContent = poll.question || '';
+  const opts = document.getElementById('pollOptions');
+  const myVote = localStorage.getItem('tss_poll_' + poll.id);
+  const votes = poll.votes || {};
+  const totalVotes = Object.values(votes).reduce((s,v) => s+v, 0) || 1;
+  opts.innerHTML = (poll.options || []).map((opt, i) => {
+    const count = votes[i] || 0;
+    const pct = Math.round(count / totalVotes * 100);
+    const isVoted = myVote == i;
+    return `<div class="poll-option${isVoted?' voted':''}" onclick="voteLivePoll('${poll.id}',${i})" style="position:relative;overflow:hidden">
+      <div class="poll-option-bar" style="width:${myVote !== null ? pct : 0}%"></div>
+      <span class="poll-option-text" style="position:relative;z-index:1">${opt}</span>
+      ${myVote !== null ? `<span class="poll-option-pct" style="position:relative;z-index:1">${pct}%</span>` : ''}
+    </div>`;
+  }).join('');
+});
+
+window.voteLivePoll = async (pollId, optIndex) => {
+  if(!window._currentUser) { showToast('🔐','Iniciá sesión para votar'); openModal('login'); return; }
+  const key = 'tss_poll_' + pollId;
+  if(localStorage.getItem(key) !== null) { showToast('⚠️','Ya votaste en esta encuesta'); return; }
+  try {
+    const pollRef = doc(db, 'live_polls', pollId);
+    await updateDoc(pollRef, { [`votes.${optIndex}`]: increment(1) });
+    localStorage.setItem(key, optIndex);
+    showToast('✅','¡Voto registrado!');
+  } catch(e) { showToast('❌', e.message); }
+};
 // ── CHAT BADGES (based on participation) ──
 window.getChatBadge = (userId) => {
   const msgs = parseInt(localStorage.getItem('tss_msg_count_'+userId)||'0');

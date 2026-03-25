@@ -568,6 +568,58 @@ window.deleteVote = async (id) => {
   await loadVotacion();
 };
 
+// ── LIVE POLL ──
+window.loadLivePoll = async () => {
+  try {
+    const q = query(collection(db,'live_polls'), orderBy('ts','desc'), limit(1));
+    const snap = await getDocs(q);
+    const el = document.getElementById('currentPollDisplay');
+    if(!snap.docs.length || !snap.docs[0].data().active) {
+      el.innerHTML = '<div style="color:var(--t3);padding:20px;text-align:center">Sin encuesta activa</div>';
+      return;
+    }
+    const poll = {id: snap.docs[0].id, ...snap.docs[0].data()};
+    const votes = poll.votes || {};
+    const total = Object.values(votes).reduce((s,v)=>s+v,0) || 1;
+    el.innerHTML = `
+      <div style="margin-bottom:12px;font-family:var(--ff-display);font-size:15px;font-weight:700;color:var(--t1)">${poll.question}</div>
+      ${(poll.options||[]).map((opt,i) => {
+        const count = votes[i]||0;
+        const pct = Math.round(count/total*100);
+        return `<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border)">
+          <div style="flex:1;font-size:13px;color:var(--t1)">${opt}</div>
+          <div style="font-size:12px;color:var(--cyan);font-weight:700">${count} votos (${pct}%)</div>
+        </div>`;
+      }).join('')}
+      <div style="margin-top:12px;display:flex;gap:8px">
+        <button class="btn-sm" style="background:rgba(225,29,72,.15);color:#e11d48;border:1px solid rgba(225,29,72,.3);border-radius:6px;cursor:pointer;flex:1" onclick="endLivePoll('${poll.id}')">Cerrar encuesta</button>
+      </div>
+    `;
+  } catch(e){}
+};
+
+window.createLivePoll = async () => {
+  const question = document.getElementById('pollQuestionInput')?.value.trim();
+  const opts = [1,2,3,4].map(i => document.getElementById('pollOpt'+i)?.value.trim()).filter(Boolean);
+  if(!question) { toast('⚠️','Escribí la pregunta'); return; }
+  if(opts.length < 2) { toast('⚠️','Mínimo 2 opciones'); return; }
+  // Deactivate any existing poll
+  const existing = await getDocs(query(collection(db,'live_polls'), orderBy('ts','desc'), limit(5)));
+  for(const d of existing.docs) { if(d.data().active) await updateDoc(doc(db,'live_polls',d.id),{active:false}); }
+  // Create new
+  await addDoc(collection(db,'live_polls'), {question, options: opts, votes: {}, active: true, ts: serverTimestamp()});
+  [1,2,3,4].forEach(i => { const el=document.getElementById('pollOpt'+i); if(el) el.value=''; });
+  document.getElementById('pollQuestionInput').value = '';
+  toast('✅','Encuesta publicada — visible en el chat');
+  loadLivePoll();
+};
+
+window.endLivePoll = async (id) => {
+  await updateDoc(doc(db,'live_polls',id), {active: false});
+  toast('✅','Encuesta cerrada');
+  loadLivePoll();
+};
+
 window.addVoteAdmin = async () => {
   const inp = document.getElementById('newVoteInput');
   const text = inp?.value.trim();
@@ -833,6 +885,7 @@ document.addEventListener('keydown', e => { if (e.key==='Escape') closeConfirm()
     <div class="sb-section">Comunidad</div>
     <div class="sb-item" onclick="goPanel('donantes',this);loadDonantes()" id="nav-donantes"><span class="sb-icon">💛</span> Donantes</div>
     <div class="sb-item" onclick="goPanel('votacion',this);loadVotacion()" id="nav-votacion"><span class="sb-icon">🗳️</span> Votación temas</div>
+    <div class="sb-item" onclick="goPanel('livepoll',this);loadLivePoll()" id="nav-livepoll"><span class="sb-icon">📊</span> Encuesta en vivo</div>
     <div class="sb-item" onclick="goPanel('newsletter',this);loadNewsletter()" id="nav-newsletter"><span class="sb-icon">📧</span> Newsletter</div>
 
     <div class="sb-section">Plataforma</div>
@@ -1126,6 +1179,31 @@ document.addEventListener('keydown', e => { if (e.key==='Escape') closeConfirm()
             <div class="config-card" style="margin-top:12px">
               <h3>Cómo funciona</h3>
               <p style="font-size:12px;color:var(--t2);line-height:1.65">Los usuarios proponen temas desde la web. Aparecen acá como <strong style="color:var(--gold)">pendientes</strong>. Vos aprobás o rechazás. Solo los aprobados se muestran públicamente y reciben votos. También podés agregar temas desde acá directamente.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LIVE POLL -->
+      <div class="panel" id="panel-livepoll">
+        <div style="display:grid;grid-template-columns:1fr 320px;gap:16px;align-items:start">
+          <div class="config-card">
+            <h3>📊 Encuesta activa</h3>
+            <div id="currentPollDisplay"><div style="color:var(--t3);padding:20px;text-align:center">Sin encuesta activa</div></div>
+          </div>
+          <div>
+            <div class="config-card">
+              <h3>Crear encuesta</h3>
+              <div class="fld"><label>Pregunta</label><input type="text" id="pollQuestionInput" placeholder="¿Qué tema te interesa más?"></div>
+              <div class="fld"><label>Opción 1</label><input type="text" id="pollOpt1" placeholder="Primera opción"></div>
+              <div class="fld"><label>Opción 2</label><input type="text" id="pollOpt2" placeholder="Segunda opción"></div>
+              <div class="fld"><label>Opción 3 (opcional)</label><input type="text" id="pollOpt3" placeholder="Tercera opción"></div>
+              <div class="fld"><label>Opción 4 (opcional)</label><input type="text" id="pollOpt4" placeholder="Cuarta opción"></div>
+              <button class="btn-sm btn-cyan" style="width:100%;margin-top:8px" onclick="createLivePoll()">🚀 Publicar encuesta</button>
+            </div>
+            <div class="config-card" style="margin-top:12px">
+              <h3>Info</h3>
+              <p style="font-size:12px;color:var(--t2);line-height:1.65">La encuesta aparece como banner fijo arriba del chat durante el programa en vivo, similar a YouTube. Solo puede haber una encuesta activa a la vez.</p>
             </div>
           </div>
         </div>
@@ -1494,7 +1572,7 @@ service cloud.firestore {
 
 <script>
 // ── NAVIGATION ──
-const panels = ['dashboard','analytics','noticias','nueva','cats','header','secciones','exclusivo','donacion','newsletterCfg','footerCfg','equipoCfg','donantes','votacion','newsletter','config'];
+const panels = ['dashboard','analytics','noticias','nueva','cats','header','secciones','exclusivo','donacion','newsletterCfg','footerCfg','equipoCfg','donantes','votacion','livepoll','newsletter','config'];
 window.goPanel = (name, navEl) => {
   panels.forEach(p => {
     document.getElementById('panel-'+p)?.classList.toggle('active', p===name);
