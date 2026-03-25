@@ -944,7 +944,18 @@ if(window.matchMedia('(display-mode: standalone)').matches || window.navigator.s
   </div>
 </div>
 
-<script>window.scrollTo(0,0);if(window.location.hash)history.replaceState(null,null," ");</script>
+<script>
+// ── PREVENT ZOOM (Safari iOS) ──
+document.addEventListener('gesturestart', e => e.preventDefault());
+document.addEventListener('gesturechange', e => e.preventDefault());
+document.addEventListener('gestureend', e => e.preventDefault());
+let lastTouchEnd = 0;
+document.addEventListener('touchend', e => {
+  const now = Date.now();
+  if(now - lastTouchEnd <= 300) e.preventDefault();
+  lastTouchEnd = now;
+}, false);
+window.scrollTo(0,0);if(window.location.hash)history.replaceState(null,null," ");</script>
 <div class="page" role="main">
 
 <!-- COUNTDOWN / LIVE BANNER -->
