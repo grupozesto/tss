@@ -110,7 +110,7 @@ html{scroll-behavior:smooth;scroll-padding-top:80px;overflow-x:hidden}
   --ink:#08090d;--ink2:#0e0f15;--ink3:#161821;--surface:#1c1e2a;--surface2:#242636;
   --border:rgba(255,255,255,.07);--border2:rgba(255,255,255,.12);
   --cyan:#2C6765;--cyan-dim:rgba(44,103,101,.15);--cyan-glow:rgba(44,103,101,.35);
-  --violet:#9f7aea;--violet-dim:rgba(159,122,234,.12);
+  --violet:#4A9E9B;--violet-dim:rgba(74,158,155,.12);
   --rose:#ff4d8d;--gold:#ffc947;
   --t1:#f0f2ff;--t2:#9094b0;--t3:#50536a;
   --ff-display:'Inter',sans-serif;--ff-body:'Inter',sans-serif;
@@ -163,7 +163,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;opacity:.022;pointer-ev
 
 /* ── COUNTDOWN BANNER ── */
 .countdown-banner{
-  background:linear-gradient(135deg,rgba(44,103,101,.06) 0%,rgba(159,122,234,.06) 100%);
+  background:linear-gradient(135deg,rgba(44,103,101,.06) 0%,rgba(74,158,155,.06) 100%);
   border-bottom:1px solid rgba(44,103,101,.15);
   padding:16px 28px;display:flex;align-items:center;gap:24px;flex-wrap:wrap;
   box-sizing:border-box;max-width:100%;overflow:hidden;
@@ -388,22 +388,22 @@ body::before{content:'';position:fixed;inset:0;z-index:0;opacity:.022;pointer-ev
 .ed-author{color:var(--cyan);font-weight:600}
 
 /* exclusivo */
-.excl-banner{background:linear-gradient(135deg,var(--ink2) 0%,rgba(159,122,234,.06) 100%);border:1px solid rgba(159,122,234,.3);border-radius:16px;padding:38px 46px;display:flex;align-items:center;gap:46px;position:relative;overflow:hidden;margin-bottom:28px}
+.excl-banner{background:linear-gradient(135deg,var(--ink2) 0%,rgba(74,158,155,.06) 100%);border:1px solid rgba(74,158,155,.3);border-radius:16px;padding:38px 46px;display:flex;align-items:center;gap:46px;position:relative;overflow:hidden;margin-bottom:28px}
 .excl-banner::before{content:'';position:absolute;top:-70px;right:-70px;width:320px;height:320px;border-radius:50%;background:var(--violet);opacity:.07;filter:blur(60px)}
 .excl-text{flex:1;position:relative;z-index:1}
-.excl-badge{display:inline-flex;align-items:center;gap:6px;background:var(--violet-dim);border:1px solid rgba(159,122,234,.35);border-radius:20px;padding:4px 12px;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--violet);margin-bottom:12px}
+.excl-badge{display:inline-flex;align-items:center;gap:6px;background:var(--violet-dim);border:1px solid rgba(74,158,155,.35);border-radius:20px;padding:4px 12px;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--violet);margin-bottom:12px}
 .excl-text h2{font-family:var(--ff-display);font-size:27px;font-weight:800;color:var(--t1);margin-bottom:10px}
 .excl-text p{font-size:13px;color:var(--t2);line-height:1.6;max-width:460px}
-.btn-violet{padding:13px 28px;border-radius:10px;background:var(--violet);color:#fff;font-family:var(--ff-display);font-size:14px;font-weight:700;letter-spacing:1px;border:none;flex-shrink:0;transition:.18s;box-shadow:0 0 25px rgba(159,122,234,.35)}
+.btn-violet{padding:13px 28px;border-radius:10px;background:var(--violet);color:#fff;font-family:var(--ff-display);font-size:14px;font-weight:700;letter-spacing:1px;border:none;flex-shrink:0;transition:.18s;box-shadow:0 0 25px rgba(74,158,155,.35)}
 .btn-violet:hover{background:#b48ef0;transform:translateY(-2px)}
 .excl-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
 .excl-card{background:var(--surface);border:1px solid var(--border);border-radius:11px;overflow:hidden;cursor:pointer;transition:.22s}
-.excl-card:hover{border-color:rgba(159,122,234,.4);transform:translateY(-3px)}
+.excl-card:hover{border-color:rgba(74,158,155,.4);transform:translateY(-3px)}
 .excl-card-thumb{aspect-ratio:16/9;background:var(--ink3);position:relative;overflow:hidden}
 .excl-card-thumb img{height:100%;width:100%;transition:transform .5s}
 .excl-card:hover .excl-card-thumb img{transform:scale(1.05)}
 .excl-lock-ov{position:absolute;inset:0;background:rgba(8,9,13,.65);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(2px)}
-.excl-lock-icon{width:48px;height:48px;border-radius:50%;background:var(--violet-dim);border:2px solid rgba(159,122,234,.4);display:flex;align-items:center;justify-content:center}
+.excl-lock-icon{width:48px;height:48px;border-radius:50%;background:var(--violet-dim);border:2px solid rgba(74,158,155,.4);display:flex;align-items:center;justify-content:center}
 .excl-lock-icon svg{width:20px;height:20px;fill:var(--violet)}
 .excl-card-body{padding:13px}
 .excl-card-body h4{font-family:var(--ff-display);font-size:14px;font-weight:700;color:var(--t1);margin-bottom:4px;line-height:1.3}
@@ -994,7 +994,7 @@ window.scrollTo(0,0);if(window.location.hash)history.replaceState(null,null," ")
         <span class="ls-count" id="vcCount"></span>
       </div>
       <!-- YouTube-style poll banner (shown when admin creates a poll) -->
-      <div id="livePollBanner" style="display:none;padding:12px 14px;background:linear-gradient(135deg,rgba(44,103,101,.08),rgba(159,122,234,.08));border-bottom:1px solid var(--border)">
+      <div id="livePollBanner" style="display:none;padding:12px 14px;background:linear-gradient(135deg,rgba(44,103,101,.08),rgba(74,158,155,.08));border-bottom:1px solid var(--border)">
         <div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--cyan);margin-bottom:6px">📊 Encuesta en vivo</div>
         <div style="font-family:var(--ff-display);font-size:13px;font-weight:700;color:var(--t1);margin-bottom:10px" id="pollQuestion"></div>
         <div id="pollOptions" style="display:flex;flex-direction:column;gap:6px"></div>
@@ -1117,7 +1117,7 @@ window.scrollTo(0,0);if(window.location.hash)history.replaceState(null,null," ")
         <h2>Próximamente: contenido exclusivo para suscriptores</h2>
         <p>Programas completos sin cortes, detrás de escena, entrevistas extendidas y archivos de más de 13 años de periodismo independiente. Estamos preparando algo especial.</p>
       </div>
-      <span style="padding:10px 24px;border-radius:20px;background:rgba(159,122,234,.15);border:1px solid rgba(159,122,234,.3);color:var(--violet);font-size:13px;font-weight:700;white-space:nowrap">🚧 Próximamente</span>
+      <span style="padding:10px 24px;border-radius:20px;background:rgba(74,158,155,.15);border:1px solid rgba(74,158,155,.3);color:var(--violet);font-size:13px;font-weight:700;white-space:nowrap">🚧 Próximamente</span>
     </div>
     <div class="excl-grid">
       <div class="excl-card fade-up" onclick="requireLogin()"><div class="excl-card-thumb"><img loading="lazy" src="https://cdn.dl.uy/solimg/894x503/39/39554.jpg" alt="Análisis de Canal 4 - Todo Se Sabe"><div class="excl-lock-ov"><div class="excl-lock-icon"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg></div></div></div><div class="excl-card-body"><h4>Programa completo — Episodio 1</h4><p>4h · Solo suscriptores</p></div></div>
