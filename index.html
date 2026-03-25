@@ -171,7 +171,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;opacity:.022;pointer-ev
 .cd-label{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--cyan);flex-shrink:0}
 .cd-blocks{display:flex;gap:10px;flex-shrink:0}
 .cd-block{background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:8px 14px;text-align:center;min-width:62px}
-.cd-num{font-family:var(--ff-display);font-size:22px;font-weight:800;color:var(--cyan);line-height:1}
+.cd-num{font-family:var(--ff-display);font-size:22px;font-weight:800;color:#fff;line-height:1}
 .cd-unit{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--t3);margin-top:3px}
 .cd-topic{flex:1;min-width:0}
 .cd-topic-label{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--violet);margin-bottom:4px}
@@ -179,7 +179,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;opacity:.022;pointer-ev
 .cd-notif-btn{
   padding:9px 18px;border-radius:8px;
   background:var(--cyan);
-  color:var(--ink);font-size:12px;font-weight:700;border:none;
+  color:#fff;font-size:12px;font-weight:700;border:none;
   white-space:nowrap;flex-shrink:0;transition:.18s;
 }
 .cd-notif-btn:hover{transform:translateY(-1px);box-shadow:0 0 30px var(--cyan-glow)}
@@ -245,7 +245,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;opacity:.022;pointer-ev
 .chat-inp:focus{border-color:var(--cyan)}
 .chat-login-prompt{display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;padding:10px 10px 14px;border-top:1px solid var(--border);text-align:center;flex-shrink:0}
 .chat-login-prompt p{font-size:11px;color:var(--t2);margin:0}
-.chat-login-prompt button{padding:7px 20px;border-radius:20px;background:var(--cyan);color:var(--ink);border:none;font-size:11px;font-weight:700;transition:.18s;cursor:pointer}
+.chat-login-prompt button{padding:7px 20px;border-radius:20px;background:var(--cyan);color:#fff;border:none;font-size:11px;font-weight:700;transition:.18s;cursor:pointer}
 .chat-login-prompt button:hover{background:#3A7F7D}
 .chat-send{width:34px;height:34px;border-radius:8px;background:var(--cyan);border:none;display:flex;align-items:center;justify-content:center;transition:.18s}
 .chat-send:hover{background:#3A7F7D}
@@ -307,7 +307,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;opacity:.022;pointer-ev
 /* videos */
 .yt-filter-bar{display:flex;gap:8px;margin-bottom:20px;align-items:center;flex-wrap:wrap}
 .yt-filter-btn{padding:8px 18px;border-radius:20px;border:1px solid var(--border2);background:transparent;color:var(--t2);font-size:12px;font-weight:600;transition:.18s;cursor:pointer;white-space:nowrap}
-.yt-filter-btn.active{background:var(--cyan);border-color:var(--cyan);color:var(--ink);font-weight:700}
+.yt-filter-btn.active{background:var(--cyan);border-color:var(--cyan);color:#fff;font-weight:700}
 .yt-filter-btn:hover{color:var(--t1)}
 .yt-search-field{margin-left:auto;background:var(--surface);border:1px solid var(--border2);border-radius:20px;padding:8px 16px;color:var(--t1);font-size:13px;font-family:var(--ff-body);outline:none;transition:.18s;width:220px;flex-shrink:1;min-width:0}
 .yt-search-field:focus{border-color:var(--cyan)}
@@ -449,7 +449,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;opacity:.022;pointer-ev
 .team-role{font-size:11px;color:var(--t2);margin-bottom:8px}
 .team-socials{display:flex;justify-content:center;gap:6px}
 .team-soc{width:28px;height:28px;border-radius:50%;background:var(--ink3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:13px;transition:.18s;color:var(--t2)}
-.team-soc:hover{background:var(--cyan);color:var(--ink);border-color:var(--cyan)}
+.team-soc:hover{background:var(--cyan);color:#fff;border-color:var(--cyan)}
 .team-dots{display:none;justify-content:center;gap:6px;margin-top:14px}
 .team-dot{width:8px;height:8px;border-radius:50%;background:var(--border2);border:none;padding:0;cursor:pointer;transition:.18s}
 .team-dot.active{background:var(--cyan);width:20px;border-radius:4px}
@@ -574,7 +574,7 @@ body.light-mode .glow-bg span{opacity:.03}
   .live-sidebar{max-height:320px}
   .chat-login-prompt{gap:4px;padding:6px 8px 10px}
   .chat-login-prompt p{font-size:10px}
-  .chat-login-prompt button{padding:6px 16px;font-size:10px}
+  .chat-login-prompt button{padding:6px 16px;font-size:10px;color:#fff}
   #chatOfflineWrap{gap:8px !important;padding:12px 10px !important}
   #chatOfflineWrap>div:first-child{font-size:22px !important}
   #chatNextShow{font-size:11px !important;padding:4px 12px !important}
@@ -654,7 +654,7 @@ body.light-mode .glow-bg span{opacity:.03}
 .vote-add-input{flex:1;background:var(--surface);border:1px solid var(--border2);border-radius:8px;padding:10px 14px;color:var(--t1);font-size:13px;outline:none;transition:.18s}
 .vote-add-input:focus{border-color:var(--cyan)}
 .vote-add-input::placeholder{color:var(--t3)}
-.vote-add-btn{padding:10px 20px;border-radius:8px;background:var(--cyan);color:var(--ink);font-size:13px;font-weight:700;border:none;white-space:nowrap;transition:.18s;cursor:pointer}
+.vote-add-btn{padding:10px 20px;border-radius:8px;background:var(--cyan);color:#fff;font-size:13px;font-weight:700;border:none;white-space:nowrap;transition:.18s;cursor:pointer}
 .vote-add-btn:hover{background:#3A7F7D}
 /* ── MURO DONANTES ── */
 .donors-section{border-top:1px solid var(--border);background:var(--ink2)}
@@ -702,9 +702,9 @@ body.light-mode .glow-bg span{opacity:.03}
 /* ── YOUTUBE LAZY LOAD ── */
 .yt-thumb-overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:transparent center/cover no-repeat;cursor:pointer;z-index:2;display:flex;align-items:center;justify-content:center;transition:opacity .3s}
 .yt-thumb-overlay.hidden{opacity:0;pointer-events:none}
-.yt-play-btn{width:72px;height:72px;border-radius:50%;background:rgba(44,103,101,.9);display:flex;align-items:center;justify-content:center;transition:.2s;box-shadow:0 4px 24px rgba(44,103,101,.3)}
+.yt-play-btn{width:72px;height:72px;border-radius:50%;background:var(--cyan);display:flex;align-items:center;justify-content:center;transition:.2s;box-shadow:0 4px 24px rgba(44,103,101,.3)}
 .yt-play-btn:hover{transform:scale(1.1);background:var(--cyan)}
-.yt-play-btn svg{width:28px;height:28px;fill:var(--ink);margin-left:3px}
+.yt-play-btn svg{width:28px;height:28px;fill:#fff;margin-left:3px}
 
 /* ── THEATER MODE ── */
 .hero-live.theater{grid-template-columns:1fr}
@@ -726,7 +726,7 @@ body.light-mode .glow-bg span{opacity:.03}
 .team-modal-bio{font-size:13px;color:var(--t2);line-height:1.7;margin-bottom:18px}
 .team-modal-socials{display:flex;justify-content:center;gap:10px}
 .team-modal-socials a{width:38px;height:38px;border-radius:50%;background:var(--surface2);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:16px;transition:.18s;color:var(--t2)}
-.team-modal-socials a:hover{background:var(--cyan);color:var(--ink);border-color:var(--cyan)}
+.team-modal-socials a:hover{background:var(--cyan);color:#fff;border-color:var(--cyan)}
 
 /* ── SAFARI ZOOM PREVENTION ── */
 body,html{touch-action:manipulation;-ms-touch-action:manipulation}
